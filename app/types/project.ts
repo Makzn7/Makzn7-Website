@@ -11,6 +11,7 @@ export type Project = {
   year?: number;
   summary?: string;
   heroMedia?: Media;
+  hoverMedia?: Media;
   gallery: Media[];
 
   departmentId?: number;

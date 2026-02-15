@@ -1,11 +1,40 @@
 {
+  "titles": {
+    "home": "الرئيسية",
+    "projects": "المشاريع",
+    "about": "من نحن",
+    "contact": "تواصل معنا",
+    "selectedProjects": "المشاريع المختارة"
+  },
   "nav": {
     "home": "الرئيسية",
-    "about": "من نحن",
     "projects": "المشاريع",
-    "departments": "الأقسام",
+    "about": "من نحن",
+    "contact": "تواصل معنا",
     "services": "الخدمات",
-    "team": "الفريق",
-    "contact": "تواصل معنا"
+    "departments": "الأقسام"
+  },
+  "fields": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني"
+  },
+  "placeholders": {
+    "name": "أدخل اسمك",
+    "email": "أدخل بريدك الإلكتروني"
+  },
+  "buttons": {
+    "submit": "إرسال",
+    "tryAgain": "حاول مرة أخرى"
+  },
+  "messages": {},
+  "errors": {},
+  "validation": {
+    "name": {
+      "required": "الاسم مطلوب"
+    },
+    "email": {
+      "required": "البريد الإلكتروني مطلوب",
+      "invalid": "يرجى إدخال عنوان بريد إلكتروني صالح"
+    }
   }
 }

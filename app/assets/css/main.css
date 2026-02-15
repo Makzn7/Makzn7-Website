@@ -15,7 +15,9 @@
   --gap: 8.75rem;
   /* منظور الغرفة */
   --persp: 200px;
-  /* لون الخلفية */
+  /* الألوان */
+  --primary-color: #54ea62;
+  --bg-color: #ffffff;
 }
 
 /* auto apply per locale */
@@ -28,4 +30,10 @@ html.font-ar {
 
 .font-pixel {
   font-family: "DotGothic16", system-ui, sans-serif;
+}
+
+@layer base {
+  .home-nav-link {
+    @apply p-2 text-sm text-black hover:text-brand-primary uppercase transition duration-300;
+  }
 }

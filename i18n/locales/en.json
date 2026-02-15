@@ -1,11 +1,43 @@
 {
+  "titles": {
+    "home": "Home",
+    "projects": "Projects",
+    "about": "About",
+    "contact": "Contact",
+    "selectedProjects": "Selected Projects"
+  },
   "nav": {
     "home": "Home",
-    "about": "About",
     "projects": "Projects",
-    "departments": "Departments",
+    "about": "About",
+    "contact": "Contact",
     "services": "Services",
-    "team": "Team",
-    "contact": "Contact"
+    "departments": "Departments"
+  },
+  "fields": {
+    "name": "Name",
+    "email": "Email"
+  },
+  "placeholders": {
+    "name": "Enter your name",
+    "email": "Enter your email"
+  },
+  "buttons": {
+    "submit": "Submit",
+    "tryAgain": "Try Again"
+  },
+  "messages": {
+    "headerMessageLine1": "We Transform Scripts",
+    "headerMessageLine2": "Into Reality"
+  },
+  "errors": {},
+  "validation": {
+    "name": {
+      "required": "Name is required"
+    },
+    "email": {
+      "required": "Email is required",
+      "invalid": "Please enter a valid email address"
+    }
   }
 }

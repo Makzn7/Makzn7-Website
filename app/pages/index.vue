@@ -15,8 +15,5 @@ useHead({
 <template>
   <div>
     <HomeHero />
-    <!-- <HomeContact />
-    <HomeTeam :team="[]" /> -->
-    <!-- <CustomCursor /> -->
   </div>
 </template>

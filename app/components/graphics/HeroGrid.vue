@@ -1,9 +1,39 @@
 <!-- CenterImage1 -->
+<script setup>
+const props = defineProps({
+  class: {
+    type: String,
+    default: "",
+  },
+  viewBoxWidth: {
+    type: Number,
+    default: 837.638,
+  },
+  viewBoxHeight: {
+    type: Number,
+    default: 666.142,
+  },
+  viewBoxY: {
+    type: Number,
+    default: 0, // Change this to shift vertical position
+  },
+  aspectRatio: {
+    type: String,
+    default: "xMidYMid meet", // or 'none' to stretch
+  },
+});
+
+const viewBox = computed(
+  () => `0 ${props.viewBoxY} ${props.viewBoxWidth} ${props.viewBoxHeight}`
+);
+</script>
+
 <template>
   <svg
-    enable-background="new 0 0 837.638 666.142"
-    viewBox="0 0 837.638 666.142"
+    :class="['w-full', $props.class]"
+    :viewBox="viewBox"
     xmlns="http://www.w3.org/2000/svg"
+    :preserveAspectRatio="aspectRatio"
   >
     <g>
       <g fill="none" stroke="#54eb62" stroke-width=".5">
