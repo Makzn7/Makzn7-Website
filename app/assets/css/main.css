@@ -1,0 +1,31 @@
+@import "./fonts.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* عرض القضبان */
+  --railW: 3.75rem;
+  /* طول القضبان */
+  --railH: 3.75rem;
+  /* الإزاحة العامة حسب التمرير */
+  --offset: 0; /* تُحدَّث بالـ JS */
+  /* مسافة بين العناصر في الستريم */
+  --gap: 8.75rem;
+  /* منظور الغرفة */
+  --persp: 200px;
+  /* لون الخلفية */
+}
+
+/* auto apply per locale */
+html.font-en {
+  font-family: "Uxum Grotesque", system-ui, sans-serif;
+}
+html.font-ar {
+  font-family: "29LT Zarid Serif", system-ui, serif;
+}
+
+.font-pixel {
+  font-family: "DotGothic16", system-ui, sans-serif;
+}
