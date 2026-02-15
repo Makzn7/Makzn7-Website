@@ -25,7 +25,7 @@
               class="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none"
             >
               <h2
-                class="text-[6rem] font-extrabold uppercase max-w-[800px] text-start leading-[1]"
+                class="text-[6rem] font-bold uppercase max-w-[800px] text-start leading-[1]"
               >
                 {{ $t("messages.headerMessageLine1") }}<br />{{
                   $t("messages.headerMessageLine2")

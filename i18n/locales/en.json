@@ -39,5 +39,15 @@
       "required": "Email is required",
       "invalid": "Please enter a valid email address"
     }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "address": "Riyadh, Saudi Arabia",
+    "addressLine2": "Thamama St, Al sahafa District.",
+    "phone": "(+966 00 000 0000)",
+    "vat": "VAT: 0000000"
+  },
+  "team": {
+    "title": "Our Team"
   }
 }

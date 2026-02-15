@@ -1,5 +1,19 @@
 @font-face {
   font-family: "Uxum Grotesque";
+  src: url("/fonts/en/TRIAL_UxumGrotesque-UltraLight.otf") format("opentype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Uxum Grotesque";
+  src: url("/fonts/en/TRIAL_UxumGrotesque-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Uxum Grotesque";
   src: url("/fonts/en/UxumGrotesque-Regular.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
@@ -9,6 +23,20 @@
   font-family: "Uxum Grotesque";
   src: url("/fonts/en/UxumGrotesque-Medium.otf") format("opentype");
   font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Uxum Grotesque";
+  src: url("/fonts/en/TRIAL_UxumGrotesque-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Uxum Grotesque";
+  src: url("/fonts/en/TRIAL_UxumGrotesque-Ultra.otf") format("opentype");
+  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
