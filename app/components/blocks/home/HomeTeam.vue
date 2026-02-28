@@ -1,3 +1,4 @@
+<!-- HomeTeam -->
 <template>
   <section
     class="home-team bg-black text-white py-16 px-6 border-t-[1px] border-white"

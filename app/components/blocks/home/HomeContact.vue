@@ -1,3 +1,4 @@
+<!-- HomeContact -->
 <template>
   <section
     class="home-contact bg-black text-white py-16 px-6 border-t border-white/10"

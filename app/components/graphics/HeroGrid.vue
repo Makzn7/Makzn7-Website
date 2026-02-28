@@ -1,4 +1,4 @@
-<!-- CenterImage1 -->
+<!-- HeroGrid -->
 <script setup>
 const props = defineProps({
   class: {

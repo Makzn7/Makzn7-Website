@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HomeHero from "~/components/blocks/home/HomeHero.vue";
+import HomeHero2 from "~/components/blocks/home/HomeHero2.vue";
 import HomeContact from "~/components/blocks/home/HomeContact.vue";
 import HomeTeam from "~/components/blocks/home/HomeTeam.vue";
 
@@ -16,7 +16,7 @@ useHead({
 
 <template>
   <div>
-    <HomeHero />
+    <HomeHero2 />
     <HomeContact />
     <HomeTeam />
   </div>
