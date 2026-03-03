@@ -66,7 +66,7 @@
     </div>
 
     <!-- spacer أسفل عشان الأرض ما تبقى فارغة في النهاية -->
-    <div class="content-item" style="height: 6rem"></div>
+    <div class="content-item" style="height: 8rem"></div>
   </div>
 </template>
 
