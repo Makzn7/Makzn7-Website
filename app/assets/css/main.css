@@ -22,7 +22,7 @@
 
 /* auto apply per locale */
 html.font-en {
-  font-family: "Uxum Grotesque", system-ui, sans-serif;
+  font-family: "Rubik", system-ui, sans-serif;
 }
 html.font-ar {
   font-family: "29LT Zarid Serif", system-ui, serif;
@@ -31,9 +31,29 @@ html.font-ar {
 .font-pixel {
   font-family: "DotGothic16", system-ui, sans-serif;
 }
+.font-ar {
+  font-family: "29LT Zarid Serif", system-ui, serif;
+}
+.font-en {
+  font-family: "Rubik", system-ui, sans-serif;
+}
+
+.white-link {
+  @apply text-white transition-all duration-500 ease-in-out;
+}
+.white-link:hover {
+  @apply text-brand-primary hover:[text-shadow:2px_0_0_currentColor,-2px_0_0_currentColor,0_0_2px_currentColor];
+}
+
+.white-link-sm {
+  @apply text-white transition-all duration-500 ease-in-out;
+}
+.white-link-sm:hover {
+  @apply text-brand-primary hover:[text-shadow:1px_0_0_currentColor,-1px_0_0_currentColor,0_0_1px_currentColor];
+}
 
 @layer base {
   .home-nav-link {
-    @apply p-2 text-sm text-black hover:text-brand-primary uppercase transition duration-300;
+    @apply text-brand-primary font-medium text-[20px] tracking-[0px] uppercase transition-all duration-500 ease-in-out;
   }
 }

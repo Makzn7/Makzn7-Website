@@ -12,7 +12,10 @@
     "about": "About",
     "contact": "Contact",
     "services": "Services",
-    "departments": "Departments"
+    "departments": "Departments",
+    "mansj": "Mansj",
+    "manjra": "Manjra",
+    "prophouse": "PropHouse"
   },
   "fields": {
     "name": "Name",
@@ -24,7 +27,10 @@
   },
   "buttons": {
     "submit": "Submit",
-    "tryAgain": "Try Again"
+    "tryAgain": "Try Again",
+    "discoverMore": "Discover More",
+    "lang": "عربي",
+    "privacyPolicy": "Privacy Policy"
   },
   "messages": {
     "headerMessageLine1": "We Transform Scripts",
@@ -42,10 +48,16 @@
   },
   "contact": {
     "title": "Contact Us",
-    "address": "Riyadh, Saudi Arabia",
-    "addressLine2": "Thamama St, Al sahafa District.",
+    "address": "Riyadh, Saudi Arabia Thumama St, Al Sahafa Dist.",
     "phone": "(+966 00 000 0000)",
-    "vat": "VAT: 0000000"
+    "vat": "VAT",
+    "cr": "CR"
+  },
+  "home": {
+    "aboutTitle": "About",
+    "aboutDescription": "Makzn 7 is a comprehensive film design services company founded in 2020. It functions as a hub for facilities such as a film design house, a prop house, a wardrobe studio, and a construction workshop. And covers all aspects of art both on and off screen; from concept, research, design, construction, and location prep.",
+    "contactTitle": "Contact Us",
+    "heroDescription": "A comprehensive film design services company founded in 2020. It functions as a hub for facilities such as a film design house, a prop house, a wardrobe studio, and a construction workshop."
   },
   "team": {
     "title": "Our Team"

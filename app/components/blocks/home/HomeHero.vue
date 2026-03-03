@@ -142,7 +142,7 @@ body {
   left: var(--railW);
   height: 1px;
   width: 114px;
-  background-color: #000;
+  background-color: var(--primary-color);
   transform-origin: left bottom;
   transform: rotate(-134deg);
 }
@@ -154,7 +154,7 @@ body {
   left: var(--railW);
   height: 1px;
   width: 114px;
-  background-color: #000;
+  background-color: var(--primary-color);
   transform-origin: left top;
   transform: rotate(134deg);
 }

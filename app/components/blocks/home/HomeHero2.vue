@@ -11,7 +11,14 @@
         <!-- ══ السقف (top-part) — rotateX(-90deg) ══ -->
         <div class="top-part px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
-            <PageContent :projects="featuredProjects" :margin-top="4" :px="0" />
+            <PageContent
+              :projects="featuredProjects"
+              :margin-top="4"
+              :px="0"
+              :desc-size="36"
+              :projectPX="2"
+              :projectSize="124"
+            />
           </div>
         </div>
 
@@ -36,7 +43,13 @@
         <!-- ══ الأرض (bottom-part) — rotateX(+90deg) ══ -->
         <div class="bottom-part">
           <div ref="floorRef" class="sync-content px-[5.5rem]">
-            <PageContent :projects="featuredProjects" :margin-top="6" :px="0" />
+            <PageContent
+              :projects="featuredProjects"
+              :margin-top="4"
+              :px="0"
+              :projectPX="2"
+              :projectSize="124"
+            />
           </div>
         </div>
       </div>
@@ -54,10 +67,8 @@ import { ref, onMounted, onUnmounted } from "vue";
 import LeftSideContent from "~/components/blocks/home/HomeHeroLeftSideContent.vue";
 import RightSideContent from "~/components/blocks/home/HomeHeroRightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
-import { projects } from "~/mocks/projects";
+import { projects, featuredProjects } from "~/mocks/projects";
 import PageContent from "./PageContent.vue";
-
-const featuredProjects = projects.filter((p) => p.isFeatured).slice(0, 5);
 
 /* ── refs ── */
 const centerBoxRef = ref(null);
@@ -204,7 +215,7 @@ body {
   left: var(--railW);
   height: 1px;
   width: 114px;
-  background-color: #000;
+  background-color: var(--primary-color);
   transform-origin: left bottom;
   transform: rotate(-145deg);
 }
@@ -215,7 +226,7 @@ body {
   left: var(--railW);
   height: 1px;
   width: 114px;
-  background-color: #000;
+  background-color: var(--primary-color);
   transform-origin: left top;
   transform: rotate(145deg);
 }
@@ -233,7 +244,7 @@ body {
   right: var(--railW);
   height: 1px;
   width: 114px;
-  background-color: #000;
+  background-color: var(--primary-color);
   transform-origin: right bottom;
   transform: rotate(145deg);
 }
@@ -244,7 +255,7 @@ body {
   right: var(--railW);
   height: 1px;
   width: 114px;
-  background-color: #000;
+  background-color: var(--primary-color);
   transform-origin: right top;
   transform: rotate(-145deg);
 }
@@ -290,7 +301,7 @@ body {
   left: 0;
   right: 0;
   overflow: hidden;
-  border: 1px solid #000;
+  border: 1px solid var(--primary-color);
   z-index: 1;
   width: calc(100% - 2 * var(--railW));
   transform: translate(var(--railW), 0);
