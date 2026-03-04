@@ -3,7 +3,14 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/i18n"],
+  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/i18n", "@nuxtjs/color-mode"],
+
+  colorMode: {
+    classSuffix: "",
+    preference: "light",
+    fallback: "light",
+    storageKey: "makzn7-color-mode",
+  },
 
   i18n: {
     lazy: true,

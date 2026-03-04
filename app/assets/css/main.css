@@ -4,28 +4,62 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ══════════════════════════════════════════════
+   LIGHT MODE — default
+══════════════════════════════════════════════ */
 :root {
-  /* عرض القضبان */
+  /* Layout */
   --railW: 3.75rem;
-  /* طول القضبان */
   --railH: 2.75rem;
-  /* الإزاحة العامة حسب التمرير */
-  --offset: 0; /* تُحدَّث بالـ JS */
-  /* مسافة بين العناصر في الستريم */
+  --offset: 0;
   --gap: 8.75rem;
-  /* منظور الغرفة */
   --persp: 200px;
-  /* الألوان */
-  --primary-color: #54ea62;
-  --bg-color: #ffffff;
+
+  /* Semantic color tokens */
+  --color-bg:           #ffffff;
+  --color-bg-secondary: #f5f5f5;
+  --color-surface:      #f0f0f0;
+  --color-text:         #0a0a0a;
+  --color-text-muted:   #555555;
+  --color-primary:      #54ea62;
+  --color-border:       rgba(0, 0, 0, 0.1);
+
+  /* Backward-compat aliases — existing components use these */
+  --primary-color: var(--color-primary);
+  --bg-color:      var(--color-bg);
 }
 
-/* auto apply per locale */
+/* ══════════════════════════════════════════════
+   DARK MODE — .dark on <html> via @nuxtjs/color-mode
+══════════════════════════════════════════════ */
+.dark {
+  --color-bg:           #0a0a0a;
+  --color-bg-secondary: #111111;
+  --color-surface:      #1a1a1a;
+  --color-text:         #ffffff;
+  --color-text-muted:   #aaaaaa;
+  --color-primary:      #ffffff;
+  --color-border:       rgba(255, 255, 255, 0.1);
+}
+
+/* ══════════════════════════════════════════════
+   SMOOTH THEME TRANSITION — global
+══════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  transition: background-color 0.25s ease, color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* ══════════════════════════════════════════════
+   FONT PER LOCALE
+══════════════════════════════════════════════ */
 html.font-en {
   font-family: "Rubik", system-ui, sans-serif;
 }
 html.font-ar {
-  font-family: "29LT Zarid Serif", system-ui, serif;
+  font-family: "Rubik", system-ui, sans-serif;
 }
 
 html.has-scroll-smooth {
@@ -34,6 +68,9 @@ html.has-scroll-smooth {
 
 [data-scroll-container] {
   min-height: 100vh;
+  /* clip cuts horizontal overflow without creating a scroll-container,
+     so position:sticky on child sections keeps working correctly */
+  overflow-x: clip;
 }
 
 .font-pixel {
@@ -46,6 +83,9 @@ html.has-scroll-smooth {
   font-family: "Rubik", system-ui, sans-serif;
 }
 
+/* ══════════════════════════════════════════════
+   LINK UTILITIES
+══════════════════════════════════════════════ */
 .white-link {
   @apply text-white transition-all duration-500 ease-in-out;
 }

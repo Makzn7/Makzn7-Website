@@ -4,7 +4,7 @@
     <div class="flex">
       <div
         class="border-e-[0.3px] border-white"
-        style="width: var(--railW)"
+        style="width: calc(var(--railW) + 3px)"
       ></div>
       <div class="w-full mx-auto grid grid-cols-1 gap-12 py-16 px-28">
         <!-- Title -->
@@ -16,22 +16,28 @@
         </div>
 
         <!-- Options + Contact Info + Social Media -->
-        <div class="grid grid-cols-1 md:grid-cols-6 gap-16 lg:gap-16 fade-in-left">
+        <div
+          class="grid grid-cols-1 md:grid-cols-6 gap-16 lg:gap-16 fade-in-left"
+        >
           <!-- Options + Year -->
           <div class="col-span-3 flex flex-col justify-between gap-6">
             <div class="flex flex-col w-full gap-2 justify-start items-start">
-              <button>
+              <button id="toggle-theme-mode" @click="toggleTheme">
                 <font-awesome-icon
                   icon="fa-solid fa-circle-half-stroke"
                   style="width: 30px; height: 30px"
                 />
               </button>
-              <button class="flex justify-start items-center gap-2">
+              <button
+                class="flex justify-start items-center gap-2"
+                id="toggle-lang"
+                @click="toggleLocale"
+              >
                 <font-awesome-icon
                   icon="fa-solid fa-globe"
                   style="width: 30px; height: 30px"
                 />
-                <span class="text-[31px] leading-[37px] mb-[20px]">{{
+                <span class="text-[31px] leading-[37px] lrt:mb-[20px]">{{
                   $t("buttons.lang")
                 }}</span>
               </button>
@@ -51,10 +57,18 @@
           <div class="col-span-2 text-lg flex flex-col justify-between gap-8">
             <!-- Email and Phone -->
             <div class="flex flex-col font-light">
-              <a href="mailto:Hello@makzn7.com" class="white-link-sm">
+              <a
+                href="mailto:Hello@makzn7.com"
+                class="white-link-sm font-en rtl:text-right"
+                dir="ltr"
+              >
                 Hello@makzn7.com
               </a>
-              <a href="tel:+966000000000" class="white-link-sm">
+              <a
+                href="tel:+966000000000"
+                class="white-link-sm font-en rtl:text-right"
+                dir="ltr"
+              >
                 {{ $t("contact.phone") }}
               </a>
             </div>
@@ -64,11 +78,11 @@
             </div>
             <!-- VAT -->
             <div>
-              <p class="text-white font-light">
-                {{ $t("contact.cr") }}: 1010709330
+              <p class="text-white font-light font-en rtl:text-right" dir="ltr">
+                {{ $t("contact.cr") }}: <bdi>1010709330</bdi>
               </p>
-              <p class="text-white font-light">
-                {{ $t("contact.vat") }}: 310928662200003
+              <p class="text-white font-light font-en rtl:text-right" dir="ltr">
+                {{ $t("contact.vat") }}: <bdi>310928662200003</bdi>
               </p>
             </div>
           </div>
@@ -139,6 +153,24 @@
   </section>
 </template>
 
+<script setup lang="ts">
+const { locale, setLocale } = useI18n();
+const colorMode = useColorMode();
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function toggleTheme() {
+  colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
+  scrollToTop();
+}
+
+function toggleLocale() {
+  setLocale(locale.value === "ar" ? "en" : "ar");
+  scrollToTop();
+}
+</script>
 
 <style scoped>
 .social-icon {

@@ -1,15 +1,24 @@
 import type { Config } from "tailwindcss";
 
 export default <Partial<Config>>{
+  darkMode: "class",
   content: [],
   theme: {
     extend: {
       colors: {
         brand: {
-          primary: "#54EA62",
+          /* Static brand colors */
           black: "#000000",
           white: "#FFFFFF",
           gray: "#959596",
+          /* Dynamic tokens — respond to .dark class via CSS variables */
+          primary:  "var(--color-primary)",
+          bg:       "var(--color-bg)",
+          "bg-2":   "var(--color-bg-secondary)",
+          surface:  "var(--color-surface)",
+          text:     "var(--color-text)",
+          muted:    "var(--color-text-muted)",
+          border:   "var(--color-border)",
         },
       },
       fontFamily: {

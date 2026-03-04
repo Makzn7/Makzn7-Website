@@ -1,6 +1,8 @@
 <!-- RightSideContent -->
 <template>
-  <div class="flex flex-col flex-wrap justify-between items-start h-full py-20">
+  <div
+    class="flex flex-col flex-wrap justify-between ltr:items-start rtl:items-end h-full py-20 px-2"
+  >
     <a href="#" class="home-nav-link [writing-mode:vertical-rl]">{{
       $t("nav.mansj")
     }}</a>

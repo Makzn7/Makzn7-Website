@@ -1,12 +1,12 @@
 <!-- HomeContact -->
 <template>
   <section
-    class="home-contact bg-black text-white border-b-[0.3px] border-white"
+    class="home-contact bg-black text-white border-b-[0.3px] border-t-[0.3px] border-white"
   >
     <div class="flex">
       <div
         class="border-e-[0.3px] border-white"
-        style="width: var(--railW)"
+        style="width: calc(var(--railW) + 3px)"
       ></div>
       <div class="w-full mx-auto grid grid-cols-1 gap-12 py-16 px-28">
         <!-- Title -->
@@ -19,17 +19,19 @@
 
         <!-- Content -->
         <div class="ms-40 me-8 flex flex-col gap-16">
-          <p class="font-light text-[37px] leading-[44px] tracking-[-0.59px] fade-in-left">
+          <p
+            class="font-light text-[37px] leading-[44px] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8] fade-in-left"
+          >
             {{ $t("home.aboutDescription") }}
           </p>
           <NuxtLink
             to="/about"
-            class="white-link flex items-center gap-6 uppercase text-white text-[57px] leading-[67px] ml-auto fade-in-right"
+            class="white-link flex items-center gap-6 uppercase text-white text-[57px] leading-[67px] ms-auto fade-in-right"
           >
             <span>
               {{ $t("buttons.discoverMore") }}
             </span>
-            <span class="font-pixel mb-[20px]">-></span>
+            <span class="font-pixel mb-[20px] inline-block">-></span>
           </NuxtLink>
         </div>
       </div>

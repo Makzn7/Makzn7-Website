@@ -5,6 +5,7 @@ import HomeHero2 from "~/components/blocks/home/HomeHero2.vue";
 import HomeAbout from "~/components/blocks/home/HomeAbout.vue";
 import HomeContact from "~/components/blocks/home/HomeContact.vue";
 import HomeTeam from "~/components/blocks/home/HomeTeam.vue";
+const { locale } = useI18n();
 const scrollContainer = ref<HTMLElement | null>(null);
 let scroll: any = null;
 
@@ -46,6 +47,9 @@ onMounted(async () => {
     ScrollTrigger.refresh();
   }
 
+  // In RTL, swap horizontal animation directions
+  const isRTL = locale.value === "ar";
+
   // Animate fade-in elements when they enter the viewport
   gsap.utils.toArray<HTMLElement>("#content-section .fade-in").forEach((el) => {
     gsap.from(el, {
@@ -66,7 +70,7 @@ onMounted(async () => {
     .forEach((el) => {
       gsap.from(el, {
         opacity: 0,
-        x: -60,
+        x: isRTL ? 60 : -60,
         duration: 1,
         ease: "power3.out",
         scrollTrigger: {
@@ -82,7 +86,7 @@ onMounted(async () => {
     .forEach((el) => {
       gsap.from(el, {
         opacity: 0,
-        x: 60,
+        x: isRTL ? -60 : 60,
         duration: 1,
         ease: "power3.out",
         scrollTrigger: {
@@ -111,7 +115,11 @@ function unlockPageScroll() {
 </script>
 
 <template>
-  <div ref="scrollContainer" data-scroll-container>
+  <div
+    ref="scrollContainer"
+    class="bg-brand-bg"
+    data-scroll-container
+  >
     <section class="sticky top-0 z-[1]" id="hero-section">
       <HomeHero2
         @lock-page-scroll="lockPageScroll"

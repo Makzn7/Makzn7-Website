@@ -1,6 +1,6 @@
 <!-- HomeHero2 -->
 <template>
-  <div class="app-container bg-white">
+  <div class="app-container bg-brand-bg">
     <div class="top-section w-full h-full cursor-none">
       <div class="left-box z-10">
         <LeftSideContent />
@@ -235,9 +235,7 @@ onUnmounted(() => {
 </script>
 
 <style>
-body {
-  background-color: var(--bg-color);
-}
+/* body background is handled globally in app.vue */
 
 .app-container {
   display: flex;
@@ -254,6 +252,11 @@ body {
   position: absolute;
   bottom: 0;
   top: 0;
+}
+
+html[dir="rtl"] .left-box {
+  left: 0;
+  right: auto;
 }
 .left-box::before {
   content: "";
@@ -352,6 +355,11 @@ body {
   z-index: 1;
   width: calc(100% - 2 * var(--railW));
   transform: translate(var(--railW), 0);
+}
+
+html[dir="rtl"] .center-box .center-part {
+  left: 0;
+  right: auto;
 }
 /* .center-box .center-part::before {
   position: absolute;

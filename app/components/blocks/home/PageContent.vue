@@ -10,9 +10,10 @@
     <!-- HeroGrid -->
     <div class="relative content-item" :style="`padding: 0 ${px}rem`">
       <div class="flex items-center justify-between gap-4 my-16">
-        <img src="/logos/svg/logo_black.svg" alt="" width="200" />
+        <!-- dark:invert flips black logo to white in dark mode -->
+        <img src="/logos/svg/logo_black.svg" alt="" width="200" class="dark:invert" />
         <p
-          :class="`font-light leading-[44px] tracking-[-0.59px]`"
+          :class="`font-light leading-[44px] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8]`"
           :style="`font-size: ${descSize}px;`"
         >
           {{ $t("home.heroDescription") }}
@@ -20,7 +21,7 @@
       </div>
       <HeroGrid aspectRatio="none" class="h-[700px]" />
       <div
-        class="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none"
+        class="absolute top-0 start-0 w-full h-full flex items-center justify-center pointer-events-none"
       >
         <!-- <h2
           class="text-[6rem] font-bold uppercase max-w-[800px] text-start leading-[1]"
@@ -34,7 +35,7 @@
     <!-- Selected Projects -->
     <div class="mt-4">
       <div
-        class="flex gap-2 justify-start items-center border-t-[0.3px] border-b-[0.3px] border-black"
+        class="flex gap-2 justify-start items-center border-t-[0.3px] border-b-[0.3px] border-brand-text"
       >
         <h2
           class="py-8 font-medium text-[44px] leading-[52px] uppercase whitespace-nowrap"
@@ -66,7 +67,7 @@
     </div>
 
     <!-- spacer أسفل عشان الأرض ما تبقى فارغة في النهاية -->
-    <div class="content-item" style="height: 8rem"></div>
+    <div class="content-item ltr:h-[8rem] rtl:h-[8rem]"></div>
   </div>
 </template>
 
