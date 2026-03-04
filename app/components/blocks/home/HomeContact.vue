@@ -10,13 +10,13 @@
         <!-- Title -->
         <div class="flex flex-col justify-between items-start space-y-12">
           <!-- Title -->
-          <h2 class="text-[103px] font-medium uppercase leading-none">
+          <h2 class="text-[103px] font-medium uppercase leading-none fade-in">
             {{ $t("home.contactTitle") }}
           </h2>
         </div>
 
         <!-- Options + Contact Info + Social Media -->
-        <div class="grid grid-cols-1 md:grid-cols-6 gap-16 lg:gap-16">
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-16 lg:gap-16 fade-in-left">
           <!-- Options + Year -->
           <div class="col-span-3 flex flex-col justify-between gap-6">
             <div class="flex flex-col w-full gap-2 justify-start items-start">

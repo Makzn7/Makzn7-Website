@@ -28,6 +28,14 @@ html.font-ar {
   font-family: "29LT Zarid Serif", system-ui, serif;
 }
 
+html.has-scroll-smooth {
+  overflow: hidden;
+}
+
+[data-scroll-container] {
+  min-height: 100vh;
+}
+
 .font-pixel {
   font-family: "DotGothic16", system-ui, sans-serif;
 }

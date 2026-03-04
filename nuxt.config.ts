@@ -40,6 +40,8 @@ export default defineNuxtConfig({
   },
 
   app: {
+    pageTransition: false,
+    layoutTransition: false,
     head: {
       link: [
         {

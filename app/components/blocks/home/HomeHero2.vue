@@ -7,7 +7,7 @@
       </div>
 
       <!-- center-box: الـ 3D perspective container -->
-      <div ref="centerBoxRef" class="center-box" @wheel.prevent="onWheel">
+      <div ref="centerBoxRef" class="center-box" @wheel="onWheel">
         <!-- ══ السقف (top-part) — rotateX(-90deg) ══ -->
         <div class="top-part px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
@@ -69,6 +69,7 @@ import RightSideContent from "~/components/blocks/home/HomeHeroRightSideContent.
 import CustomCursor from "~/components/ui/CustomCursor.vue";
 import { projects, featuredProjects } from "~/mocks/projects";
 import PageContent from "./PageContent.vue";
+const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
 
 /* ── refs ── */
 const centerBoxRef = ref(null);
@@ -83,10 +84,38 @@ let targetScroll = 0;
 let maxScroll = 0;
 let railH = 0;
 let rafId = null;
+let pageScrollLocked = false;
+
+function syncPageScrollLock(shouldLock) {
+  if (pageScrollLocked === shouldLock) return;
+  pageScrollLocked = shouldLock;
+  emit(shouldLock ? "lock-page-scroll" : "unlock-page-scroll");
+}
 
 /* ── wheel ── */
 function onWheel(e) {
-  targetScroll = Math.max(0, Math.min(maxScroll, targetScroll + e.deltaY));
+  // If the page has scrolled (content-section is overlapping the hero),
+  // don't consume — let the page scroll handle returning to top.
+  if (window.scrollY > 1) {
+    syncPageScrollLock(false);
+    return;
+  }
+
+  const nextTarget = targetScroll + e.deltaY;
+  const clampedTarget = Math.max(0, Math.min(maxScroll, nextTarget));
+  const canConsumeInsideHero = clampedTarget !== targetScroll;
+
+  if (canConsumeInsideHero) {
+    // Keep scroll inside hero and block page-level locomotive scroll.
+    e.preventDefault();
+    e.stopPropagation();
+    targetScroll = clampedTarget;
+    syncPageScrollLock(true);
+    return;
+  }
+
+  // At hero boundaries, let the outer page consume the wheel event.
+  syncPageScrollLock(false);
 }
 
 /* ── touch ── */
@@ -95,10 +124,27 @@ function onTouchStart(e) {
   ty = e.touches[0].clientY;
 }
 function onTouchMove(e) {
-  targetScroll = Math.max(
-    0,
-    Math.min(maxScroll, targetScroll + (ty - e.touches[0].clientY))
-  );
+  // If the page has scrolled, let it handle returning to top.
+  if (window.scrollY > 1) {
+    syncPageScrollLock(false);
+    ty = e.touches[0].clientY;
+    return;
+  }
+
+  const nextTarget = targetScroll + (ty - e.touches[0].clientY);
+  const clampedTarget = Math.max(0, Math.min(maxScroll, nextTarget));
+  const canConsumeInsideHero = clampedTarget !== targetScroll;
+
+  if (canConsumeInsideHero) {
+    // Same behavior for touch: consume in hero until boundaries.
+    e.preventDefault();
+    e.stopPropagation();
+    targetScroll = clampedTarget;
+    syncPageScrollLock(true);
+  } else {
+    syncPageScrollLock(false);
+  }
+
   ty = e.touches[0].clientY;
 }
 
@@ -169,7 +215,7 @@ onMounted(() => {
   maxScroll = Math.max(0, contentH - wallH);
 
   box.addEventListener("touchstart", onTouchStart, { passive: true });
-  box.addEventListener("touchmove", onTouchMove, { passive: true });
+  box.addEventListener("touchmove", onTouchMove, { passive: false });
   window.addEventListener("keydown", onKey);
 
   // scrollPos = railH;
@@ -184,6 +230,7 @@ onUnmounted(() => {
   box?.removeEventListener("touchmove", onTouchMove);
   window.removeEventListener("keydown", onKey);
   if (rafId) cancelAnimationFrame(rafId);
+  syncPageScrollLock(false);
 });
 </script>
 
