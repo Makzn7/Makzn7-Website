@@ -1,12 +1,12 @@
 <!-- HomeContact -->
 <template>
   <section
-    class="home-contact bg-black text-white border-b-[0.3px] border-t-[0.3px] border-white"
+    class="home-contact bg-black text-white border-b-[0.3px] border-white"
   >
     <div class="flex">
       <div
         class="border-e-[0.3px] border-white"
-        style="width: calc(var(--railW) + 3px)"
+        style="width: calc(var(--railW) + 3.5px)"
       ></div>
       <div class="w-full mx-auto grid grid-cols-1 gap-12 py-16 px-28">
         <!-- Title -->

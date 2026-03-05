@@ -1,6 +1,12 @@
 <!-- HomeHero2 -->
 <template>
-  <div class="app-container bg-brand-bg">
+  <div class="app-container relative dark bg-brand-bg">
+    <img
+      src="/logos/svg/logo_black.svg"
+      width="100"
+      alt=""
+      class="dark:invert absolute logo-image"
+    />
     <div class="top-section w-full h-full cursor-none">
       <div class="left-box z-10">
         <LeftSideContent />
@@ -13,11 +19,12 @@
           <div ref="ceilRef" class="sync-content">
             <PageContent
               :projects="featuredProjects"
-              :margin-top="4"
+              :margin-top="3"
               :px="0"
-              :desc-size="36"
-              :projectPX="2"
-              :projectSize="124"
+              :margin-s="83"
+              :image-w="73"
+              :title-s="129"
+              :desc-size="35.5"
             />
           </div>
         </div>
@@ -25,14 +32,7 @@
         <!-- ══ الجدار (center-part) ══ -->
         <div class="center-part">
           <div ref="wallRef" class="sync-content">
-            <PageContent
-              :projects="featuredProjects"
-              :show-hover="true"
-              @hover-enter="onHoverEnter"
-              @hover-leave="onHoverLeave"
-              :margin-top="1"
-              :px="1.5"
-            />
+            <PageContent :margin-top="0" />
           </div>
           <img
             ref="previewImgRef"
@@ -44,11 +44,12 @@
         <div class="bottom-part">
           <div ref="floorRef" class="sync-content px-[5.5rem]">
             <PageContent
-              :projects="featuredProjects"
-              :margin-top="4"
+              :margin-top="5"
               :px="0"
-              :projectPX="2"
-              :projectSize="124"
+              :margin-s="80"
+              :image-w="70"
+              :title-s="129"
+              :desc-size="35.5"
             />
           </div>
         </div>
@@ -246,6 +247,11 @@ onUnmounted(() => {
   display: flex;
 }
 
+.logo-image {
+  top: calc(var(--railH) + 8px);
+  left: var(--railW);
+}
+
 /* ── Left / Right rails ── */
 .left-box {
   width: var(--railW);
@@ -365,7 +371,7 @@ html[dir="rtl"] .center-box .center-part {
   position: absolute;
   top: var(--railH);
   width: calc(100% - 2 * var(--railW));
-  height: 1px;
+  height: 0.3px;
   background: #000;
   content: "";
 } */

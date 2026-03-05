@@ -12,10 +12,6 @@ useHead(() => ({
 
 <template>
   <NuxtLayout><NuxtPage /></NuxtLayout>
-  <!-- Fixed theme + language toggle — always on top -->
-  <ClientOnly>
-    <ToggleBar />
-  </ClientOnly>
 </template>
 
 <style>
