@@ -12,13 +12,17 @@
       <div class="flex items-center justify-between gap-4 my-16">
         <!-- dark:invert flips black logo to white in dark mode -->
         <img
+          v-if="showLogo"
           src="/logos/svg/logo_black.svg"
           alt=""
           width="200"
           class="dark:invert"
+          :class="{ 'fade-in': withAnimations }"
         />
         <p
-          :class="`font-light leading-[1.2] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8]`"
+          :class="`font-light leading-[1.2] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8] ${
+            showLogo ? 'ms-0' : 'ms-[210px]'
+          }`"
           :style="`font-size: clamp(${Math.max(
             16,
             Math.round(descSize * 0.35)
@@ -29,15 +33,11 @@
       </div>
       <div class="relative image-3d-container">
         <HeroGrid aspectRatio="none" class="h-[700px]" />
-        <div
-          class="absolute top-0 start-0 w-full h-full flex items-center justify-center pointer-events-none 3d-content"
-        >
-          <!-- <h2
-          class="text-[6rem] font-bold uppercase max-w-[800px] text-start leading-[1]"
-        >
-          {{ $t("messages.headerMessageLine1") }}<br />
-          {{ $t("messages.headerMessageLine2") }}
-        </h2> -->
+        <!-- 3D model overlay — interactive tilt on hover -->
+        <div class="absolute top-0 start-0 w-full h-full 3d-content">
+          <ClientOnly>
+            <HeroModel3D class="w-full h-full" :modelScale="3.5" />
+          </ClientOnly>
         </div>
       </div>
     </div>
@@ -86,6 +86,7 @@
 
 <script setup>
 import HeroGrid from "~/components/graphics/HeroGrid.vue";
+import HeroModel3D from "~/components/ui/HeroModel3D.vue";
 
 const props = defineProps({
   projects: { type: Array, required: true },
@@ -95,6 +96,8 @@ const props = defineProps({
   descSize: { type: Number, default: 37 },
   projectPX: { type: Number, default: 4 },
   projectSize: { type: Number, default: 123 },
+  showLogo: { type: Boolean, default: true },
+  withAnimations: { type: Boolean, default: true },
 });
 
 const emit = defineEmits(["hover-enter", "hover-leave"]);

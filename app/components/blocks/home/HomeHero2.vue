@@ -18,6 +18,7 @@
               :desc-size="36"
               :projectPX="2"
               :projectSize="124"
+              :showLogo="false"
             />
           </div>
         </div>
