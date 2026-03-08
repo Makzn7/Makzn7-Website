@@ -11,24 +11,34 @@
     <div class="relative content-item" :style="`padding: 0 ${px}rem`">
       <div class="flex items-center justify-between gap-4 my-16">
         <!-- dark:invert flips black logo to white in dark mode -->
-        <img src="/logos/svg/logo_black.svg" alt="" width="200" class="dark:invert" />
+        <img
+          src="/logos/svg/logo_black.svg"
+          alt=""
+          width="200"
+          class="dark:invert"
+        />
         <p
-          :class="`font-light leading-[44px] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8]`"
-          :style="`font-size: ${descSize}px;`"
+          :class="`font-light leading-[1.2] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8]`"
+          :style="`font-size: clamp(${Math.max(
+            16,
+            Math.round(descSize * 0.35)
+          )}px, ${(descSize / 15.36).toFixed(1)}vw, ${descSize}px);`"
         >
           {{ $t("home.heroDescription") }}
         </p>
       </div>
-      <HeroGrid aspectRatio="none" class="h-[700px]" />
-      <div
-        class="absolute top-0 start-0 w-full h-full flex items-center justify-center pointer-events-none"
-      >
-        <!-- <h2
+      <div class="relative image-3d-container">
+        <HeroGrid aspectRatio="none" class="h-[700px]" />
+        <div
+          class="absolute top-0 start-0 w-full h-full flex items-center justify-center pointer-events-none 3d-content"
+        >
+          <!-- <h2
           class="text-[6rem] font-bold uppercase max-w-[800px] text-start leading-[1]"
         >
           {{ $t("messages.headerMessageLine1") }}<br />
           {{ $t("messages.headerMessageLine2") }}
         </h2> -->
+        </div>
       </div>
     </div>
 
@@ -38,7 +48,7 @@
         class="flex gap-2 justify-start items-center border-t-[0.3px] border-b-[0.3px] border-brand-text"
       >
         <h2
-          class="py-8 font-medium text-[44px] leading-[52px] uppercase whitespace-nowrap"
+          class="py-8 font-medium text-[20px] sm:text-[28px] md:text-[34px] lg:text-[38px] xl:text-[41px] 2xl:text-[44px] leading-[1.2] uppercase whitespace-nowrap"
           :style="`padding-right: ${projectPX}rem; padding-left: ${projectPX}rem;`"
         >
           {{ $t("titles.selectedProjects") }}
@@ -57,8 +67,11 @@
           @mouseleave="showHover && $emit('hover-leave')"
         >
           <h3
-            class="leading-[130px] italic font-semibold"
-            :style="`font-size: ${projectSize}px`"
+            class="leading-[1.05] italic font-semibold"
+            :style="`font-size: clamp(${Math.max(
+              36,
+              Math.round(projectSize * 0.35)
+            )}px, ${(projectSize / 15.36).toFixed(1)}vw, ${projectSize}px)`"
           >
             {{ project.name }}
           </h3>

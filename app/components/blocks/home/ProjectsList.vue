@@ -10,7 +10,7 @@
       @mouseenter="showHover && onEnter($event, project)"
       @mouseleave="showHover && $emit('hover-leave')"
     >
-      <h3 class="text-6xl font-extrabold leading-none">{{ project.name }}</h3>
+      <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[54px] 2xl:text-6xl font-extrabold leading-none">{{ project.name }}</h3>
     </div>
   </div>
 </template>

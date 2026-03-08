@@ -5,7 +5,7 @@
   >
     <div class="max-w-7xl mx-auto">
       <!-- Section Title -->
-      <h2 class="text-6xl lg:text-7xl font-medium uppercase mb-16">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-medium uppercase mb-16">
         {{ $t("team.title") }}
       </h2>
 

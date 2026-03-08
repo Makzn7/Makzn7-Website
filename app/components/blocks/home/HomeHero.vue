@@ -25,7 +25,7 @@
               class="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none"
             >
               <h2
-                class="text-[6rem] font-bold uppercase max-w-[800px] text-start leading-[1]"
+                class="text-[2rem] sm:text-[2.5rem] md:text-[3.5rem] lg:text-[4.5rem] xl:text-[5rem] 2xl:text-[6rem] font-bold uppercase max-w-[800px] text-start leading-[1]"
               >
                 {{ $t("messages.headerMessageLine1") }}<br />{{
                   $t("messages.headerMessageLine2")
@@ -48,7 +48,7 @@
                 project.hoverMedia?.src || project.heroMedia?.src
               "
             >
-              <h3 class="text-6xl font-extrabold">{{ project.name }}</h3>
+              <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[54px] 2xl:text-6xl font-extrabold">{{ project.name }}</h3>
             </div>
           </div>
           <img class="h-[200px] w-[200px] object-cover preview-image" />

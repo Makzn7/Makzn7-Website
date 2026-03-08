@@ -45,7 +45,7 @@
           <div ref="floorRef" class="sync-content px-[5.5rem]">
             <PageContent
               :projects="featuredProjects"
-              :margin-top="4"
+              :margin-top="6"
               :px="0"
               :projectPX="2"
               :projectSize="124"

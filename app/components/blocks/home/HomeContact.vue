@@ -10,7 +10,9 @@
         <!-- Title -->
         <div class="flex flex-col justify-between items-start space-y-12">
           <!-- Title -->
-          <h2 class="text-[103px] font-medium uppercase leading-none fade-in">
+          <h2
+            class="text-[38px] sm:text-[50px] md:text-[65px] lg:text-[80px] xl:text-[90px] 2xl:text-[103px] font-medium uppercase leading-none fade-in"
+          >
             {{ $t("home.contactTitle") }}
           </h2>
         </div>
@@ -37,18 +39,21 @@
                   icon="fa-solid fa-globe"
                   style="width: 30px; height: 30px"
                 />
-                <span class="text-[31px] leading-[37px] lrt:mb-[20px]">{{
-                  $t("buttons.lang")
-                }}</span>
+                <span
+                  class="text-[14px] sm:text-[18px] md:text-[22px] lg:text-[26px] xl:text-[28px] 2xl:text-[31px] leading-[1.2] lrt:mb-[20px]"
+                  >{{ $t("buttons.lang") }}</span
+                >
               </button>
             </div>
             <div class="flex flex-col justify-start items-start gap-2">
               <NuxtLink
                 to="/privacy-policy"
-                class="white-link uppercase text-white text-[42px] leading-[50px]"
+                class="white-link uppercase text-white text-[18px] sm:text-[24px] md:text-[30px] lg:text-[36px] xl:text-[39px] 2xl:text-[42px] leading-[1.2]"
                 >{{ $t("buttons.privacyPolicy") }}</NuxtLink
               >
-              <p class="text-white font-light text-[49px] leading-[58px]">
+              <p
+                class="text-white font-light text-[20px] sm:text-[28px] md:text-[35px] lg:text-[42px] xl:text-[45px] 2xl:text-[49px] leading-[1.2]"
+              >
                 {{ new Date().getFullYear() }}
               </p>
             </div>
@@ -96,7 +101,7 @@
               href="https://www.instagram.com/makzn.7"
               target="_blank"
               rel="noopener noreferrer"
-              class="social-icon group"
+              class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
               aria-label="Instagram"
             >
               <font-awesome-icon
@@ -110,7 +115,7 @@
               href="https://vimeo.com/makzn7"
               target="_blank"
               rel="noopener noreferrer"
-              class="social-icon group"
+              class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
               aria-label="Vimeo"
             >
               <font-awesome-icon
@@ -124,7 +129,7 @@
               href="https://www.linkedin.com/company/makzn7"
               target="_blank"
               rel="noopener noreferrer"
-              class="social-icon group"
+              class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
               aria-label="LinkedIn"
             >
               <font-awesome-icon
@@ -138,7 +143,7 @@
               href="https://www.x.com/makzn7"
               target="_blank"
               rel="noopener noreferrer"
-              class="social-icon group"
+              class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
               aria-label="X (Twitter)"
             >
               <font-awesome-icon

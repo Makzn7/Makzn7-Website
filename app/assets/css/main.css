@@ -16,30 +16,30 @@
   --persp: 200px;
 
   /* Semantic color tokens */
-  --color-bg:           #ffffff;
+  --color-bg: #ffffff;
   --color-bg-secondary: #f5f5f5;
-  --color-surface:      #f0f0f0;
-  --color-text:         #0a0a0a;
-  --color-text-muted:   #555555;
-  --color-primary:      #54ea62;
-  --color-border:       rgba(0, 0, 0, 0.1);
+  --color-surface: #f0f0f0;
+  --color-text: #0a0a0a;
+  --color-text-muted: #555555;
+  --color-primary: #54ea62;
+  --color-border: rgba(0, 0, 0, 0.1);
 
   /* Backward-compat aliases — existing components use these */
   --primary-color: var(--color-primary);
-  --bg-color:      var(--color-bg);
+  --bg-color: var(--color-bg);
 }
 
 /* ══════════════════════════════════════════════
    DARK MODE — .dark on <html> via @nuxtjs/color-mode
 ══════════════════════════════════════════════ */
 .dark {
-  --color-bg:           #0a0a0a;
+  --color-bg: #0a0a0a;
   --color-bg-secondary: #111111;
-  --color-surface:      #1a1a1a;
-  --color-text:         #ffffff;
-  --color-text-muted:   #aaaaaa;
-  --color-primary:      #ffffff;
-  --color-border:       rgba(255, 255, 255, 0.1);
+  --color-surface: #1a1a1a;
+  --color-text: #ffffff;
+  --color-text-muted: #aaaaaa;
+  --color-primary: #ffffff;
+  --color-border: rgba(255, 255, 255, 0.1);
 }
 
 /* ══════════════════════════════════════════════
@@ -48,7 +48,9 @@
 *,
 *::before,
 *::after {
-  transition: background-color 0.25s ease, color 0.2s ease,
+  transition:
+    background-color 0.25s ease,
+    color 0.2s ease,
     border-color 0.2s ease;
 }
 
@@ -102,6 +104,11 @@ html.has-scroll-smooth {
 
 @layer base {
   .home-nav-link {
-    @apply text-brand-primary font-medium text-[20px] tracking-[0px] uppercase transition-all duration-500 ease-in-out;
+    @apply text-brand-primary font-medium text-[16px] tracking-[0px] uppercase transition-all duration-500 ease-in-out;
+  }
+  @screen 2xl {
+    .home-nav-link {
+      @apply text-[20px];
+    }
   }
 }
