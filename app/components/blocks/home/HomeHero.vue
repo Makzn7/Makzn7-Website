@@ -1,6 +1,6 @@
 <!-- Page -->
 <template>
-  <div class="app-container bg-white">
+  <div ref="heroRef" class="app-container bg-white">
     <div class="top-section w-full h-full cursor-none">
       <div class="left-box">
         <LeftSideContent />
@@ -13,6 +13,7 @@
               width="100"
               height="100"
               alt=""
+              class="fade-in"
             />
           </div>
         </div>
@@ -25,7 +26,8 @@
               class="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none"
             >
               <h2
-                class="text-[2rem] sm:text-[2.5rem] md:text-[3.5rem] lg:text-[4.5rem] xl:text-[5rem] 2xl:text-[6rem] font-bold uppercase max-w-[800px] text-start leading-[1]"
+                class="text-[2rem] sm:text-[2.5rem] md:text-[3.5rem] lg:text-[4.5rem] xl:text-[5rem] 2xl:text-[6rem] font-bold uppercase max-w-[800px] text-start leading-[1] fade-in"
+                style="animation-delay: 0.15s"
               >
                 {{ $t("messages.headerMessageLine1") }}<br />{{
                   $t("messages.headerMessageLine2")
@@ -34,21 +36,24 @@
             </div>
           </div>
           <div class="mt-4">
-            <div class="flex gap-2 justify-center items-center">
+            <div class="flex gap-2 justify-center items-center fade-in" style="animation-delay: 0.1s">
               <h2 class="py-4 font-medium text-lg uppercase whitespace-nowrap">
                 {{ $t("titles.selectedProjects") }}
               </h2>
               <div class="h-[1px] bg-black w-full"></div>
             </div>
             <div
-              v-for="project in featuredProjects"
+              v-for="(project, index) in featuredProjects"
               :key="project.id"
               class="my-8 hover-item"
               :data-image-url="
                 project.hoverMedia?.src || project.heroMedia?.src
               "
             >
-              <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[54px] 2xl:text-6xl font-extrabold">{{ project.name }}</h3>
+              <h3
+                class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[54px] 2xl:text-6xl font-extrabold fade-in-left"
+                :style="{ animationDelay: (0.15 + index * 0.08) + 's' }"
+              >{{ project.name }}</h3>
             </div>
           </div>
           <img class="h-[200px] w-[200px] object-cover preview-image" />
@@ -63,7 +68,8 @@
   <CustomCursor />
 </template>
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
+import { useScrollAnimation } from "~/composables/useScrollAnimation";
 import LeftSideContent from "~/components/blocks/home/HomeHeroLeftSideContent.vue";
 import HeroGrid from "~/components/graphics/HeroGrid.vue";
 import RightSideContent from "~/components/blocks/home/HomeHeroRightSideContent.vue";
@@ -71,6 +77,9 @@ import CustomCursor from "~/components/ui/CustomCursor.vue";
 import { projects } from "~/mocks/projects";
 
 const featuredProjects = projects.filter((p) => p.isFeatured).slice(0, 5);
+
+const heroRef = ref(null);
+useScrollAnimation(heroRef);
 
 onMounted(() => {
   const hoverItems = document.querySelectorAll(".hover-item");

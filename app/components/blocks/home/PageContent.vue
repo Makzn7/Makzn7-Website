@@ -4,6 +4,7 @@
   <!-- لا padding أعلى عشان المحتوى يبدأ من y=0 مباشرة
        هذا ضروري للـ sync — السقف والأرض يعرضان امتداد هذا المحتوى -->
   <div
+    ref="contentRef"
     class="page-content flex flex-col gap-12"
     :style="`margin-top: ${marginTop}rem;`"
   >
@@ -16,14 +17,13 @@
           src="/logos/svg/logo_black.svg"
           alt=""
           width="200"
-          class="dark:invert"
-          :class="{ 'fade-in': withAnimations }"
+          class="dark:invert fade-in"
         />
         <p
-          :class="`font-light leading-[1.2] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8] ${
+          :class="`font-light leading-[1.2] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8] fade-in-right ${
             showLogo ? 'ms-0' : 'ms-[210px]'
           }`"
-          :style="`font-size: clamp(${Math.max(
+          :style="`animation-delay: 0.15s; font-size: clamp(${Math.max(
             16,
             Math.round(descSize * 0.35)
           )}px, ${(descSize / 15.36).toFixed(1)}vw, ${descSize}px);`"
@@ -57,7 +57,7 @@
 
       <div>
         <div
-          v-for="project in projects"
+          v-for="(project, index) in projects"
           :key="project.id"
           class="content-item py-16 hover:underline transition-all duration-500 ease-in-out"
           :style="`padding-right: ${projectPX}rem; padding-left: ${projectPX}rem;`"
@@ -85,6 +85,8 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+import { useScrollAnimation } from "~/composables/useScrollAnimation";
 import HeroGrid from "~/components/graphics/HeroGrid.vue";
 import HeroModel3D from "~/components/ui/HeroModel3D.vue";
 
@@ -101,6 +103,9 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["hover-enter", "hover-leave"]);
+
+const contentRef = ref(null);
+useScrollAnimation(contentRef);
 
 function onEnter(e) {
   const url = e.currentTarget.getAttribute("data-image-url");

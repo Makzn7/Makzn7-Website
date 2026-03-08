@@ -1,7 +1,7 @@
 <template>
-  <div class="projects-list">
+  <div ref="listRef" class="projects-list">
     <div
-      v-for="project in projects"
+      v-for="(project, index) in projects"
       :key="project.id"
       class="project-item"
       :style="{ height: itemHeight + 'px' }"
@@ -10,12 +10,19 @@
       @mouseenter="showHover && onEnter($event, project)"
       @mouseleave="showHover && $emit('hover-leave')"
     >
-      <h3 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[54px] 2xl:text-6xl font-extrabold leading-none">{{ project.name }}</h3>
+      <h3
+        class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[54px] 2xl:text-6xl font-extrabold leading-none"
+        :style="{ animationDelay: index * 0.08 + 's' }"
+      >
+        {{ project.name }}
+      </h3>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref } from "vue";
+
 const props = defineProps({
   projects: { type: Array, required: true },
   itemHeight: { type: Number, default: 96 },

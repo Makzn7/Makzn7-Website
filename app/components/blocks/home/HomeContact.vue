@@ -1,6 +1,6 @@
 <!-- HomeContact -->
 <template>
-  <section class="home-contact bg-black text-white">
+  <section ref="sectionRef" class="home-contact bg-black text-white">
     <div class="flex">
       <div
         class="border-e-[0.3px] border-white"
@@ -12,6 +12,7 @@
           <!-- Title -->
           <h2
             class="text-[38px] sm:text-[50px] md:text-[65px] lg:text-[80px] xl:text-[90px] 2xl:text-[103px] font-medium uppercase leading-none fade-in"
+            style="animation-delay: 0s"
           >
             {{ $t("home.contactTitle") }}
           </h2>
@@ -20,6 +21,7 @@
         <!-- Options + Contact Info + Social Media -->
         <div
           class="grid grid-cols-1 md:grid-cols-6 gap-16 lg:gap-16 fade-in-left"
+          style="animation-delay: 0.15s"
         >
           <!-- Options + Year -->
           <div class="col-span-3 flex flex-col justify-between gap-6">
@@ -159,6 +161,12 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
+import { useScrollAnimation } from "~/composables/useScrollAnimation";
+
+const sectionRef = ref(null);
+useScrollAnimation(sectionRef);
+
 const { locale, setLocale } = useI18n();
 const colorMode = useColorMode();
 
