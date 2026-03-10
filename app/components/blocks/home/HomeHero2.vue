@@ -37,7 +37,7 @@
           </div>
           <img
             ref="previewImgRef"
-            class="preview-image h-[200px] w-[200px] object-cover"
+            class="preview-image h-[400px] w-[400px] object-fill"
           />
         </div>
 
@@ -50,6 +50,8 @@
               :px="0"
               :projectPX="2"
               :projectSize="124"
+              :modelPath="modelPath"
+              :modelType="modelType"
             />
           </div>
         </div>
@@ -69,8 +71,10 @@ import LeftSideContent from "~/components/blocks/home/HomeHeroLeftSideContent.vu
 import RightSideContent from "~/components/blocks/home/HomeHeroRightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
 import { projects, featuredProjects } from "~/mocks/projects";
+import { homeSettings } from "~/mocks/homeSettings";
 import PageContent from "./PageContent.vue";
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
+const { locale } = useI18n();
 
 /* ── refs ── */
 const centerBoxRef = ref(null);
@@ -78,6 +82,14 @@ const wallRef = ref(null);
 const floorRef = ref(null);
 const ceilRef = ref(null);
 const previewImgRef = ref(null);
+
+const modelPath = computed(() => {
+  if (locale.value === "ar") return homeSettings.hero_3d.image_ar;
+  return homeSettings.hero_3d.image_en;
+});
+const modelType = computed(() => {
+  return homeSettings.hero_3d.type;
+});
 
 /* ── scroll state ── */
 let scrollPos = 0;
@@ -185,10 +197,19 @@ function loop() {
 function onHoverEnter({ url, x, y }) {
   const img = previewImgRef.value;
   if (!img || !url) return;
-  img.style.left = `${x}px`;
-  img.style.top = `${y}px`;
+
+  // Reset to start position for fresh slide-in
+  img.style.transition = "none";
+  img.style.transform = "translateX(32px)";
+  void img.offsetWidth; // force reflow
+  img.style.transition = "";
+
+  if (locale.value === "ar") img.style.left = `${x}px`;
+  else img.style.right = `${x}px`;
+  img.style.bottom = `${y}px`;
   img.src = url;
   img.style.opacity = "1";
+  img.style.transform = "translateX(0)"; // CSS transition handles slide-in
 }
 function onHoverLeave() {
   const img = previewImgRef.value;
@@ -262,7 +283,8 @@ html[dir="rtl"] .left-box {
 .left-box::before {
   content: "";
   position: absolute;
-  top: calc(var(--railH) - 2px);
+  /* top: calc(var(--railH) - 2px); */
+  top: var(--railH);
   left: var(--railW);
   height: 0.3px;
   width: 114px;
@@ -273,7 +295,8 @@ html[dir="rtl"] .left-box {
 .left-box::after {
   content: "";
   position: absolute;
-  bottom: calc(var(--railH) - 2px);
+  /* bottom: calc(var(--railH) - 2px); */
+  bottom: var(--railH);
   left: var(--railW);
   height: 0.3px;
   width: 114px;
@@ -291,7 +314,8 @@ html[dir="rtl"] .left-box {
 .right-box::before {
   content: "";
   position: absolute;
-  top: calc(var(--railH) - 2px);
+  /* top: calc(var(--railH) - 2px); */
+  top: var(--railH);
   right: var(--railW);
   height: 0.3px;
   width: 114px;
@@ -302,7 +326,8 @@ html[dir="rtl"] .left-box {
 .right-box::after {
   content: "";
   position: absolute;
-  bottom: calc(var(--railH) - 2px);
+  /* bottom: calc(var(--railH) - 2px); */
+  bottom: var(--railH);
   right: var(--railW);
   height: 0.3px;
   width: 114px;
@@ -399,10 +424,9 @@ html[dir="rtl"] .center-box .center-part {
   position: absolute;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+  transform: translateX(32px);
+  transition: opacity 0.5s ease-in-out,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 2;
-}
-.preview-image[src] {
-  opacity: 1;
 }
 </style>

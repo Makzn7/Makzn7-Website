@@ -10,7 +10,7 @@
   >
     <!-- HeroGrid -->
     <div class="relative content-item" :style="`padding: 0 ${px}rem`">
-      <div class="flex items-center justify-between gap-4 my-16">
+      <div class="flex items-center justify-between gap-8 my-16">
         <!-- dark:invert flips black logo to white in dark mode -->
         <img
           v-if="showLogo"
@@ -21,7 +21,7 @@
         />
         <p
           :class="`font-light leading-[1.2] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8] fade-in-right ${
-            showLogo ? 'ms-0' : 'ms-[210px]'
+            showLogo ? 'ms-0' : 'ms-[230px]'
           }`"
           :style="`animation-delay: 0.15s; font-size: clamp(${Math.max(
             16,
@@ -32,11 +32,16 @@
         </p>
       </div>
       <div class="relative image-3d-container">
-        <HeroGrid aspectRatio="none" class="h-[700px]" />
+        <HeroGrid1 aspectRatio="none" class="h-[700px]" />
         <!-- 3D model overlay — interactive tilt on hover -->
         <div class="absolute top-0 start-0 w-full h-full 3d-content">
           <ClientOnly>
-            <HeroModel3D class="w-full h-full" :modelScale="3.5" />
+            <HeroModel3D
+              class="w-full h-full"
+              :modelScale="3.5"
+              :modelPath="modelPath"
+              :modelImageType="modelType"
+            />
           </ClientOnly>
         </div>
       </div>
@@ -89,6 +94,7 @@ import { ref } from "vue";
 import { useScrollAnimation } from "~/composables/useScrollAnimation";
 import HeroGrid from "~/components/graphics/HeroGrid.vue";
 import HeroModel3D from "~/components/ui/HeroModel3D.vue";
+import HeroGrid1 from "~/components/graphics/HeroGrid1.vue";
 
 const props = defineProps({
   projects: { type: Array, required: true },
@@ -100,6 +106,8 @@ const props = defineProps({
   projectSize: { type: Number, default: 123 },
   showLogo: { type: Boolean, default: true },
   withAnimations: { type: Boolean, default: true },
+  modelPath: { type: String, default: "/images/3d/Eng" },
+  modelType: { type: String, default: "string" },
 });
 
 const emit = defineEmits(["hover-enter", "hover-leave"]);
@@ -109,16 +117,22 @@ useScrollAnimation(contentRef);
 
 function onEnter(e) {
   const url = e.currentTarget.getAttribute("data-image-url");
+
   if (!url) return;
 
   const parent = e.currentTarget.closest(".center-part");
   if (!parent) return;
 
   const pr = parent.getBoundingClientRect();
+  // emit("hover-enter", {
+  //   url,
+  //   x: Math.max(0, Math.random() * (pr.width - 100)),
+  //   y: Math.max(0, Math.random() * (pr.height - 100)),
+  // });
   emit("hover-enter", {
     url,
-    x: Math.max(0, Math.random() * (pr.width - 200)),
-    y: Math.max(0, Math.random() * (pr.height - 200)),
+    x: 50,
+    y: 50,
   });
 }
 </script>

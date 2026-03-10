@@ -27,22 +27,16 @@
           <div class="col-span-3 flex flex-col justify-between gap-6">
             <div class="flex flex-col w-full gap-2 justify-start items-start">
               <button id="toggle-theme-mode" @click="toggleTheme">
-                <font-awesome-icon
-                  icon="fa-solid fa-circle-half-stroke"
-                  style="width: 30px; height: 30px"
-                />
+                <img src="/icons/general/Artboard1.svg" width="30" />
               </button>
               <button
                 class="flex justify-start items-center gap-2"
                 id="toggle-lang"
                 @click="toggleLocale"
               >
-                <font-awesome-icon
-                  icon="fa-solid fa-globe"
-                  style="width: 30px; height: 30px"
-                />
+                <img src="/icons/general/Artboard2.svg" width="30" />
                 <span
-                  class="text-[14px] sm:text-[18px] md:text-[22px] lg:text-[26px] xl:text-[28px] 2xl:text-[31px] leading-[1.2] lrt:mb-[20px]"
+                  class="text-[14px] sm:text-[18px] md:text-[22px] lg:text-[26px] xl:text-[28px] 2xl:text-[31px] leading-[1.2] ltr:mb-[15px]"
                   >{{ $t("buttons.lang") }}</span
                 >
               </button>

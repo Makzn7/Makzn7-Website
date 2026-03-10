@@ -1,0 +1,15 @@
+export type Settings = {
+  phone?: string;
+  email?: string;
+  address?: string;
+  social_links: {
+    facebook?: string;
+    twitter?: string;
+    instagram?: string;
+    linkedin?: string;
+    youtube?: string;
+    vimeo?: string;
+  };
+  cr_number?: string;
+  vat_number?: string;
+};
