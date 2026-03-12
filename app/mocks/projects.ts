@@ -30,7 +30,8 @@ const data = [
 export const featuredProjects = data.map((item, i) => ({
   id: i + 1,
   slug: `project-${i + 1}`,
-  name: item.en,
+  name_en: item.en,
+  name_ar: item.ar,
   year: 2020 + (i % 5),
   summary: "Sample project description",
   heroMedia: {

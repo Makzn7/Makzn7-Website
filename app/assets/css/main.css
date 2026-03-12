@@ -27,6 +27,8 @@
   /* Backward-compat aliases — existing components use these */
   --primary-color: var(--color-primary);
   --bg-color: var(--color-bg);
+  /* border */
+  --border-color: #ffffff;
 }
 
 /* ══════════════════════════════════════════════
@@ -40,6 +42,7 @@
   --color-text-muted: #aaaaaa;
   --color-primary: #ffffff;
   --color-border: rgba(255, 255, 255, 0.1);
+  --border-color: #54ea62;
 }
 
 /* ══════════════════════════════════════════════
@@ -58,7 +61,7 @@
    FONT PER LOCALE
 ══════════════════════════════════════════════ */
 html.font-en {
-  font-family: "Rubik", system-ui, sans-serif;
+  font-family: "Roboto", system-ui, sans-serif;
 }
 html.font-ar {
   font-family: "Rubik", system-ui, sans-serif;
@@ -102,6 +105,10 @@ html.has-scroll-smooth {
   @apply text-brand-primary hover:[text-shadow:1px_0_0_currentColor,-1px_0_0_currentColor,0_0_1px_currentColor];
 }
 
+.dark-border {
+  border-color: var(--border-color);
+}
+
 @layer base {
   .home-nav-link {
     @apply text-brand-primary font-medium text-[16px] tracking-[0px] uppercase transition-all duration-500 ease-in-out;
@@ -117,16 +124,34 @@ html.has-scroll-smooth {
    SCROLL ANIMATIONS
 ══════════════════════════════════════════════ */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(28px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes fadeInLeft {
-  from { opacity: 0; transform: translateX(-44px); }
-  to   { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-44px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @keyframes fadeInRight {
-  from { opacity: 0; transform: translateX(44px); }
-  to   { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(44px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Hidden by default — JS adds .is-visible when element enters viewport */

@@ -1,12 +1,14 @@
 <!-- HomeHero2 -->
 <template>
   <div class="app-container relative dark bg-brand-bg">
-    <img
-      src="/logos/svg/logo_black.svg"
-      width="100"
-      alt=""
-      class="dark:invert absolute logo-image"
-    />
+    <div class="absolute logo-image p-4">
+      <img
+        src="/logos/svg/logo_black.svg"
+        width="100"
+        alt=""
+        class="dark:invert"
+      />
+    </div>
     <div class="top-section w-full h-full cursor-none">
       <div class="left-box z-10">
         <LeftSideContent />
@@ -21,7 +23,7 @@
               :projects="featuredProjects"
               :margin-top="3"
               :px="0"
-              :margin-s="83"
+              :margin-s="113"
               :image-w="73"
               :title-s="129"
               :desc-size="35.5"
@@ -46,7 +48,7 @@
             <PageContent
               :margin-top="5"
               :px="0"
-              :margin-s="80"
+              :margin-s="113"
               :image-w="70"
               :title-s="129"
               :desc-size="35.5"

@@ -10,7 +10,7 @@
   >
     <!-- HeroGrid -->
     <div class="relative content-item" :style="`padding: 0 ${px}rem`">
-      <div class="flex items-center justify-between gap-8 my-16">
+      <div class="flex items-center justify-between gap-8 my-12 mx-6">
         <!-- dark:invert flips black logo to white in dark mode -->
         <img
           v-if="showLogo"
@@ -32,7 +32,7 @@
         </p>
       </div>
       <div class="relative image-3d-container">
-        <HeroGrid1 aspectRatio="none" class="h-[700px]" />
+        <HeroGrid1 aspectRatio="none" class="h-[700px]" :cols="45" :rows="40" />
         <!-- 3D model overlay — interactive tilt on hover -->
         <div class="absolute top-0 start-0 w-full h-full 3d-content">
           <ClientOnly>
@@ -41,6 +41,7 @@
               :modelScale="3.5"
               :modelPath="modelPath"
               :modelImageType="modelType"
+              :modelModeColor="modelModeColor"
             />
           </ClientOnly>
         </div>
@@ -66,7 +67,7 @@
           :key="project.id"
           class="content-item py-16 hover:underline transition-all duration-500 ease-in-out"
           :style="`padding-right: ${projectPX}rem; padding-left: ${projectPX}rem;`"
-          :class="{ 'hover-item cursor-pointer': showHover }"
+          :class="{ 'hover-item': showHover }"
           :data-image-url="project.hoverMedia?.src || project.heroMedia?.src"
           @mouseenter="showHover && onEnter($event)"
           @mouseleave="showHover && $emit('hover-leave')"
@@ -75,10 +76,10 @@
             class="leading-[1.05] italic font-semibold"
             :style="`font-size: clamp(${Math.max(
               36,
-              Math.round(projectSize * 0.35)
-            )}px, ${(projectSize / 15.36).toFixed(1)}vw, ${projectSize}px)`"
+              Math.round(projectSize * 0.5)
+            )}px, ${(projectSize / 19.36).toFixed(1)}vw, ${projectSize}px)`"
           >
-            {{ project.name }}
+            {{ locale === "ar" ? project.name_ar : project.name_en }}
           </h3>
         </div>
       </div>
@@ -108,9 +109,11 @@ const props = defineProps({
   withAnimations: { type: Boolean, default: true },
   modelPath: { type: String, default: "/images/3d/Eng" },
   modelType: { type: String, default: "string" },
+  modelModeColor: { type: String, default: "#ffffff" },
 });
 
 const emit = defineEmits(["hover-enter", "hover-leave"]);
+const { locale } = useI18n();
 
 const contentRef = ref(null);
 useScrollAnimation(contentRef);

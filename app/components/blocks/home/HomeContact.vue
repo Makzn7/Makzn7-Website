@@ -3,7 +3,7 @@
   <section ref="sectionRef" class="home-contact bg-black text-white">
     <div class="flex">
       <div
-        class="border-e-[0.3px] border-white"
+        class="border-e-[0.3px] dark-border"
         style="width: calc(var(--railW) + 3.5px)"
       ></div>
       <div class="w-full mx-auto grid grid-cols-1 gap-12 py-16 px-28">
@@ -59,31 +59,35 @@
             <!-- Email and Phone -->
             <div class="flex flex-col font-light">
               <a
-                href="mailto:Hello@makzn7.com"
+                href="mailto:{{ settings.email }}"
                 class="white-link-sm font-en rtl:text-right"
                 dir="ltr"
               >
-                Hello@makzn7.com
+                {{ settings.email }}
               </a>
               <a
-                href="tel:+966000000000"
+                :href="`tel:${settings.phone}`"
                 class="white-link-sm font-en rtl:text-right"
                 dir="ltr"
               >
-                {{ $t("contact.phone") }}
+                ({{ settings.phone }})
               </a>
             </div>
             <!-- Address -->
             <div class="space-y-1">
-              <p class="text-white font-light">{{ $t("contact.address") }}</p>
+              <p class="text-white font-light">
+                {{
+                  locale === "ar" ? settings.address_ar : settings.address_en
+                }}
+              </p>
             </div>
             <!-- VAT -->
             <div>
               <p class="text-white font-light font-en rtl:text-right" dir="ltr">
-                {{ $t("contact.cr") }}: <bdi>1010709330</bdi>
+                {{ $t("contact.cr") }}: <bdi>{{ settings.cr_number }}</bdi>
               </p>
               <p class="text-white font-light font-en rtl:text-right" dir="ltr">
-                {{ $t("contact.vat") }}: <bdi>310928662200003</bdi>
+                {{ $t("contact.vat") }}: <bdi>{{ settings.vat_number }}</bdi>
               </p>
             </div>
           </div>
@@ -94,7 +98,7 @@
           >
             <!-- Instagram -->
             <a
-              href="https://www.instagram.com/makzn.7"
+              :href="settings.social_links.instagram"
               target="_blank"
               rel="noopener noreferrer"
               class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
@@ -108,7 +112,7 @@
 
             <!-- Vimeo -->
             <a
-              href="https://vimeo.com/makzn7"
+              :href="settings.social_links.vimeo"
               target="_blank"
               rel="noopener noreferrer"
               class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
@@ -122,7 +126,7 @@
 
             <!-- LinkedIn -->
             <a
-              href="https://www.linkedin.com/company/makzn7"
+              :href="settings.social_links.linkedin"
               target="_blank"
               rel="noopener noreferrer"
               class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
@@ -136,7 +140,7 @@
 
             <!-- X (Twitter) -->
             <a
-              href="https://www.x.com/makzn7"
+              :href="settings.social_links.twitter"
               target="_blank"
               rel="noopener noreferrer"
               class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
@@ -157,6 +161,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useScrollAnimation } from "~/composables/useScrollAnimation";
+import { settings } from "~/mocks/settings";
 
 const sectionRef = ref(null);
 useScrollAnimation(sectionRef);

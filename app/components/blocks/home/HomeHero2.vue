@@ -15,10 +15,12 @@
               :projects="featuredProjects"
               :margin-top="4"
               :px="0"
-              :desc-size="36"
               :projectPX="2"
               :projectSize="124"
               :showLogo="false"
+              :modelPath="modelPath"
+              :modelType="modelType"
+              :modelModeColor="modelModeColor"
             />
           </div>
         </div>
@@ -33,6 +35,9 @@
               @hover-leave="onHoverLeave"
               :margin-top="1"
               :px="1.5"
+              :modelPath="modelPath"
+              :modelType="modelType"
+              :modelModeColor="modelModeColor"
             />
           </div>
           <img
@@ -52,6 +57,7 @@
               :projectSize="124"
               :modelPath="modelPath"
               :modelType="modelType"
+              :modelModeColor="modelModeColor"
             />
           </div>
         </div>
@@ -75,6 +81,7 @@ import { homeSettings } from "~/mocks/homeSettings";
 import PageContent from "./PageContent.vue";
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
 const { locale } = useI18n();
+const colorMode = useColorMode();
 
 /* ── refs ── */
 const centerBoxRef = ref(null);
@@ -84,11 +91,20 @@ const ceilRef = ref(null);
 const previewImgRef = ref(null);
 
 const modelPath = computed(() => {
-  if (locale.value === "ar") return homeSettings.hero_3d.image_ar;
+  if (locale.value === "ar") {
+    if (colorMode.value === "dark") return homeSettings.hero_3d.image_dark_ar;
+    return homeSettings.hero_3d.image_ar;
+  }
+  if (colorMode.value === "dark") return homeSettings.hero_3d.image_dark_en;
   return homeSettings.hero_3d.image_en;
 });
 const modelType = computed(() => {
   return homeSettings.hero_3d.type;
+});
+const modelModeColor = computed(() => {
+  if (colorMode.value === "dark")
+    return homeSettings.hero_3d.mode_color_dark || "#ffffff";
+  return homeSettings.hero_3d.mode_color || "#000000";
 });
 
 /* ── scroll state ── */

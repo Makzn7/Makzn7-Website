@@ -51,22 +51,14 @@ onBeforeUnmount(() => {
 .line.horizontal {
   width: 100vw;
   height: 1px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--color-primary) 0 6px,
-    var(--color-primary) 6px 14px
-  );
+  background: repeating-linear-gradient(90deg, #54ea62 0 6px, #54ea62 6px 14px);
   transform: translateY(50vh);
 }
 
 .line.vertical {
   height: 100vh;
   width: 1px;
-  background: repeating-linear-gradient(
-    0deg,
-    var(--color-primary) 0 6px,
-    var(--color-primary) 6px 14px
-  );
+  background: repeating-linear-gradient(0deg, #54ea62 0 6px, #54ea62 6px 14px);
   transform: translateX(50vw);
 }
 </style>

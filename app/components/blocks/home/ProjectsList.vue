@@ -14,7 +14,7 @@
         class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[54px] 2xl:text-6xl font-extrabold leading-none"
         :style="{ animationDelay: index * 0.08 + 's' }"
       >
-        {{ project.name }}
+        {{ locale === "ar" ? project.name_ar : project.name_en }}
       </h3>
     </div>
   </div>
@@ -30,6 +30,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["hover-enter", "hover-leave"]);
+const { locale } = useI18n();
 
 function onEnter(e, project) {
   const url = e.currentTarget.getAttribute("data-image-url");

@@ -37,9 +37,8 @@ const props = defineProps({
   /** Model scale — كبّر الرقم = عنصر أكبر */
   modelScale: { type: Number, default: 2.2 },
   modelImageType: { type: String, default: "string" },
+  modelModeColor: { type: String, default: "#ffffff" },
 });
-
-console.log(props.modelPath);
 
 /* ── refs ── */
 const containerRef = ref(null);
@@ -86,22 +85,20 @@ async function init() {
   camera.position.z = 4;
 
   /* ── Lights ── */
-  if (props.modelImageType != "string") {
-    const ambient = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambient);
+  const ambient = new THREE.AmbientLight(props.modelModeColor, 1.0);
+  scene.add(ambient);
 
-    const key = new THREE.DirectionalLight(0xffffff, 2.5);
-    key.position.set(4, 6, 5);
-    scene.add(key);
+  const key = new THREE.DirectionalLight(props.modelModeColor, 2.5);
+  key.position.set(4, 6, 5);
+  scene.add(key);
 
-    const fill = new THREE.DirectionalLight(0xccddff, 1);
-    fill.position.set(-5, 2, -3);
-    scene.add(fill);
+  const fill = new THREE.DirectionalLight("#54ea62", 1);
+  fill.position.set(-5, 2, -3);
+  scene.add(fill);
 
-    const rim = new THREE.DirectionalLight(0xffffff, 0.8);
-    rim.position.set(0, -4, -6);
-    scene.add(rim);
-  }
+  const rim = new THREE.DirectionalLight("#54ea62", 0.8);
+  rim.position.set(0, -4, -6);
+  scene.add(rim);
 
   /* ── Tilt group — mouse-driven only ── */
   tiltGroup = new THREE.Group();

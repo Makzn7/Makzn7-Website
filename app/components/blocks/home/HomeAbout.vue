@@ -2,11 +2,11 @@
 <template>
   <section
     ref="sectionRef"
-    class="home-contact bg-black text-white border-b-[0.3px] border-white"
+    class="home-contact bg-black text-white border-b-[0.3px] dark-border"
   >
     <div class="flex">
       <div
-        class="border-e-[0.3px] border-white"
+        class="border-e-[0.3px] dark-border"
         style="width: calc(var(--railW) + 3.5px)"
       ></div>
       <div class="w-full mx-auto grid grid-cols-1 gap-12 py-16 px-28">

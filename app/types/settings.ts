@@ -1,7 +1,8 @@
 export type Settings = {
   phone?: string;
   email?: string;
-  address?: string;
+  address_ar?: string;
+  address_en?: string;
   social_links: {
     facebook?: string;
     twitter?: string;

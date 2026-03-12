@@ -3,7 +3,7 @@
     <!-- content -->
     <div class="flex flex-col w-full min-h-screen text-white">
       <!--  -->
-      <div class="w-full border-b-[0.3px] border-brand-text h-[80px]">
+      <div class="w-full border-b-[0.3px] border-brand-text h-[90px]">
         <div
           class="border-e-[0.3px] h-full"
           :style="`width: ${marginS}px;`"
@@ -39,7 +39,7 @@
         :style="`margin-inline-start: ${marginS}px;`"
       >
         <p
-          class="font-light leading-[1.45] tracking-[0px] pe-20"
+          class="font-light leading-[1.45] tracking-[0px] pe-28"
           :style="`font-size: clamp(${Math.max(
             16,
             Math.round(descSize * 0.35)
@@ -69,7 +69,7 @@
         :style="`margin-inline-start: ${marginS}px;`"
       >
         <p
-          class="font-light leading-[1.45] tracking-[0px] pe-20"
+          class="font-light leading-[1.45] tracking-[0px] pe-28"
           :style="`font-size: clamp(${Math.max(
             16,
             Math.round(descSize * 0.35)
@@ -88,7 +88,7 @@
 <script setup>
 const props = defineProps({
   marginTop: { type: Number, default: 4 },
-  marginS: { type: Number, default: 110 },
+  marginS: { type: Number, default: 140 },
   px: { type: Number, default: 1 },
   imageW: { type: Number, default: 100 },
   titleS: { type: Number, default: 130 },
