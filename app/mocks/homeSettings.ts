@@ -13,7 +13,7 @@ export const homeSettings: HomeSettings = {
     type: "string",
     image_en: "/images/3d/EN_ALL_TEXT_NEW.gltf",
     image_ar: "/images/3d/ARB",
-    image_dark_en: "/images/3d/Eng_Dark_Mode",
+    image_dark_en: "/images/3d/EN_ALL_TEXT_NEW_DARK.gltf",
     image_dark_ar: "/images/3d/ARB_Dark_Mode",
   },
 };
