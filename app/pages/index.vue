@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import HomeHero2 from "~/components/blocks/home/HomeHero2.vue";
+import HomeHero from "~/components/blocks/home/HomeHero.vue";
 import HomeAbout from "~/components/blocks/home/HomeAbout.vue";
-import HomeContact from "~/components/blocks/home/HomeContact.vue";
-import HomeTeam from "~/components/blocks/home/HomeTeam.vue";
+import ContactSection from "~/components/ui/ContactSection.vue";
 const { locale } = useI18n();
 const scrollContainer = ref<HTMLElement | null>(null);
 let scroll: any = null;
@@ -121,15 +120,14 @@ function unlockPageScroll() {
     data-scroll-container
   >
     <section class="sticky top-0 z-[1]" id="hero-section">
-      <HomeHero2
+      <HomeHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>
       <HomeAbout />
-      <HomeContact />
+      <ContactSection />
     </section>
-    <!-- <HomeTeam /> -->
   </div>
 </template>

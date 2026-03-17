@@ -73,7 +73,7 @@
           @mouseleave="showHover && $emit('hover-leave')"
         >
           <h3
-            class="leading-[1.05] italic font-semibold"
+            class="leading-[1.05] italic"
             :style="`font-size: clamp(${Math.max(
               36,
               Math.round(projectSize * 0.5)

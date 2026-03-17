@@ -2,12 +2,14 @@
 <template>
   <div class="app-container relative dark bg-brand-bg">
     <div class="absolute logo-image p-4">
-      <img
-        src="/logos/svg/logo_black.svg"
-        width="100"
-        alt=""
-        class="dark:invert"
-      />
+      <NuxtLink to="/">
+        <img
+          src="/logos/svg/logo_black.svg"
+          width="100"
+          alt=""
+          class="dark:invert"
+        />
+      </NuxtLink>
     </div>
     <div class="top-section w-full h-full cursor-none">
       <div class="left-box z-10">
@@ -27,6 +29,8 @@
               :image-w="73"
               :title-s="129"
               :desc-size="35.5"
+              :teams="teams"
+              :awards="awards"
             />
           </div>
         </div>
@@ -34,7 +38,7 @@
         <!-- ══ الجدار (center-part) ══ -->
         <div class="center-part">
           <div ref="wallRef" class="sync-content">
-            <PageContent :margin-top="0" />
+            <PageContent :margin-top="0" :teams="teams" :awards="awards" />
           </div>
           <img
             ref="previewImgRef"
@@ -52,6 +56,8 @@
               :image-w="70"
               :title-s="129"
               :desc-size="35.5"
+              :teams="teams"
+              :awards="awards"
             />
           </div>
         </div>
@@ -70,8 +76,18 @@ import { ref, onMounted, onUnmounted } from "vue";
 import LeftSideContent from "~/components/blocks/home/HomeHeroLeftSideContent.vue";
 import RightSideContent from "~/components/blocks/home/HomeHeroRightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
-import { projects, featuredProjects } from "~/mocks/projects";
+import { featuredProjects } from "~/mocks/projects";
 import PageContent from "./PageContent.vue";
+const props = defineProps({
+  teams: {
+    type: Array,
+    default: () => [],
+  },
+  awards: {
+    type: Array,
+    default: () => [],
+  },
+});
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
 
 /* ── refs ── */
@@ -208,7 +224,7 @@ onMounted(() => {
 
   railH =
     parseFloat(
-      getComputedStyle(document.documentElement).getPropertyValue("--railH")
+      getComputedStyle(document.documentElement).getPropertyValue("--railH"),
     ) || 60;
 
   const wallH = box.offsetHeight - 2 * railH;
@@ -252,6 +268,8 @@ onUnmounted(() => {
 .logo-image {
   top: calc(var(--railH) + 8px);
   left: var(--railW);
+  z-index: 100;
+  pointer-events: auto;
 }
 
 /* ── Left / Right rails ── */

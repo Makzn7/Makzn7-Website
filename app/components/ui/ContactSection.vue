@@ -1,4 +1,4 @@
-<!-- HomeContact -->
+<!-- ContactSection -->
 <template>
   <section ref="sectionRef" class="home-contact bg-black text-white">
     <div class="flex">

@@ -18,66 +18,64 @@
           <img src="/icons/svg/green/2.svg" width="100" alt="" />
         </div>
       </div>
-      <!-- About Title -->
-      <div
-        class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-12 py-16"
-        :style="`margin-inline-start: ${marginS}px;`"
-      >
-        <h1
-          class="uppercase italic font-light leading-[1.2] tracking-[0px]"
-          :style="`font-size: clamp(${Math.max(
-            40,
-            Math.round(titleS * 0.35)
-          )}px, ${(titleS / 15.36).toFixed(1)}vw, ${titleS}px);`"
+      <!-- About -->
+      <section>
+        <SectionTitle
+          :title="$t('about.aboutTitle')"
+          :marginS="marginS"
+          :titleS="titleS"
+        />
+        <div
+          class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-12 py-16"
+          :style="`margin-inline-start: ${marginS}px;`"
         >
-          {{ $t("about.aboutTitle") }}
-        </h1>
-      </div>
-      <!-- About Desc -->
-      <div
-        class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-12 py-16"
-        :style="`margin-inline-start: ${marginS}px;`"
-      >
-        <p
-          class="font-light leading-[1.45] tracking-[0px] pe-28"
-          :style="`font-size: clamp(${Math.max(
-            16,
-            Math.round(descSize * 0.35)
-          )}px, ${(descSize / 15.36).toFixed(1)}vw, ${descSize}px);`"
+          <p
+            class="font-light leading-[1.45] tracking-[0px] pe-28"
+            :style="`font-size: clamp(${Math.max(
+              16,
+              Math.round(descSize * 0.35),
+            )}px, ${(descSize / 20).toFixed(1)}vw, ${descSize}px);`"
+          >
+            {{ $t("about.aboutDescription") }}
+          </p>
+        </div>
+      </section>
+      <!-- Services -->
+      <section>
+        <SectionTitle
+          :title="$t('about.servicesTitle')"
+          :marginS="marginS"
+          :titleS="titleS"
+        ></SectionTitle>
+        <div
+          class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-12 py-16"
+          :style="`margin-inline-start: ${marginS}px;`"
         >
-          {{ $t("about.aboutDescription") }}
-        </p>
-      </div>
-      <!-- Services Title -->
-      <div
-        class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-12 py-16"
-        :style="`margin-inline-start: ${marginS}px;`"
-      >
-        <h1
-          class="uppercase italic font-light leading-[1.2] tracking-[0px]"
-          :style="`font-size: clamp(${Math.max(
-            40,
-            Math.round(titleS * 0.35)
-          )}px, ${(titleS / 15.36).toFixed(1)}vw, ${titleS}px);`"
-        >
-          {{ $t("about.servicesTitle") }}
-        </h1>
-      </div>
-      <!-- Services Desc -->
-      <div
-        class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-12 py-16"
-        :style="`margin-inline-start: ${marginS}px;`"
-      >
-        <p
-          class="font-light leading-[1.45] tracking-[0px] pe-28"
-          :style="`font-size: clamp(${Math.max(
-            16,
-            Math.round(descSize * 0.35)
-          )}px, ${(descSize / 15.36).toFixed(1)}vw, ${descSize}px);`"
-        >
-          {{ $t("about.servicesDescription") }}
-        </p>
-      </div>
+          <p
+            class="font-light leading-[1.45] tracking-[0px] pe-28"
+            :style="`font-size: clamp(${Math.max(
+              16,
+              Math.round(descSize * 0.35),
+            )}px, ${(descSize / 20).toFixed(1)}vw, ${descSize}px);`"
+          >
+            {{ $t("about.servicesDescription") }}
+          </p>
+        </div>
+      </section>
+      <!-- Team -->
+      <AboutTeam
+        :marginS="marginS"
+        :descSize="descSize"
+        :titleS="titleS"
+        :teams="teams"
+      />
+      <!-- Awards -->
+      <AboutAward
+        :marginS="marginS"
+        :descSize="descSize"
+        :titleS="titleS"
+        :awards="awards"
+      />
     </div>
     <!-- spacer أسفل عشان الأرض ما تبقى فارغة في النهاية -->
     <div
@@ -86,6 +84,10 @@
   </div>
 </template>
 <script setup>
+import AboutTeam from "./AboutTeam.vue";
+import AboutAward from "./AboutAward.vue";
+import SectionTitle from "../../ui/SectionTitle.vue";
+
 const props = defineProps({
   marginTop: { type: Number, default: 4 },
   marginS: { type: Number, default: 140 },
@@ -93,5 +95,13 @@ const props = defineProps({
   imageW: { type: Number, default: 100 },
   titleS: { type: Number, default: 130 },
   descSize: { type: Number, default: 37 },
+  teams: {
+    type: Array,
+    default: () => [],
+  },
+  awards: {
+    type: Array,
+    default: () => [],
+  },
 });
 </script>

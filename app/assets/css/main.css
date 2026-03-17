@@ -29,6 +29,8 @@
   --bg-color: var(--color-bg);
   /* border */
   --border-color: #ffffff;
+  /*  */
+  --main-color: #54ea62;
 }
 
 /* ══════════════════════════════════════════════
@@ -95,14 +97,14 @@ html.has-scroll-smooth {
   @apply text-white transition-all duration-500 ease-in-out;
 }
 .white-link:hover {
-  @apply text-brand-primary hover:[text-shadow:2px_0_0_currentColor,-2px_0_0_currentColor,0_0_2px_currentColor];
+  @apply text-[var(--main-color)] hover:[text-shadow:2px_0_0_var(--main-color),-2px_0_0_var(--main-color),0_0_2px_var(--main-color)];
 }
 
 .white-link-sm {
   @apply text-white transition-all duration-500 ease-in-out;
 }
 .white-link-sm:hover {
-  @apply text-brand-primary hover:[text-shadow:1px_0_0_currentColor,-1px_0_0_currentColor,0_0_1px_currentColor];
+  @apply text-[var(--main-color)] hover:[text-shadow:1px_0_0_var(--main-color),-1px_0_0_var(--main-color),0_0_1px_var(--main-color)];
 }
 
 .dark-border {

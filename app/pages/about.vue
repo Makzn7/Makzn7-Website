@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import HomeContact from "~/components/blocks/home/HomeContact.vue";
+import ContactSection from "~/components/ui/ContactSection.vue";
 import AboutHero from "~/components/blocks/about/AboutHero.vue";
+import { team } from "~/mocks/team";
+import { awards } from "~/mocks/awards";
 const { locale } = useI18n();
 const scrollContainer = ref<HTMLElement | null>(null);
 let scroll: any = null;
@@ -118,10 +120,12 @@ function unlockPageScroll() {
       <AboutHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"
+        :teams="team"
+        :awards="awards"
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>
-      <HomeContact />
+      <ContactSection />
     </section>
   </div>
 </template>

@@ -1,245 +1,448 @@
-<!-- Page -->
+<!-- HomeHero2 -->
 <template>
-  <div ref="heroRef" class="app-container bg-white">
+  <div class="app-container bg-brand-bg">
     <div class="top-section w-full h-full cursor-none">
-      <div class="left-box">
+      <div class="left-box z-10">
         <LeftSideContent />
       </div>
-      <div class="center-box">
-        <div class="top-part bg-white z-50">
-          <div class="flex justify-center items-center">
-            <img
-              src="/logos/svg/logo_black.svg"
-              width="100"
-              height="100"
-              alt=""
-              class="fade-in"
+
+      <!-- center-box: الـ 3D perspective container -->
+      <div ref="centerBoxRef" class="center-box" @wheel="onWheel">
+        <!-- ══ السقف (top-part) — rotateX(-90deg) ══ -->
+        <div class="top-part px-[5.5rem]">
+          <div ref="ceilRef" class="sync-content">
+            <PageContent
+              :projects="featuredProjects"
+              :margin-top="4"
+              :px="0"
+              :projectPX="2"
+              :projectSize="124"
+              :showLogo="false"
+              :modelPath="modelPath"
+              :modelType="modelType"
+              :modelModeColor="modelModeColor"
             />
           </div>
         </div>
-        <div
-          class="center-part flex flex-col gap-4 overflow-scroll p-6 pb-[80px]"
-        >
-          <div class="mt-12 relative">
-            <HeroGrid aspectRatio="none" class="h-[700px]"></HeroGrid>
-            <div
-              class="absolute top-0 left-0 w-full h-full flex items-center justify-center pointer-events-none"
-            >
-              <h2
-                class="text-[2rem] sm:text-[2.5rem] md:text-[3.5rem] lg:text-[4.5rem] xl:text-[5rem] 2xl:text-[6rem] font-bold uppercase max-w-[800px] text-start leading-[1] fade-in"
-                style="animation-delay: 0.15s"
-              >
-                {{ $t("messages.headerMessageLine1") }}<br />{{
-                  $t("messages.headerMessageLine2")
-                }}
-              </h2>
-            </div>
+
+        <!-- ══ الجدار (center-part) ══ -->
+        <div class="center-part">
+          <div ref="wallRef" class="sync-content">
+            <PageContent
+              :projects="featuredProjects"
+              :show-hover="true"
+              @hover-enter="onHoverEnter"
+              @hover-leave="onHoverLeave"
+              :margin-top="1"
+              :px="1.5"
+              :modelPath="modelPath"
+              :modelType="modelType"
+              :modelModeColor="modelModeColor"
+            />
           </div>
-          <div class="mt-4">
-            <div class="flex gap-2 justify-center items-center fade-in" style="animation-delay: 0.1s">
-              <h2 class="py-4 font-medium text-lg uppercase whitespace-nowrap">
-                {{ $t("titles.selectedProjects") }}
-              </h2>
-              <div class="h-[1px] bg-black w-full"></div>
-            </div>
-            <div
-              v-for="(project, index) in featuredProjects"
-              :key="project.id"
-              class="my-8 hover-item"
-              :data-image-url="
-                project.hoverMedia?.src || project.heroMedia?.src
-              "
-            >
-              <h3
-                class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-[54px] 2xl:text-6xl font-extrabold fade-in-left"
-                :style="{ animationDelay: (0.15 + index * 0.08) + 's' }"
-              >{{ project.name }}</h3>
-            </div>
-          </div>
-          <img class="h-[200px] w-[200px] object-cover preview-image" />
+          <img
+            ref="previewImgRef"
+            class="preview-image h-[400px] w-[400px] object-fill"
+          />
         </div>
-        <div class="bottom-part"></div>
+
+        <!-- ══ الأرض (bottom-part) — rotateX(+90deg) ══ -->
+        <div class="bottom-part">
+          <div ref="floorRef" class="sync-content px-[5.5rem]">
+            <PageContent
+              :projects="featuredProjects"
+              :margin-top="6"
+              :px="0"
+              :projectPX="2"
+              :projectSize="124"
+              :modelPath="modelPath"
+              :modelType="modelType"
+              :modelModeColor="modelModeColor"
+            />
+          </div>
+        </div>
       </div>
-      <div class="right-box">
+
+      <div class="right-box z-10">
         <RightSideContent />
       </div>
     </div>
   </div>
   <CustomCursor />
 </template>
+
 <script setup>
-import { ref, onMounted } from "vue";
-import { useScrollAnimation } from "~/composables/useScrollAnimation";
+import { ref, onMounted, onUnmounted } from "vue";
 import LeftSideContent from "~/components/blocks/home/HomeHeroLeftSideContent.vue";
-import HeroGrid from "~/components/graphics/HeroGrid.vue";
 import RightSideContent from "~/components/blocks/home/HomeHeroRightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
-import { projects } from "~/mocks/projects";
+import { projects, featuredProjects } from "~/mocks/projects";
+import { homeSettings } from "~/mocks/homeSettings";
+import PageContent from "./PageContent.vue";
+const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
+const { locale } = useI18n();
+const colorMode = useColorMode();
 
-const featuredProjects = projects.filter((p) => p.isFeatured).slice(0, 5);
+/* ── refs ── */
+const centerBoxRef = ref(null);
+const wallRef = ref(null);
+const floorRef = ref(null);
+const ceilRef = ref(null);
+const previewImgRef = ref(null);
 
-const heroRef = ref(null);
-useScrollAnimation(heroRef);
+const modelPath = computed(() => {
+  if (locale.value === "ar") {
+    if (colorMode.value === "dark") return homeSettings.hero_3d.image_dark_ar;
+    return homeSettings.hero_3d.image_ar;
+  }
+  if (colorMode.value === "dark") return homeSettings.hero_3d.image_dark_en;
+  return homeSettings.hero_3d.image_en;
+});
+const modelType = computed(() => {
+  return homeSettings.hero_3d.type;
+});
+const modelModeColor = computed(() => {
+  if (colorMode.value === "dark")
+    return homeSettings.hero_3d.mode_color_dark || "#ffffff";
+  return homeSettings.hero_3d.mode_color || "#000000";
+});
 
+/* ── scroll state ── */
+let scrollPos = 0;
+let targetScroll = 0;
+let maxScroll = 0;
+let railH = 0;
+let rafId = null;
+let pageScrollLocked = false;
+
+function syncPageScrollLock(shouldLock) {
+  if (pageScrollLocked === shouldLock) return;
+  pageScrollLocked = shouldLock;
+  emit(shouldLock ? "lock-page-scroll" : "unlock-page-scroll");
+}
+
+/* ── wheel ── */
+function onWheel(e) {
+  // If the page has scrolled (content-section is overlapping the hero),
+  // don't consume — let the page scroll handle returning to top.
+  if (window.scrollY > 1) {
+    syncPageScrollLock(false);
+    return;
+  }
+
+  const nextTarget = targetScroll + e.deltaY;
+  const clampedTarget = Math.max(0, Math.min(maxScroll, nextTarget));
+  const canConsumeInsideHero = clampedTarget !== targetScroll;
+
+  if (canConsumeInsideHero) {
+    // Keep scroll inside hero and block page-level locomotive scroll.
+    e.preventDefault();
+    e.stopPropagation();
+    targetScroll = clampedTarget;
+    syncPageScrollLock(true);
+    return;
+  }
+
+  // At hero boundaries, let the outer page consume the wheel event.
+  syncPageScrollLock(false);
+}
+
+/* ── touch ── */
+let ty = 0;
+function onTouchStart(e) {
+  ty = e.touches[0].clientY;
+}
+function onTouchMove(e) {
+  // If the page has scrolled, let it handle returning to top.
+  if (window.scrollY > 1) {
+    syncPageScrollLock(false);
+    ty = e.touches[0].clientY;
+    return;
+  }
+
+  const nextTarget = targetScroll + (ty - e.touches[0].clientY);
+  const clampedTarget = Math.max(0, Math.min(maxScroll, nextTarget));
+  const canConsumeInsideHero = clampedTarget !== targetScroll;
+
+  if (canConsumeInsideHero) {
+    // Same behavior for touch: consume in hero until boundaries.
+    e.preventDefault();
+    e.stopPropagation();
+    targetScroll = clampedTarget;
+    syncPageScrollLock(true);
+  } else {
+    syncPageScrollLock(false);
+  }
+
+  ty = e.touches[0].clientY;
+}
+
+/* ── keyboard ── */
+function onKey(e) {
+  if (e.key === "ArrowDown")
+    targetScroll = Math.min(maxScroll, targetScroll + 60);
+  if (e.key === "ArrowUp") targetScroll = Math.max(0, targetScroll - 60);
+}
+
+/* ══════════════════════════════════════════════
+   LOOP — المزامنة الحقيقية
+
+   wall  translateY = -scrollPos
+   floor translateY = -(scrollPos + wallH)
+   ceil  translateY = -(scrollPos - railH)
+══════════════════════════════════════════════ */
+function loop() {
+  scrollPos += (targetScroll - scrollPos) * 0.1;
+
+  const box = centerBoxRef.value;
+  const wallH = box ? box.offsetHeight - 2 * railH : 0;
+
+  if (wallRef.value)
+    wallRef.value.style.transform = `translateY(${-scrollPos}px)`;
+
+  if (floorRef.value)
+    floorRef.value.style.transform = `translateY(${-(scrollPos + wallH)}px)`;
+
+  if (ceilRef.value)
+    ceilRef.value.style.transform = `translateY(${-(scrollPos - railH)}px)`;
+
+  rafId = requestAnimationFrame(loop);
+}
+
+/* ── hover preview ── */
+function onHoverEnter({ url, x, y }) {
+  const img = previewImgRef.value;
+  if (!img || !url) return;
+
+  // Reset to start position for fresh slide-in
+  img.style.transition = "none";
+  img.style.transform = "translateX(32px)";
+  void img.offsetWidth; // force reflow
+  img.style.transition = "";
+
+  if (locale.value === "ar") img.style.left = `${x}px`;
+  else img.style.right = `${x}px`;
+  img.style.bottom = `${y}px`;
+  img.src = url;
+  img.style.opacity = "1";
+  img.style.transform = "translateX(0)"; // CSS transition handles slide-in
+}
+function onHoverLeave() {
+  const img = previewImgRef.value;
+  if (!img) return;
+  img.style.opacity = "0";
+  setTimeout(() => {
+    if (img.style.opacity === "0") img.src = "";
+  }, 500);
+}
+
+/* ── lifecycle ── */
 onMounted(() => {
-  const hoverItems = document.querySelectorAll(".hover-item");
-  const previewImgEl = document.querySelector(".preview-image");
-  const centerPartEl = document.querySelector(".center-part");
+  const box = centerBoxRef.value;
+  if (!box) return;
 
-  if (!hoverItems.length || !previewImgEl || !centerPartEl) return;
+  railH =
+    parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue("--railH")
+    ) || 60;
 
-  // Make sure preview image can be absolutely positioned
-  previewImgEl.style.position = "absolute";
+  const wallH = box.offsetHeight - 2 * railH;
 
-  hoverItems.forEach((item) => {
-    item.addEventListener("mouseenter", () => {
-      const url = item.getAttribute("data-image-url");
-      console.log(url);
+  // maxScroll = طول المحتوى الكلي - ارتفاع الجدار
+  const contentH = wallRef.value?.scrollHeight || 0;
+  maxScroll = Math.max(0, contentH - wallH);
 
-      if (!url) return;
+  box.addEventListener("touchstart", onTouchStart, { passive: true });
+  box.addEventListener("touchmove", onTouchMove, { passive: false });
+  window.addEventListener("keydown", onKey);
 
-      // Random position inside .center-part
-      const centerRect = centerPartEl.getBoundingClientRect();
-      const maxX = centerRect.width - previewImgEl.offsetWidth;
-      const maxY = centerRect.height - previewImgEl.offsetHeight;
+  // scrollPos = railH;
+  // targetScroll = railH;
 
-      const randomX = Math.max(0, Math.random() * maxX);
-      const randomY = Math.max(0, Math.random() * maxY);
+  loop();
+});
 
-      previewImgEl.style.left = `${randomX}px`;
-      previewImgEl.style.top = `${randomY}px`;
-
-      // Show image
-      previewImgEl.src = url;
-      previewImgEl.style.opacity = "1";
-    });
-
-    item.addEventListener("mouseleave", () => {
-      previewImgEl.style.opacity = "0";
-      // Clear src after transition
-      setTimeout(() => {
-        previewImgEl.src = "";
-      }, 500);
-    });
-  });
+onUnmounted(() => {
+  const box = centerBoxRef.value;
+  box?.removeEventListener("touchstart", onTouchStart);
+  box?.removeEventListener("touchmove", onTouchMove);
+  window.removeEventListener("keydown", onKey);
+  if (rafId) cancelAnimationFrame(rafId);
+  syncPageScrollLock(false);
 });
 </script>
+
 <style>
-body {
-  background-color: var(--bg-color);
-}
+/* body background is handled globally in app.vue */
+
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
-
 .top-section {
   display: flex;
 }
 
+/* ── Left / Right rails ── */
 .left-box {
   width: var(--railW);
-  /* border-right: 1px solid #000; */
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  top: 0;
 }
 
+html[dir="rtl"] .left-box {
+  left: 0;
+  right: auto;
+}
 .left-box::before {
   content: "";
   position: absolute;
-  top: calc(var(--railH) - 2px);
+  /* top: calc(var(--railH) - 2px); */
+  top: var(--railH);
   left: var(--railW);
-  height: 1px;
+  height: 0.3px;
   width: 114px;
-  background-color: var(--primary-color);
+  background-color: var(--color-primary);
   transform-origin: left bottom;
-  transform: rotate(-134deg);
+  transform: rotate(-145deg);
 }
-
 .left-box::after {
   content: "";
   position: absolute;
-  bottom: calc(var(--railH) - 2px);
+  /* bottom: calc(var(--railH) - 2px); */
+  bottom: var(--railH);
   left: var(--railW);
-  height: 1px;
+  height: 0.3px;
   width: 114px;
-  background-color: var(--primary-color);
+  background-color: var(--color-primary);
   transform-origin: left top;
-  transform: rotate(134deg);
+  transform: rotate(145deg);
 }
-
 .right-box {
   width: var(--railW);
-  /* border-left: 1px solid #000; */
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  right: 0;
 }
-
 .right-box::before {
   content: "";
   position: absolute;
-  top: calc(var(--railH) - 2px);
+  /* top: calc(var(--railH) - 2px); */
+  top: var(--railH);
   right: var(--railW);
-  height: 1px;
+  height: 0.3px;
   width: 114px;
-  background-color: #000;
+  background-color: var(--color-primary);
   transform-origin: right bottom;
-  transform: rotate(134deg);
+  transform: rotate(145deg);
 }
-
 .right-box::after {
   content: "";
   position: absolute;
-  bottom: calc(var(--railH) - 2px);
+  /* bottom: calc(var(--railH) - 2px); */
+  bottom: var(--railH);
   right: var(--railW);
-  height: 1px;
+  height: 0.3px;
   width: 114px;
-  background-color: #000;
+  background-color: var(--color-primary);
   transform-origin: right top;
-  transform: rotate(-134deg);
+  transform: rotate(-145deg);
 }
 
+/* ══════════════════════════════════════════════
+   CENTER-BOX — 3D scene container
+══════════════════════════════════════════════ */
 .center-box {
-  width: calc(100% - 2 * var(--railW));
+  /* width: calc(100% - 2 * var(--railW)); */
+  width: 100%;
   height: 100%;
-  display: block;
   position: relative;
+  overflow: hidden;
+  perspective: 380px;
+  perspective-origin: 50% 50%;
 }
 
+/* ══════════════════════════════════════════════
+   TOP-PART = السقف
+   rotateX(-90deg), محور الدوران: bottom (خط الجدار-السقف)
+══════════════════════════════════════════════ */
 .center-box .top-part {
-  height: var(--railH);
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  border: 1px solid var(--bg-color);
-  border-bottom: 1px solid #000;
-}
-
-.center-box .center-part {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  height: 100%;
-  border-right: 1px solid #000;
-  border-left: 1px solid #000;
-}
-
-.center-box .bottom-part {
   height: var(--railH);
+  overflow: hidden;
+  transform-origin: bottom center;
+  transform: rotateX(-90deg);
+  /* border-bottom: 1px solid #000; */
+  z-index: 1;
+}
+
+/* ══════════════════════════════════════════════
+   CENTER-PART = الجدار
+   المنطقة بين railH و (100%-railH)
+══════════════════════════════════════════════ */
+.center-box .center-part {
+  position: absolute;
+  top: var(--railH);
+  bottom: var(--railH);
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  border: 0.3px solid var(--color-primary);
+  z-index: 1;
+  width: calc(100% - 2 * var(--railW));
+  transform: translate(var(--railW), 0);
+}
+
+html[dir="rtl"] .center-box .center-part {
+  left: 0;
+  right: auto;
+}
+/* .center-box .center-part::before {
+  position: absolute;
+  top: var(--railH);
+  width: calc(100% - 2 * var(--railW));
+  height: 1px;
+  background: #000;
+  content: "";
+} */
+
+/* ══════════════════════════════════════════════
+   BOTTOM-PART = الأرض
+   rotateX(+90deg), محور الدوران: top (خط الأرض-الجدار)
+══════════════════════════════════════════════ */
+.center-box .bottom-part {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  border: 1px solid var(--bg-color);
-  border-top: 1px solid #000;
+  height: var(--railH);
+  overflow: hidden;
+  transform-origin: top center;
+  transform: rotateX(90deg);
+  /* border-top: 1px solid #000; */
+  z-index: 1;
 }
 
+/* ── sync-content ── */
+.sync-content {
+  width: 100%;
+  will-change: transform;
+}
+
+/* ── preview image ── */
 .preview-image {
   position: absolute;
-  pointer-events: none; /* so it doesn't block hover */
+  pointer-events: none;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.preview-image[src] {
-  opacity: 1;
+  transform: translateX(32px);
+  transition: opacity 0.5s ease-in-out,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 2;
 }
 </style>
