@@ -13,6 +13,7 @@
       <div class="flex items-center justify-between gap-8 my-12 mx-6">
         <!-- dark:invert flips black logo to white in dark mode -->
         <img
+          id="logo"
           v-if="showLogo"
           src="/logos/svg/logo_black.svg"
           alt=""

@@ -6,15 +6,17 @@
       :titleS="titleS"
     />
     <div
-      class="w-full relative border-s-[0.3px] border-t-[0.3px] border-brand-text ps-12 py-16 pe-44"
-      :style="`margin-inline-start: ${marginS}px;`"
+      class="w-full relative border-s-[0.3px] border-t-[0.3px] border-brand-text ps-12 pe-44"
+      :style="`margin-inline-start: ${marginS}px; padding-top: ${
+        py - 2
+      }rem; padding-bottom: ${py - 2}rem;`"
     >
       <div v-for="(award, i) in awards" :key="i" class="flex flex-col">
         <h2
           class="font-semibold uppercase italic"
           :style="`font-size: clamp(${Math.max(
             18,
-            Math.round(yearS * 0.35),
+            Math.round(yearS * 0.35)
           )}px, ${(yearS / 20).toFixed(1)}vw, ${yearS}px);`"
         >
           {{ award.year }}
@@ -23,7 +25,7 @@
           class="uppercase font-light italic max-w-screen-sm leading-[1.2]"
           :style="`font-size: clamp(${Math.max(
             18,
-            Math.round(nameS * 0.35),
+            Math.round(nameS * 0.35)
           )}px, ${(nameS / 20).toFixed(1)}vw, ${nameS}px);`"
         >
           {{ locale === "ar" ? award.title_ar : award.title_en }}
@@ -50,6 +52,7 @@ const props = defineProps({
   titleS: { type: Number, default: 130 },
   yearS: { type: Number, default: 85 },
   nameS: { type: Number, default: 68 },
+  py: { type: Number, default: 4 },
   awards: {
     type: Array as () => Award[],
     default: () => [],

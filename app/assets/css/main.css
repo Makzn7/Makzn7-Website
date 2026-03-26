@@ -104,7 +104,18 @@ html.has-scroll-smooth {
   @apply text-white transition-all duration-500 ease-in-out;
 }
 .white-link-sm:hover {
-  @apply text-[var(--main-color)] hover:[text-shadow:1px_0_0_var(--main-color),-1px_0_0_var(--main-color),0_0_1px_var(--main-color)];
+  @apply text-[var(--main-color)] hover:[text-shadow:0.5px_0_0_var(--main-color),-0.5px_0_0_var(--main-color),0_0_0.5px_var(--main-color)];
+}
+
+.nav-hover {
+  transition:
+    transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    letter-spacing 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-origin: center center;
+}
+.nav-hover:hover {
+  transform: scale(1.15);
+  letter-spacing: 2px;
 }
 
 .dark-border {

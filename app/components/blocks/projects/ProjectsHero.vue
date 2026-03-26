@@ -22,16 +22,17 @@
         <div class="top-part px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
             <PageContent
+              :projects="projects"
               :margin-top="3"
               :px="0"
               :margin-s="113"
               :image-w="73"
               :title-s="129"
               :desc-size="35.5"
-              :teams="teams"
-              :awards="awards"
               :py="6"
               :marginB="2.5"
+              :filters="filters"
+              :active-filters="[]"
             />
           </div>
         </div>
@@ -39,7 +40,12 @@
         <!-- ══ الجدار (center-part) ══ -->
         <div class="center-part">
           <div ref="wallRef" class="sync-content">
-            <PageContent :margin-top="0" :teams="teams" :awards="awards" />
+            <PageContent
+              :margin-top="0"
+              :projects="projects"
+              :filters="filters"
+              :active-filters="[]"
+            />
           </div>
           <img
             ref="previewImgRef"
@@ -57,8 +63,9 @@
               :image-w="70"
               :title-s="129"
               :desc-size="35.5"
-              :teams="teams"
-              :awards="awards"
+              :projects="projects"
+              :filters="filters"
+              :active-filters="[]"
               :py="6"
               :marginB="2.5"
             />
@@ -80,17 +87,20 @@ import LeftSideContent from "~/components/ui/LeftSideContent.vue";
 import RightSideContent from "~/components/ui/RightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
 import PageContent from "./PageContent.vue";
-const props = defineProps({
-  teams: {
-    type: Array,
-    default: () => [],
-  },
-  awards: {
-    type: Array,
-    default: () => [],
-  },
-});
+import { projects } from "~/mocks/projects";
+import { departments } from "~/mocks/departments";
+import { scopes } from "~/mocks/scopes";
+import { projectTypes } from "~/mocks/projectTypes";
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
+
+const years = [2020, 2021, 2022, 2023, 2024, 2025];
+
+const filters = [
+  ...years.map((y, i) => ({ type: "year", id: i + 1, name: String(y), value: y })),
+  ...departments.map((d) => ({ type: "department", ...d })),
+  ...projectTypes.map((t) => ({ type: "type", ...t })),
+  ...scopes.map((s) => ({ type: "scope", ...s })),
+];
 
 /* ── refs ── */
 const centerBoxRef = ref(null);

@@ -33,7 +33,7 @@
             class="font-light leading-[1.45] tracking-[0px] pe-28"
             :style="`font-size: clamp(${Math.max(
               16,
-              Math.round(descSize * 0.35),
+              Math.round(descSize * 0.35)
             )}px, ${(descSize / 20).toFixed(1)}vw, ${descSize}px);`"
           >
             {{ $t("about.aboutDescription") }}
@@ -55,7 +55,7 @@
             class="font-light leading-[1.45] tracking-[0px] pe-28"
             :style="`font-size: clamp(${Math.max(
               16,
-              Math.round(descSize * 0.35),
+              Math.round(descSize * 0.35)
             )}px, ${(descSize / 20).toFixed(1)}vw, ${descSize}px);`"
           >
             {{ $t("about.servicesDescription") }}
@@ -68,6 +68,8 @@
         :descSize="descSize"
         :titleS="titleS"
         :teams="teams"
+        :py="py"
+        :marginB="marginB"
       />
       <!-- Awards -->
       <AboutAward
@@ -75,6 +77,7 @@
         :descSize="descSize"
         :titleS="titleS"
         :awards="awards"
+        :py="py"
       />
     </div>
     <!-- spacer أسفل عشان الأرض ما تبقى فارغة في النهاية -->
@@ -103,5 +106,7 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  py: { type: Number, default: 4 },
+  marginB: { type: Number, default: 2 },
 });
 </script>

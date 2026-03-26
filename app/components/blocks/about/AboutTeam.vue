@@ -6,8 +6,8 @@
       :titleS="titleS"
     />
     <div
-      class="w-full relative border-s-[0.3px] border-t-[0.3px] border-brand-text ps-12 py-16 pe-44"
-      :style="`margin-inline-start: ${marginS}px;`"
+      class="w-full relative border-s-[0.3px] border-t-[0.3px] border-brand-text ps-12 pe-44"
+      :style="`margin-inline-start: ${marginS}px; padding-top: ${py}rem; padding-bottom: ${py}rem;`"
     >
       <div class="team-line"></div>
       <div
@@ -17,7 +17,8 @@
           <!-- Slanted line in 4th column after first 3 items -->
           <div
             v-if="index === 3"
-            class="hidden lg:flex items-end justify-end mb-8"
+            class="hidden lg:flex items-end justify-end"
+            :style="`margin-bottom: ${marginB}rem;`"
           >
             <!-- <div
               class="w-[0.3px] h-full bg-brand-text origin-bottom"
@@ -26,7 +27,10 @@
           </div>
 
           <!-- Team card -->
-          <div class="group flex flex-col items-start gap-4 mb-8">
+          <div
+            class="group flex flex-col items-start gap-4"
+            :style="`margin-bottom: ${marginB}rem;`"
+          >
             <!-- With photo -->
             <div
               v-if="team.photo"
@@ -97,6 +101,8 @@ const props = defineProps({
     type: Array as () => Person[],
     default: () => [],
   },
+  py: { type: Number, default: 4 },
+  marginB: { type: Number, default: 2 },
 });
 
 const getInitials = (name: string): string[] => {
