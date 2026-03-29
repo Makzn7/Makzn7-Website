@@ -37,7 +37,9 @@
             <span>
               {{ $t("buttons.discoverMore") }}
             </span>
-            <span class="font-pixel mb-[20px] inline-block">-></span>
+            <span class="font-pixel mb-[20px] inline-block text-brand-primary"
+              >-></span
+            >
           </NuxtLink>
         </div>
       </div>

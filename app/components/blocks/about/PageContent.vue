@@ -15,7 +15,7 @@
         :style="`margin-inline-start: ${marginS}px;`"
       >
         <div>
-          <img src="/icons/svg/green/2.svg" width="100" alt="" />
+          <img src="/icons/svg/green/2.svg" width="100" alt="Makzn7" />
         </div>
       </div>
       <!-- About -->

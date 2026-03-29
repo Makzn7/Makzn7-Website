@@ -1,4 +1,5 @@
 @import "./fonts.css";
+@import "./hero-scene.css";
 
 @tailwind base;
 @tailwind components;

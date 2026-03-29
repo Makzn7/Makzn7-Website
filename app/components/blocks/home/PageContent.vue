@@ -16,7 +16,7 @@
           id="logo"
           v-if="showLogo"
           src="/logos/svg/logo_black.svg"
-          alt=""
+          alt="Makzn7"
           width="200"
           class="dark:invert fade-in"
         />

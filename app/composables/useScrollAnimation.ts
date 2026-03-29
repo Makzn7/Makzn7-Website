@@ -1,20 +1,17 @@
-/**
- * useScrollAnimation
- *
- * Sets up an IntersectionObserver that adds `.is-visible` to every
- * .fade-in / .fade-in-left / .fade-in-right element inside `containerRef`.
- *
- * Usage:
- *   const rootRef = ref(null)
- *   useScrollAnimation(rootRef)
- *   // then bind ref="rootRef" to the component's root element
- */
-import { onMounted, onUnmounted } from "vue";
+import { onMounted, onUnmounted, type Ref } from "vue";
 
-export function useScrollAnimation(containerRef, options = {}) {
+interface ScrollAnimationOptions {
+  threshold?: number;
+  rootMargin?: string;
+}
+
+export function useScrollAnimation(
+  containerRef: Ref<HTMLElement | null>,
+  options: ScrollAnimationOptions = {}
+) {
   const { threshold = 0.12, rootMargin = "0px 0px -50px 0px" } = options;
 
-  let observer = null;
+  let observer: IntersectionObserver | null = null;
 
   onMounted(() => {
     if (typeof window === "undefined" || !window.IntersectionObserver) return;
@@ -30,14 +27,14 @@ export function useScrollAnimation(containerRef, options = {}) {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
+            observer?.unobserve(entry.target);
           }
         });
       },
       { threshold, rootMargin }
     );
 
-    els.forEach((el) => observer.observe(el));
+    els.forEach((el) => observer!.observe(el));
   });
 
   onUnmounted(() => observer?.disconnect());

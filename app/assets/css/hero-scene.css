@@ -1,0 +1,162 @@
+/* ══════════════════════════════════════════════
+   HERO SCENE — shared 3D perspective layout
+   Used by HomeHero, AboutHero, ProjectsHero
+══════════════════════════════════════════════ */
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.top-section {
+  display: flex;
+}
+
+.logo-image {
+  top: calc(var(--railH) + 8px);
+  left: var(--railW);
+  z-index: 100;
+  pointer-events: auto;
+}
+
+/* ── Left / Right rails ── */
+.left-box {
+  width: var(--railW);
+  position: absolute;
+  bottom: 0;
+  top: 0;
+}
+
+html[dir="rtl"] .left-box {
+  left: 0;
+  right: auto;
+}
+.left-box::before {
+  content: "";
+  position: absolute;
+  top: var(--railH);
+  left: var(--railW);
+  height: 0.3px;
+  width: 114px;
+  background-color: var(--color-primary);
+  transform-origin: left bottom;
+  transform: rotate(-145deg);
+}
+.left-box::after {
+  content: "";
+  position: absolute;
+  bottom: var(--railH);
+  left: var(--railW);
+  height: 0.3px;
+  width: 114px;
+  background-color: var(--color-primary);
+  transform-origin: left top;
+  transform: rotate(145deg);
+}
+.right-box {
+  width: var(--railW);
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  right: 0;
+}
+.right-box::before {
+  content: "";
+  position: absolute;
+  top: var(--railH);
+  right: var(--railW);
+  height: 0.3px;
+  width: 114px;
+  background-color: var(--color-primary);
+  transform-origin: right bottom;
+  transform: rotate(145deg);
+}
+.right-box::after {
+  content: "";
+  position: absolute;
+  bottom: var(--railH);
+  right: var(--railW);
+  height: 0.3px;
+  width: 114px;
+  background-color: var(--color-primary);
+  transform-origin: right top;
+  transform: rotate(-145deg);
+}
+
+/* ══════════════════════════════════════════════
+   CENTER-BOX — 3D scene container
+══════════════════════════════════════════════ */
+.center-box {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  perspective: 380px;
+  perspective-origin: 50% 50%;
+}
+
+/* ══════════════════════════════════════════════
+   TOP-PART = السقف
+══════════════════════════════════════════════ */
+.center-box .top-part {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--railH);
+  overflow: hidden;
+  transform-origin: bottom center;
+  transform: rotateX(-90deg);
+  z-index: 1;
+}
+
+/* ══════════════════════════════════════════════
+   CENTER-PART = الجدار
+══════════════════════════════════════════════ */
+.center-box .center-part {
+  position: absolute;
+  top: var(--railH);
+  bottom: var(--railH);
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  border: 0.3px solid var(--color-primary);
+  z-index: 1;
+  width: calc(100% - 2 * var(--railW));
+  transform: translate(var(--railW), 0);
+}
+
+html[dir="rtl"] .center-box .center-part {
+  left: 0;
+  right: auto;
+}
+
+/* ══════════════════════════════════════════════
+   BOTTOM-PART = الأرض
+══════════════════════════════════════════════ */
+.center-box .bottom-part {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--railH);
+  overflow: hidden;
+  transform-origin: top center;
+  transform: rotateX(90deg);
+  z-index: 1;
+}
+
+/* ── sync-content ── */
+.sync-content {
+  width: 100%;
+  will-change: transform;
+}
+
+/* ── preview image ── */
+.preview-image {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  z-index: 2;
+}

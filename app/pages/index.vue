@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HomeHero from "~/components/blocks/home/HomeHero.vue";
 import HomeAbout from "~/components/blocks/home/HomeAbout.vue";
 import ContactSection from "~/components/ui/ContactSection.vue";
-const { locale } = useI18n();
-const scrollContainer = ref<HTMLElement | null>(null);
+
 const splashRef = ref<HTMLElement | null>(null);
 const splashLogoRef = ref<HTMLElement | null>(null);
 const showSplash = ref(true);
 const splashAnimating = ref(false);
-let scroll: any = null;
+
+const { scrollContainer, lockPageScroll, unlockPageScroll } =
+  usePageScrollShell();
+useGsapReveal();
 
 useHead({
   title: "Makzn7",
@@ -23,21 +23,14 @@ useHead({
 });
 
 onMounted(async () => {
-  gsap.registerPlugin(ScrollTrigger);
-
-  // حساب موقع الشعار الأصلي وتعيين CSS variables
   await nextTick();
   const targetLogo = document.getElementById("logo");
   const splashLogo = splashLogoRef.value;
   if (targetLogo && splashLogo) {
     const tr = targetLogo.getBoundingClientRect();
-    // offsetWidth يعطي العرض الحقيقي بدون تأثير transform
-    const splashW = splashLogo.offsetWidth; // 280px
-    const splashH = splashLogo.offsetHeight;
-    // مركز الشعار في الـ splash (وسط الشاشة)
+    const splashW = splashLogo.offsetWidth;
     const splashCx = window.innerWidth / 2;
     const splashCy = window.innerHeight / 2;
-    // مركز الشعار الهدف
     const targetCx = tr.left + tr.width / 2;
     const targetCy = tr.top + tr.height / 2;
     const dx = targetCx - splashCx;
@@ -48,101 +41,11 @@ onMounted(async () => {
     splashLogo.style.setProperty("--sc", `${sc}`);
   }
 
-  // تشغيل الأنيميشن
   splashAnimating.value = true;
-
-  // حذف شاشة التحميل بعد انتهاء الأنيميشن
   setTimeout(() => {
     showSplash.value = false;
   }, 3200);
-
-  const { $LocomotiveScroll } = useNuxtApp();
-
-  if (scrollContainer.value) {
-    scroll = new $LocomotiveScroll({
-      el: scrollContainer.value,
-      smooth: true,
-      lerp: 0.08,
-      multiplier: 1,
-      smartphone: {
-        smooth: true,
-      },
-      tablet: {
-        smooth: true,
-      },
-    });
-
-    const lenis = scroll.lenisInstance;
-    if (lenis) {
-      lenis.on("scroll", ScrollTrigger.update);
-      ScrollTrigger.addEventListener("refresh", () => lenis.resize?.());
-    }
-    ScrollTrigger.refresh();
-  }
-
-  const isRTL = locale.value === "ar";
-
-  gsap.utils.toArray<HTMLElement>("#content-section .fade-in").forEach((el) => {
-    gsap.from(el, {
-      opacity: 0,
-      y: 50,
-      duration: 1,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: el,
-        start: "top 85%",
-        toggleActions: "play none none reverse",
-      },
-    });
-  });
-
-  gsap.utils
-    .toArray<HTMLElement>("#content-section .fade-in-left")
-    .forEach((el) => {
-      gsap.from(el, {
-        opacity: 0,
-        x: isRTL ? 60 : -60,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
-      });
-    });
-
-  gsap.utils
-    .toArray<HTMLElement>("#content-section .fade-in-right")
-    .forEach((el) => {
-      gsap.from(el, {
-        opacity: 0,
-        x: isRTL ? -60 : 60,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
-      });
-    });
 });
-
-onBeforeUnmount(() => {
-  if (scroll) scroll.destroy();
-  ScrollTrigger.getAll().forEach((t) => t.kill());
-});
-
-function lockPageScroll() {
-  if (!scroll) return;
-  scroll.stop();
-}
-
-function unlockPageScroll() {
-  if (!scroll) return;
-  scroll.start();
-}
 </script>
 
 <template>
