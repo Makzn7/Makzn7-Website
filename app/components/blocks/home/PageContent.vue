@@ -55,7 +55,7 @@
         class="flex gap-2 justify-start items-center border-t-[0.3px] border-b-[0.3px] border-brand-text"
       >
         <h2
-          class="py-8 font-medium text-[20px] sm:text-[28px] md:text-[34px] lg:text-[38px] xl:text-[41px] 2xl:text-[44px] leading-[1.2] uppercase whitespace-nowrap"
+          class="py-8 font-semibold italic text-[20px] sm:text-[28px] md:text-[34px] lg:text-[38px] xl:text-[41px] 2xl:text-[44px] leading-[1.2] uppercase whitespace-nowrap"
           :style="`padding-right: ${projectPX}rem; padding-left: ${projectPX}rem;`"
         >
           {{ $t("titles.selectedProjects") }}
@@ -74,7 +74,7 @@
           @mouseleave="showHover && $emit('hover-leave')"
         >
           <h3
-            class="leading-[1.05] italic"
+            class="leading-[1.05] italic font-light"
             :style="`font-size: clamp(${Math.max(
               36,
               Math.round(projectSize * 0.5)

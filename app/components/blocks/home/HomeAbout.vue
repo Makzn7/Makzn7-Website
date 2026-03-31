@@ -13,7 +13,7 @@
         <!-- Title -->
         <div class="flex flex-col justify-between items-start space-y-12">
           <h2
-            class="text-[38px] sm:text-[50px] md:text-[65px] lg:text-[80px] xl:text-[90px] 2xl:text-[103px] font-medium uppercase leading-none fade-in"
+            class="text-[38px] sm:text-[50px] md:text-[65px] lg:text-[80px] xl:text-[90px] 2xl:text-[103px] font-light italic uppercase leading-none fade-in"
           >
             {{ $t("home.aboutTitle") }}
           </h2>

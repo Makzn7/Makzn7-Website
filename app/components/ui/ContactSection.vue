@@ -11,7 +11,7 @@
         <div class="flex flex-col justify-between items-start space-y-12">
           <!-- Title -->
           <h2
-            class="text-[38px] sm:text-[50px] md:text-[65px] lg:text-[80px] xl:text-[90px] 2xl:text-[103px] font-medium uppercase leading-none fade-in"
+            class="text-[38px] sm:text-[50px] md:text-[65px] lg:text-[80px] xl:text-[90px] 2xl:text-[103px] font-light italic uppercase leading-none fade-in"
             style="animation-delay: 0s"
           >
             {{ $t("home.contactTitle") }}
@@ -33,6 +33,7 @@
                 class="flex justify-start items-center gap-2"
                 id="toggle-lang"
                 @click="toggleLocale"
+                :class="locale === 'ar' ? 'font-en' : 'font-ar'"
               >
                 <img src="/icons/general/Artboard2.svg" width="30" />
                 <span

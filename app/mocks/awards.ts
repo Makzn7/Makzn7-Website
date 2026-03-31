@@ -10,6 +10,6 @@ export const awards: Award[] = [
     description_en: "CULTURAL AWARDS 2025 FILM AWARD",
     image: "/images/awards/film_2025.png",
     link: "https://example.com",
-    image_3d: "/images/awards/award1.glb",
+    image_3d: "/images/awards/trophy.png",
   },
 ];

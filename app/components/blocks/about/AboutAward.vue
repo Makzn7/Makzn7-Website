@@ -35,6 +35,11 @@
           class="w-full h-auto object-cover mt-12"
           :alt="award.title_en"
         />
+        <img
+          :src="award.image_3d ?? ''"
+          :alt="award.title_en"
+          class="absolute end-48 -top-36 w-60 h-auto object-contain"
+        />
       </div>
     </div>
   </section>

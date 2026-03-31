@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
   font-family: "Uxum Grotesque";
   src: url("/fonts/en/TRIAL_UxumGrotesque-UltraLight.otf") format("opentype");
   font-weight: 200;
@@ -54,7 +54,7 @@
   font-weight: 600;
   font-style: normal;
   font-display: swap;
-}
+} */
 @font-face {
   font-family: "DotGothic16";
   src: url("/fonts/pixel/DotGothic16-Regular.ttf") format("truetype");
