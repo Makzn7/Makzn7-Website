@@ -22,7 +22,7 @@
         <div class="top-part px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
             <PageContent
-              :projects="projects"
+              :projects="data"
               :margin-top="3"
               :px="0"
               :margin-s="113"
@@ -32,7 +32,8 @@
               :py="6"
               :marginB="2.5"
               :filters="filters"
-              :active-filters="[]"
+              :active-filters="activeFilters"
+              @toggle-filter="toggleFilter"
             />
           </div>
         </div>
@@ -42,9 +43,10 @@
           <div ref="wallRef" class="sync-content">
             <PageContent
               :margin-top="0"
-              :projects="projects"
+              :projects="data"
               :filters="filters"
-              :active-filters="[]"
+              :active-filters="activeFilters"
+              @toggle-filter="toggleFilter"
             />
           </div>
           <img
@@ -63,11 +65,12 @@
               :image-w="70"
               :title-s="129"
               :desc-size="35.5"
-              :projects="projects"
+              :projects="data"
               :filters="filters"
-              :active-filters="[]"
+              :active-filters="activeFilters"
               :py="6"
               :marginB="2.5"
+              @toggle-filter="toggleFilter"
             />
           </div>
         </div>
@@ -94,21 +97,81 @@ import { projectTypes } from "~/mocks/projectTypes";
 
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
 
+const data = ref(projects);
+const router = useRouter();
+const route = useRoute();
+
 const years = [2020, 2021, 2022, 2023, 2024, 2025];
 
 const filters = [
-  ...years.map((y, i) => ({ type: "year", id: i + 1, name: String(y), value: y })),
+  ...years.map((y, i) => ({
+    type: "year",
+    id: i + 1,
+    name: String(y),
+    slug: y,
+  })),
   ...departments.map((d) => ({ type: "department", ...d })),
   ...projectTypes.map((t) => ({ type: "type", ...t })),
   ...scopes.map((s) => ({ type: "scope", ...s })),
 ];
+
+const activeFilters = ref([]);
+
+const toggleFilter = (filter) => {
+  const type = filter.type;
+  const hasType = activeFilters.value.findIndex((f) => f.type === type);
+  const index = activeFilters.value.findIndex(
+    (f) => f.type === filter.type && f.slug === filter.slug
+  );
+  if (hasType !== -1) {
+    if (index !== -1) {
+      // remove filter
+      activeFilters.value.splice(index, 1);
+    } else {
+      // replace with new filter of same type
+      activeFilters.value.splice(hasType, 1, filter);
+    }
+  } else {
+    // add new filter
+    activeFilters.value.push(filter);
+  }
+  filterProjects();
+  updateUrl();
+};
+
+const updateUrl = async () => {
+  const query = {};
+
+  for (const f of activeFilters.value) {
+    query[f.type] = String(f.slug);
+  }
+
+  await router.replace({
+    path: route.path,
+    query,
+  });
+};
+
+const filterProjects = () => {
+  let filtered = projects;
+  for (const f of activeFilters.value) {
+    filtered = filtered.filter((p) => {
+      if (f.type === "year") return p.year === f.slug;
+      if (f.type === "department")
+        return p.departments.some((d) => d.slug === f.slug);
+      if (f.type === "type") return p.types.some((t) => t.slug === f.slug);
+      if (f.type === "scope") return p.scopes.some((s) => s.slug === f.slug);
+      return true;
+    });
+  }
+  data.value = filtered;
+};
 
 /* ── refs ── */
 const centerBoxRef = ref(null);
 const wallRef = ref(null);
 const floorRef = ref(null);
 const ceilRef = ref(null);
-const previewImgRef = ref(null);
 
 /* ── hero scroll (extracted to composable) ── */
 const { onWheel } = useHeroScroll(
@@ -116,23 +179,17 @@ const { onWheel } = useHeroScroll(
   emit
 );
 
-/* ── hover preview ── */
-function onHoverEnter({ url, x, y }) {
-  const img = previewImgRef.value;
-  if (!img || !url) return;
-  img.style.left = `${x}px`;
-  img.style.top = `${y}px`;
-  img.src = url;
-  img.style.opacity = "1";
-}
-function onHoverLeave() {
-  const img = previewImgRef.value;
-  if (!img) return;
-  img.style.opacity = "0";
-  setTimeout(() => {
-    if (img.style.opacity === "0") img.src = "";
-  }, 500);
-}
+onMounted(() => {
+  // apply initial filter from URL
+  const params = new URLSearchParams(window.location.search);
+  for (const [key, value] of params.entries()) {
+    const filter = filters.find(
+      (f) => f.type === key && String(f.slug) === value
+    );
+    if (filter) activeFilters.value.push(filter);
+  }
+  filterProjects();
+});
 </script>
 
 <style>

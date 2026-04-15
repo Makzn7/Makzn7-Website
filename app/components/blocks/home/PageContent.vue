@@ -6,10 +6,14 @@
   <div
     ref="contentRef"
     class="page-content flex flex-col gap-12"
-    :style="`margin-top: ${marginTop}rem;`"
+    :style="{
+      '--mt': marginTop + 'rem',
+      '--px': px + 'rem',
+      '--ppx': projectPX + 'rem',
+    }"
   >
     <!-- HeroGrid -->
-    <div class="relative content-item" :style="`padding: 0 ${px}rem`">
+    <div class="relative content-item pc-hero-grid">
       <div class="flex items-center justify-between gap-8 my-12 mx-6">
         <!-- dark:invert flips black logo to white in dark mode -->
         <img
@@ -55,8 +59,11 @@
         class="flex gap-2 justify-start items-center border-t-[0.3px] border-b-[0.3px] border-brand-text"
       >
         <h2
-          class="py-8 font-semibold italic text-[20px] sm:text-[28px] md:text-[34px] lg:text-[38px] xl:text-[41px] 2xl:text-[44px] leading-[1.2] uppercase whitespace-nowrap"
-          :style="`padding-right: ${projectPX}rem; padding-left: ${projectPX}rem;`"
+          class="py-8 font-bold leading-[1.2] whitespace-nowrap pc-project-px"
+          :style="`animation-delay: 0.15s; font-size: clamp(${Math.max(
+            16,
+            Math.round(59 * 0.35)
+          )}px, ${(59 / 15.36).toFixed(1)}vw, ${59}px);`"
         >
           {{ $t("titles.selectedProjects") }}
         </h2>
@@ -66,15 +73,14 @@
         <div
           v-for="(project, index) in projects"
           :key="project.id"
-          class="content-item py-16 hover:underline transition-all duration-500 ease-in-out"
-          :style="`padding-right: ${projectPX}rem; padding-left: ${projectPX}rem;`"
+          class="content-item py-16 hover:underline transition-all duration-500 ease-in-out pc-project-px"
           :class="{ 'hover-item': showHover }"
           :data-image-url="project.hoverMedia?.src || project.heroMedia?.src"
           @mouseenter="showHover && onEnter($event)"
           @mouseleave="showHover && $emit('hover-leave')"
         >
           <h3
-            class="leading-[1.05] italic font-light"
+            class="leading-[1.05] font-light lg:max-w-[80%] hover:font-bold"
             :style="`font-size: clamp(${Math.max(
               36,
               Math.round(projectSize * 0.5)
@@ -91,27 +97,43 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import { useScrollAnimation } from "~/composables/useScrollAnimation";
 import HeroGrid from "~/components/graphics/HeroGrid.vue";
 import HeroModel3D from "~/components/ui/HeroModel3D.vue";
 import HeroGrid1 from "~/components/graphics/HeroGrid1.vue";
+import type { Project } from "~/types/project";
 
-const props = defineProps({
-  projects: { type: Array, required: true },
-  showHover: { type: Boolean, default: false },
-  marginTop: { type: Number, default: 4 },
-  px: { type: Number, default: 1 },
-  descSize: { type: Number, default: 37 },
-  projectPX: { type: Number, default: 4 },
-  projectSize: { type: Number, default: 123 },
-  showLogo: { type: Boolean, default: true },
-  withAnimations: { type: Boolean, default: true },
-  modelPath: { type: String, default: "/images/3d/Eng" },
-  modelType: { type: String, default: "string" },
-  modelModeColor: { type: String, default: "#ffffff" },
-});
+const props = withDefaults(
+  defineProps<{
+    projects: Project[];
+    showHover?: boolean;
+    marginTop?: number;
+    px?: number;
+    descSize?: number;
+    projectPX?: number;
+    projectSize?: number;
+    showLogo?: boolean;
+    withAnimations?: boolean;
+    modelPath?: string;
+    modelType?: string;
+    modelModeColor?: string;
+  }>(),
+  {
+    showHover: false,
+    marginTop: 4,
+    px: 1,
+    descSize: 32,
+    projectPX: 4,
+    projectSize: 120,
+    showLogo: true,
+    withAnimations: true,
+    modelPath: "/images/3d/Eng",
+    modelType: "string",
+    modelModeColor: "#ffffff",
+  }
+);
 
 const emit = defineEmits(["hover-enter", "hover-leave"]);
 const { locale } = useI18n();
@@ -119,12 +141,14 @@ const { locale } = useI18n();
 const contentRef = ref(null);
 useScrollAnimation(contentRef);
 
-function onEnter(e) {
-  const url = e.currentTarget.getAttribute("data-image-url");
+function onEnter(e: MouseEvent) {
+  const target = e.currentTarget as HTMLElement | null;
+  if (!target) return;
 
+  const url = target.getAttribute("data-image-url");
   if (!url) return;
 
-  const parent = e.currentTarget.closest(".center-part");
+  const parent = target.closest(".center-part");
   if (!parent) return;
 
   const pr = parent.getBoundingClientRect();
@@ -140,3 +164,16 @@ function onEnter(e) {
   });
 }
 </script>
+
+<style scoped>
+.page-content {
+  margin-top: var(--mt, 4rem);
+}
+.pc-hero-grid {
+  padding: 0 var(--px, 1rem);
+}
+.pc-project-px {
+  padding-right: var(--ppx, 4rem);
+  padding-left: var(--ppx, 4rem);
+}
+</style>

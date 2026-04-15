@@ -32,6 +32,10 @@
   --border-color: #ffffff;
   /*  */
   --main-color: #54ea62;
+  --cursor-color: #54ea62;
+
+  --team-line-height: 340px;
+  --team-space: 23rem;
 }
 
 /* ══════════════════════════════════════════════
@@ -51,20 +55,29 @@
 /* ══════════════════════════════════════════════
    SMOOTH THEME TRANSITION — global
 ══════════════════════════════════════════════ */
-*,
-*::before,
-*::after {
+a,
+button,
+input,
+textarea,
+select,
+[class*="nav-"],
+[class*="link"],
+.social-icon,
+.project-card,
+.project-item,
+.team-photo-wrapper,
+.team-initials-wrapper {
   transition:
     background-color 0.25s ease,
     color 0.2s ease,
     border-color 0.2s ease;
 }
-
 /* ══════════════════════════════════════════════
    FONT PER LOCALE
 ══════════════════════════════════════════════ */
 html.font-en {
-  font-family: "Roboto", system-ui, sans-serif;
+  /* font-family: "Roboto", system-ui, sans-serif; */
+  font-family: "Funnel Display", sans-serif;
 }
 html.font-ar {
   font-family: "Rubik", system-ui, sans-serif;
@@ -88,7 +101,14 @@ html.has-scroll-smooth {
   font-family: "Rubik", system-ui, sans-serif;
 }
 .font-en {
-  font-family: "Roboto", system-ui, sans-serif;
+  /* font-family: "Roboto", system-ui, sans-serif; */
+  font-family: "Funnel Display", sans-serif;
+}
+.text-primary {
+  color: var(--main-color);
+}
+.border-primary {
+  border-color: var(--main-color);
 }
 
 /* ══════════════════════════════════════════════
@@ -107,20 +127,38 @@ html.has-scroll-smooth {
 .white-link-sm:hover {
   @apply text-[var(--main-color)] hover:[text-shadow:0.5px_0_0_var(--main-color),-0.5px_0_0_var(--main-color),0_0_0.5px_var(--main-color)];
 }
+.white-link-sm.active {
+  @apply text-[var(--main-color)];
+}
+.primary-link {
+  @apply text-[var(--main-color)] transition-all duration-500 ease-in-out;
+}
 
 .nav-hover {
   transition:
     transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-    letter-spacing 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    letter-spacing 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-origin: center center;
 }
 .nav-hover:hover {
   transform: scale(1.15);
   letter-spacing: 2px;
+  color: var(--main-color);
 }
 
 .dark-border {
   border-color: var(--border-color);
+}
+
+.team-line {
+  @apply hidden lg:block absolute top-0 ltr:right-[var(--team-space)] rtl:left-[var(--team-space)] w-[0.3px] h-[var(--team-line-height)] bg-white;
+}
+.team-line::after {
+  content: "";
+  @apply absolute w-[0.3px] h-[var(--team-line-height)] bg-white ltr:left-[8.7rem] rtl:right-[8.7rem];
+  top: calc(var(--team-line-height) - 72px);
+  transform: rotate(-55deg);
 }
 
 @layer base {

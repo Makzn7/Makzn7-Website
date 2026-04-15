@@ -8,12 +8,14 @@ const { scrollContainer, lockPageScroll, unlockPageScroll } =
   usePageScrollShell();
 useGsapReveal();
 
+const { t } = useI18n();
+
 useHead({
   title: "Makzn7 - About",
   meta: [
     {
       name: "description",
-      content: "Makzn7 – production design & prop house.",
+      content: () => t("meta.description"),
     },
   ],
 });

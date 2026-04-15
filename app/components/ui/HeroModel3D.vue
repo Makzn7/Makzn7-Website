@@ -1,8 +1,3 @@
-<!-- HeroModel3D — renders GLTF with a hover-tilt effect
-     Model is static when not hovered.
-     Hover right → right side comes forward, left leans back  (rotateY positive)
-     Hover left  → left side comes forward, right leans back  (rotateY negative)
--->
 <template>
   <div
     ref="containerRef"
@@ -10,16 +5,23 @@
     @mousemove="onMouseMove"
     @mouseleave="onMouseLeave"
   >
-    <canvas ref="canvasRef" class="hero-model-canvas" />
+    <canvas ref="canvasRef" class="hero-model-canvas"></canvas>
 
     <!-- Loading indicator -->
     <Transition name="fade">
-      <div v-if="loading" class="hero-model-loading">
+      <div v-if="loading && !loadError" class="hero-model-loading">
         <span class="loading-dot" />
         <span class="loading-dot" />
         <span class="loading-dot" />
       </div>
     </Transition>
+
+    <!-- Error fallback -->
+    <div v-if="loadError" class="hero-model-error">
+      <span class="text-brand-text/30 text-xs uppercase tracking-wider"
+        >3D</span
+      >
+    </div>
   </div>
 </template>
 
@@ -41,9 +43,10 @@ const props = defineProps({
 });
 
 /* ── refs ── */
-const containerRef = ref(null);
-const canvasRef = ref(null);
+const containerRef = (ref < HTMLDivElement) | (null > null);
+const canvasRef = (ref < HTMLCanvasElement) | (null > null);
 const loading = ref(true);
+const loadError = ref(false);
 
 /* ── Three.js state ── */
 let renderer = null;
@@ -140,11 +143,13 @@ async function init() {
       (err) => {
         console.error("[HeroModel3D] Failed to load model:", err);
         loading.value = false;
+        loadError.value = true;
       }
     );
   } catch (err) {
     console.error("[HeroModel3D] Unexpected error:", err);
     loading.value = false;
+    loadError.value = true;
   }
 
   /* ── Render loop ── */
@@ -269,6 +274,16 @@ onUnmounted(() => {
     opacity: 1;
     transform: scale(1.2);
   }
+}
+
+/* Error fallback */
+.hero-model-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 /* Fade transition for loading overlay */

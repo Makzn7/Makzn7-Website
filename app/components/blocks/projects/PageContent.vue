@@ -7,6 +7,7 @@
         :margin-s="marginS"
         :filters="filters"
         :active-filters="activeFilters"
+        @toggle-filter="toggleFilter"
       />
       <!-- Projects List -->
       <section>
@@ -45,4 +46,9 @@ const props = defineProps({
     default: () => [],
   },
 });
+
+const emit = defineEmits(["toggle-filter"]);
+const toggleFilter = (filter) => {
+  emit("toggle-filter", filter);
+};
 </script>

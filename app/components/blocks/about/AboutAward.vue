@@ -11,9 +11,9 @@
         py - 2
       }rem; padding-bottom: ${py - 2}rem;`"
     >
-      <div v-for="(award, i) in awards" :key="i" class="flex flex-col">
+      <div v-for="(award, i) in awards" :key="i" class="flex flex-col mb-12">
         <h2
-          class="font-semibold uppercase italic"
+          class="font-bold"
           :style="`font-size: clamp(${Math.max(
             18,
             Math.round(yearS * 0.35)
@@ -22,7 +22,7 @@
           {{ award.year }}
         </h2>
         <h3
-          class="uppercase font-light italic max-w-screen-sm leading-[1.2]"
+          class="font-light max-w-screen-md leading-[1.2]"
           :style="`font-size: clamp(${Math.max(
             18,
             Math.round(nameS * 0.35)
@@ -34,10 +34,13 @@
           :src="award.image"
           class="w-full h-auto object-cover mt-12"
           :alt="award.title_en"
+          loading="lazy"
         />
         <img
-          :src="award.image_3d ?? ''"
+          v-if="award.image_3d"
+          :src="award.image_3d"
           :alt="award.title_en"
+          loading="lazy"
           class="absolute end-48 -top-36 w-60 h-auto object-contain"
         />
       </div>
@@ -54,9 +57,9 @@ const { locale } = useI18n();
 const props = defineProps({
   marginS: { type: Number, default: 140 },
   descSize: { type: Number, default: 37 },
-  titleS: { type: Number, default: 130 },
-  yearS: { type: Number, default: 85 },
-  nameS: { type: Number, default: 68 },
+  titleS: { type: Number, default: 110 },
+  yearS: { type: Number, default: 80 },
+  nameS: { type: Number, default: 50 },
   py: { type: Number, default: 4 },
   awards: {
     type: Array as () => Award[],

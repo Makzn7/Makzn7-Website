@@ -1,5 +1,9 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import type {
+  LocomotiveScrollInstance,
+  LocomotiveScrollConstructor,
+} from "~/types/scroll";
 
 interface ScrollShellOptions {
   lerp?: number;
@@ -10,15 +14,14 @@ export function usePageScrollShell(options: ScrollShellOptions = {}) {
   const { lerp = 0.08, multiplier = 1 } = options;
 
   const scrollContainer = ref<HTMLElement | null>(null);
-  // LocomotiveScroll v5 instance — untyped because the library
-  // doesn't export a usable TS interface for its constructor options.
-  let scroll: any = null;
+  let scroll: LocomotiveScrollInstance | null = null;
 
   onMounted(async () => {
     const { $LocomotiveScroll } = useNuxtApp();
 
     if (scrollContainer.value) {
-      scroll = new ($LocomotiveScroll as any)({
+      const LS = $LocomotiveScroll as LocomotiveScrollConstructor;
+      scroll = new LS({
         el: scrollContainer.value,
         smooth: true,
         lerp,

@@ -1,9 +1,14 @@
 <!-- ContactSection -->
 <template>
-  <section ref="sectionRef" class="home-contact bg-black text-white">
+  <section
+    ref="sectionRef"
+    class="home-contact text-white"
+    :style="`background-color: ${bgColor};`"
+  >
     <div class="flex">
       <div
-        class="border-e-[0.3px] dark-border"
+        class="border-e-[0.3px]"
+        :class="borderClasses"
         style="width: calc(var(--railW) + 3.5px)"
       ></div>
       <div class="w-full mx-auto grid grid-cols-1 gap-12 py-16 px-28">
@@ -11,8 +16,11 @@
         <div class="flex flex-col justify-between items-start space-y-12">
           <!-- Title -->
           <h2
-            class="text-[38px] sm:text-[50px] md:text-[65px] lg:text-[80px] xl:text-[90px] 2xl:text-[103px] font-light italic uppercase leading-none fade-in"
-            style="animation-delay: 0s"
+            class="font-light leading-none fade-in tracking-[-2.06px]"
+            :style="`animation-delay: 0s; font-size: clamp(${Math.max(
+              16,
+              Math.round(103 * 0.35)
+            )}px, ${(103 / 15.36).toFixed(1)}vw, ${103}px);`"
           >
             {{ $t("home.contactTitle") }}
           </h2>
@@ -26,7 +34,11 @@
           <!-- Options + Year -->
           <div class="col-span-3 flex flex-col justify-between gap-6">
             <div class="flex flex-col w-full gap-2 justify-start items-start">
-              <button id="toggle-theme-mode" @click="toggleTheme">
+              <button
+                v-if="showTheme"
+                id="toggle-theme-mode"
+                @click="toggleTheme"
+              >
                 <img src="/icons/general/Artboard1.svg" width="30" />
               </button>
               <button
@@ -163,6 +175,12 @@
 import { ref } from "vue";
 import { useScrollAnimation } from "~/composables/useScrollAnimation";
 import { settings } from "~/mocks/settings";
+
+const props = defineProps({
+  bgColor: { type: String, default: "#000000" },
+  showTheme: { type: Boolean, default: true },
+  borderClasses: { type: String, default: "border-white" },
+});
 
 const sectionRef = ref(null);
 useScrollAnimation(sectionRef);

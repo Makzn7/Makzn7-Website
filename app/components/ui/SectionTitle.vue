@@ -1,10 +1,10 @@
 <template>
   <div
-    class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-16 py-12"
+    class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-8 py-12"
     :style="`margin-inline-start: ${marginS}px;`"
   >
     <h1
-      class="uppercase italic font-light leading-[1.2] tracking-[0px]"
+      class="leading-[1.2] tracking-[0px]"
       :style="`font-size: clamp(${Math.max(
         40,
         Math.round(titleS * 0.35)

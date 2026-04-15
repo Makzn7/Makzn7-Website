@@ -38,7 +38,8 @@
             >
               <img
                 :src="team.photo"
-                alt="Team Member Image"
+                :alt="team.name"
+                loading="lazy"
                 class="w-full h-full object-cover grayscale"
               />
               <div
@@ -63,7 +64,7 @@
 
             <div>
               <h3
-                class="font-semibold uppercase"
+                class="font-semibold"
                 :style="`font-size: clamp(${Math.max(
                   18,
                   Math.round(nameS * 0.35)
@@ -72,7 +73,7 @@
                 {{ team.name }}
               </h3>
               <p
-                class="font-light uppercase italic"
+                class="font-light"
                 :style="`font-size: clamp(${Math.max(
                   14,
                   Math.round(nameS * 0.35)
@@ -90,12 +91,12 @@
   </section>
 </template>
 <script setup lang="ts">
-import { Person } from "~/types/person";
+import type { Person } from "~/types/person";
 import SectionTitle from "../../ui/SectionTitle.vue";
 const props = defineProps({
   marginS: { type: Number, default: 140 },
-  descSize: { type: Number, default: 37 },
-  titleS: { type: Number, default: 130 },
+  descSize: { type: Number, default: 28 },
+  titleS: { type: Number, default: 110 },
   nameS: { type: Number, default: 24 },
   teams: {
     type: Array as () => Person[],
@@ -112,18 +113,3 @@ const getInitials = (name: string): string[] => {
     .map((part) => part.charAt(0).toUpperCase());
 };
 </script>
-<style>
-:root {
-  --team-line-height: 300px;
-  --team-space: 14rem;
-}
-.team-line {
-  @apply hidden lg:block absolute top-0 ltr:right-[var(--team-space)] rtl:left-[var(--team-space)] w-[0.3px] h-[var(--team-line-height)] bg-white;
-}
-.team-line::after {
-  content: "";
-  @apply absolute w-[0.3px] h-[var(--team-line-height)] bg-white ltr:left-[123px] rtl:right-[123px];
-  top: calc(var(--team-line-height) - 64px);
-  transform: rotate(-55deg);
-}
-</style>

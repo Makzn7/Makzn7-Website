@@ -20,24 +20,34 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
+import type { Project } from "~/types/project";
 
-const props = defineProps({
-  projects: { type: Array, required: true },
-  itemHeight: { type: Number, default: 96 },
-  showHover: { type: Boolean, default: false },
-});
+const props = withDefaults(
+  defineProps<{
+    projects: Project[];
+    itemHeight?: number;
+    showHover?: boolean;
+  }>(),
+  {
+    itemHeight: 96,
+    showHover: false,
+  }
+);
 
 const emit = defineEmits(["hover-enter", "hover-leave"]);
 const { locale } = useI18n();
 
-function onEnter(e, project) {
-  const url = e.currentTarget.getAttribute("data-image-url");
+function onEnter(e: MouseEvent, project: Project) {
+  const target = e.currentTarget as HTMLElement | null;
+  if (!target) return;
+
+  const url = target.getAttribute("data-image-url");
   if (!url) return;
 
   // موضع عشوائي داخل center-part
-  const parent = e.currentTarget.closest(".center-part");
+  const parent = target.closest(".center-part");
   if (!parent) return;
   const pr = parent.getBoundingClientRect();
   const maxX = pr.width - 200;

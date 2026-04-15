@@ -26,18 +26,17 @@
           :titleS="titleS"
         />
         <div
-          class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-12 py-16"
+          class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-8 py-16"
           :style="`margin-inline-start: ${marginS}px;`"
         >
-          <p
-            class="font-light leading-[1.45] tracking-[0px] pe-28"
+          <div
+            class="font-light tracking-[0px] pe-[8rem]"
             :style="`font-size: clamp(${Math.max(
               16,
               Math.round(descSize * 0.35)
             )}px, ${(descSize / 20).toFixed(1)}vw, ${descSize}px);`"
-          >
-            {{ $t("about.aboutDescription") }}
-          </p>
+            v-html="$t('about.aboutDescription')"
+          ></div>
         </div>
       </section>
       <!-- Services -->
@@ -48,18 +47,17 @@
           :titleS="titleS"
         ></SectionTitle>
         <div
-          class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-12 py-16"
+          class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-8 py-16"
           :style="`margin-inline-start: ${marginS}px;`"
         >
-          <p
-            class="font-light leading-[1.45] tracking-[0px] pe-28"
+          <div
+            class="font-light tracking-[0px] pe-[8rem]"
             :style="`font-size: clamp(${Math.max(
               16,
               Math.round(descSize * 0.35)
             )}px, ${(descSize / 20).toFixed(1)}vw, ${descSize}px);`"
-          >
-            {{ $t("about.servicesDescription") }}
-          </p>
+            v-html="$t('about.servicesDescription')"
+          ></div>
         </div>
       </section>
       <!-- Team -->
@@ -86,27 +84,37 @@
     ></div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import AboutTeam from "./AboutTeam.vue";
 import AboutAward from "./AboutAward.vue";
 import SectionTitle from "../../ui/SectionTitle.vue";
+import type { Person } from "~/types/person";
+import type { Award } from "~/types/award";
 
-const props = defineProps({
-  marginTop: { type: Number, default: 4 },
-  marginS: { type: Number, default: 140 },
-  px: { type: Number, default: 1 },
-  imageW: { type: Number, default: 100 },
-  titleS: { type: Number, default: 130 },
-  descSize: { type: Number, default: 37 },
-  teams: {
-    type: Array,
-    default: () => [],
-  },
-  awards: {
-    type: Array,
-    default: () => [],
-  },
-  py: { type: Number, default: 4 },
-  marginB: { type: Number, default: 2 },
-});
+const props = withDefaults(
+  defineProps<{
+    marginTop?: number;
+    marginS?: number;
+    px?: number;
+    imageW?: number;
+    titleS?: number;
+    descSize?: number;
+    teams?: Person[];
+    awards?: Award[];
+    py?: number;
+    marginB?: number;
+  }>(),
+  {
+    marginTop: 4,
+    marginS: 140,
+    px: 1,
+    imageW: 100,
+    titleS: 110,
+    descSize: 30,
+    teams: () => [],
+    awards: () => [],
+    py: 4,
+    marginB: 2,
+  }
+);
 </script>

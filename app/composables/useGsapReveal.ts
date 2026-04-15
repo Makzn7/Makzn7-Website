@@ -20,7 +20,7 @@ export function useGsapReveal(options: RevealOptions = {}) {
     start = "top 85%",
   } = options;
 
-  const { locale } = useI18n();
+  const { locale } = useI18n({ useScope: 'global' });
 
   onMounted(() => {
     const isRTL = locale.value === "ar";

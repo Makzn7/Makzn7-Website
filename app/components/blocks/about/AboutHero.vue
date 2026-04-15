@@ -1,7 +1,7 @@
 <!-- HomeHero2 -->
 <template>
   <div class="app-container relative dark bg-brand-bg">
-    <div class="absolute logo-image p-4">
+    <div class="absolute logo-image p-4 rtl:right-[var(--railW)]">
       <NuxtLink to="/">
         <img
           src="/logos/svg/logo_black.svg"
@@ -26,8 +26,8 @@
               :px="0"
               :margin-s="113"
               :image-w="73"
-              :title-s="129"
-              :desc-size="35.5"
+              :title-s="109"
+              :desc-size="28.5"
               :teams="teams"
               :awards="awards"
               :py="6"
@@ -55,8 +55,8 @@
               :px="0"
               :margin-s="115"
               :image-w="70"
-              :title-s="129"
-              :desc-size="35.5"
+              :title-s="109"
+              :desc-size="28.5"
               :teams="teams"
               :awards="awards"
               :py="6"

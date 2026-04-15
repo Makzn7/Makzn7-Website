@@ -36,6 +36,9 @@
     "headerMessageLine1": "We Transform Scripts",
     "headerMessageLine2": "Into Reality"
   },
+  "meta": {
+    "description": "Makzn7 – production design & prop house."
+  },
   "errors": {},
   "validation": {
     "name": {
@@ -54,7 +57,7 @@
     "cr": "CR"
   },
   "home": {
-    "aboutTitle": "About",
+    "aboutTitle": "About Us",
     "aboutDescription": "Makzn 7 is a comprehensive film design services company founded in 2020. It functions as a hub for facilities such as a film design house, a prop house, a wardrobe studio, and a construction workshop. And covers all aspects of art both on and off screen; from concept, research, design, construction, and location prep.",
     "contactTitle": "Contact Us",
     "heroDescription": "A comprehensive film design services company founded in 2020. It functions as a hub for facilities such as a film design house, a prop house, a wardrobe studio, and a construction workshop."
@@ -66,6 +69,14 @@
     "servicesDescription": "Makzn 7 design house offers a wide range of services, including consultation, comprehensive design solutions, and production design. The expert teams at Makzn7 comprise highly skilled local professionals who uphold exceptional international standards to deliver top-quality solutions effortlessly. With a deep understanding of cultural nuances and extensive local knowledge, Makzn7 consistently exceeds expectations in providing innovative and culturally relevant to support film, television, theater, commercials, and other creative projects. from set design, art Direction, props design, Costume Design, and graphic design.",
     "teamTitle": "Team",
     "awardsTitle": "Awards"
+  },
+  "mansj": {
+    "aboutTitle": "About Mansj",
+    "aboutDescription": "Mansaj is a design house for Cinematic Costumes and Styling for film and media appearance content provided by the highest local expertise in the industry with an authentic cultural knowledge and experience.",
+    "servicesTitle": "Services",
+    "servicesDescription": "Mansj provide exceptional wardrobe design and styling services to the film industry, combining artistic creativity with technicalexpertise to bring characters to life and elevate the visual storytelling experience, from ccostume design to styling to cosultancy and warehouse rentals.",
+    "teamTitle": "Team",
+    "showProject": "BROWSE MANSJ PROJECTS"
   },
   "team": {
     "title": "Our Team"

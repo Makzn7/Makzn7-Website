@@ -12,12 +12,14 @@ const { scrollContainer, lockPageScroll, unlockPageScroll } =
   usePageScrollShell();
 useGsapReveal();
 
+const { t } = useI18n();
+
 useHead({
   title: "Makzn7",
   meta: [
     {
       name: "description",
-      content: "Makzn7 – production design & prop house.",
+      content: () => t("meta.description"),
     },
   ],
 });
@@ -65,11 +67,7 @@ onMounted(async () => {
     />
   </div>
 
-  <div
-    ref="scrollContainer"
-    class="bg-brand-bg"
-    data-scroll-container
-  >
+  <div ref="scrollContainer" class="bg-brand-bg" data-scroll-container>
     <section class="sticky top-0 z-[1]" id="hero-section">
       <HomeHero
         @lock-page-scroll="lockPageScroll"
@@ -78,7 +76,7 @@ onMounted(async () => {
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>
       <HomeAbout />
-      <ContactSection />
+      <ContactSection border-classes="border-primary" />
     </section>
   </div>
 </template>
@@ -133,7 +131,8 @@ onMounted(async () => {
   /* يتحرك ويصغر تدريجياً */
   100% {
     opacity: 1;
-    transform: translate(var(--dx, -200px), var(--dy, -150px)) scale(var(--sc, 0.35));
+    transform: translate(var(--dx, -200px), var(--dy, -150px))
+      scale(var(--sc, 0.35));
   }
 }
 
@@ -143,7 +142,8 @@ onMounted(async () => {
 }
 
 @keyframes splashBgFade {
-  0%, 85% {
+  0%,
+  85% {
     opacity: 1;
     pointer-events: all;
   }
