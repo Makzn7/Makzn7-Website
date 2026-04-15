@@ -25,7 +25,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import gsap from "gsap";
 
@@ -43,8 +43,8 @@ const props = defineProps({
 });
 
 /* ── refs ── */
-const containerRef = (ref < HTMLDivElement) | (null > null);
-const canvasRef = (ref < HTMLCanvasElement) | (null > null);
+const containerRef = ref<HTMLDivElement | null>(null);
+const canvasRef = ref<HTMLCanvasElement | null>(null);
 const loading = ref(true);
 const loadError = ref(false);
 
@@ -61,7 +61,11 @@ let rafId = null;
 async function init() {
   const canvas = canvasRef.value;
   const container = containerRef.value;
-  if (!canvas || !container) return;
+  if (!canvas || !container) {
+    loading.value = false;
+    loadError.value = true;
+    return;
+  }
 
   /* Dynamically import Three.js (avoids SSR issues) */
   const THREE = await import("three");
@@ -163,10 +167,13 @@ async function init() {
 /* ══════════════════════════════════════════════
    MOUSE TILT
 ══════════════════════════════════════════════ */
-function onMouseMove(e) {
+function onMouseMove(e: MouseEvent) {
   if (!tiltGroup || loading.value) return;
 
-  const rect = containerRef.value.getBoundingClientRect();
+  const container = containerRef.value;
+  if (!container) return;
+
+  const rect = container.getBoundingClientRect();
   /* Normalise: -1 (left/top) → +1 (right/bottom) */
   const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
   const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
@@ -218,7 +225,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  cancelAnimationFrame(rafId);
+  if (rafId) cancelAnimationFrame(rafId);
   renderer?.dispose();
   window.removeEventListener("resize", onResize);
 });
