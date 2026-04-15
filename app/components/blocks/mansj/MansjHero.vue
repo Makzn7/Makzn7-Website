@@ -3,7 +3,7 @@
   <div class="app-container relative dark bg-[#0A305A]">
     <div class="absolute logo-image py-4 px-6 rtl:right-[var(--railW)]">
       <NuxtLink to="#">
-        <img src="/logos/departments/mansj.svg" width="100" alt="Mansaj" />
+        <img src="/logos/departments/Mansj.svg" width="100" alt="Mansaj" />
       </NuxtLink>
     </div>
     <div class="top-section w-full h-full cursor-none">
