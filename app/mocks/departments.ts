@@ -18,6 +18,6 @@ export const departments: Department[] = [
     id: 4,
     slug: "prophouse",
     name: "Prop House",
-    heroImage: "/logos/departments/PropHouse.svg",
+    heroImage: "/logos/departments/Prophouse.svg",
   },
 ];
