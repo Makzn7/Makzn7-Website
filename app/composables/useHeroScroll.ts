@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, type Ref } from "vue";
+import { onMounted, onUnmounted, nextTick, type Ref } from "vue";
 
 interface HeroScrollRefs {
   centerBoxRef: Ref<HTMLElement | null>;
@@ -26,6 +26,52 @@ export function useHeroScroll(
   let rafId: number | null = null;
   let pageScrollLocked = false;
   let ty = 0;
+  let resizeObserver: ResizeObserver | null = null;
+  const observedImages = new Set<HTMLImageElement>();
+
+  function measureScrollLimits() {
+    const box = refs.centerBoxRef.value;
+    if (!box) return;
+
+    railH =
+      parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue("--railH")
+      ) || 60;
+
+    const wallH = Math.max(0, box.offsetHeight - 2 * railH);
+    const contentH = refs.wallRef.value?.scrollHeight || 0;
+    maxScroll = Math.max(0, contentH - wallH);
+
+    targetScroll = Math.min(targetScroll, maxScroll);
+    scrollPos = Math.min(scrollPos, maxScroll);
+  }
+
+  function onImageLoad() {
+    measureScrollLimits();
+  }
+
+  function syncImageListeners() {
+    const wall = refs.wallRef.value;
+    if (!wall) return;
+
+    const currentImages = new Set(
+      Array.from(wall.querySelectorAll("img")) as HTMLImageElement[]
+    );
+
+    observedImages.forEach((img) => {
+      if (currentImages.has(img)) return;
+      img.removeEventListener("load", onImageLoad);
+      img.removeEventListener("error", onImageLoad);
+      observedImages.delete(img);
+    });
+
+    currentImages.forEach((img) => {
+      if (observedImages.has(img)) return;
+      observedImages.add(img);
+      img.addEventListener("load", onImageLoad);
+      img.addEventListener("error", onImageLoad);
+    });
+  }
 
   function syncPageScrollLock(shouldLock: boolean) {
     if (pageScrollLocked === shouldLock) return;
@@ -112,20 +158,28 @@ export function useHeroScroll(
 
   onMounted(() => {
     const box = refs.centerBoxRef.value;
-    if (!box) return;
-
-    railH =
-      parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue("--railH")
-      ) || 60;
-
-    const wallH = box.offsetHeight - 2 * railH;
-    const contentH = refs.wallRef.value?.scrollHeight || 0;
-    maxScroll = Math.max(0, contentH - wallH);
+    const wall = refs.wallRef.value;
+    if (!box || !wall) return;
 
     box.addEventListener("touchstart", onTouchStart, { passive: true });
     box.addEventListener("touchmove", onTouchMove, { passive: false });
     window.addEventListener("keydown", onKey);
+    window.addEventListener("resize", measureScrollLimits);
+
+    resizeObserver = new ResizeObserver(() => {
+      measureScrollLimits();
+      syncImageListeners();
+    });
+    resizeObserver.observe(box);
+    resizeObserver.observe(wall);
+
+    syncImageListeners();
+    nextTick(() => {
+      measureScrollLimits();
+      requestAnimationFrame(() => {
+        measureScrollLimits();
+      });
+    });
 
     loop();
   });
@@ -135,6 +189,13 @@ export function useHeroScroll(
     box?.removeEventListener("touchstart", onTouchStart);
     box?.removeEventListener("touchmove", onTouchMove);
     window.removeEventListener("keydown", onKey);
+    window.removeEventListener("resize", measureScrollLimits);
+    resizeObserver?.disconnect();
+    observedImages.forEach((img) => {
+      img.removeEventListener("load", onImageLoad);
+      img.removeEventListener("error", onImageLoad);
+    });
+    observedImages.clear();
     if (rafId) cancelAnimationFrame(rafId);
     syncPageScrollLock(false);
   });
