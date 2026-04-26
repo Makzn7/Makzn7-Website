@@ -12,7 +12,7 @@
       </NuxtLink>
     </div>
     <div class="top-section w-full h-full cursor-none">
-      <div class="left-box z-10">
+      <div class="left-box z-10 after:opacity-50 before:opacity-50">
         <LeftSideContent />
       </div>
 
@@ -32,14 +32,20 @@
               :awards="awards"
               :py="6"
               :marginB="2.5"
+              :pageDetails="makzn7Page"
             />
           </div>
         </div>
 
         <!-- ══ الجدار (center-part) ══ -->
-        <div class="center-part">
+        <div class="center-part border-white-op50">
           <div ref="wallRef" class="sync-content">
-            <PageContent :margin-top="0" :teams="teams" :awards="awards" />
+            <PageContent
+              :margin-top="0"
+              :teams="teams"
+              :awards="awards"
+              :pageDetails="makzn7Page"
+            />
           </div>
           <img
             ref="previewImgRef"
@@ -61,12 +67,13 @@
               :awards="awards"
               :py="6"
               :marginB="2.5"
+              :pageDetails="makzn7Page"
             />
           </div>
         </div>
       </div>
 
-      <div class="right-box z-10">
+      <div class="right-box z-10 after:opacity-50 before:opacity-50">
         <RightSideContent />
       </div>
     </div>
@@ -80,6 +87,7 @@ import LeftSideContent from "~/components/ui/LeftSideContent.vue";
 import RightSideContent from "~/components/ui/RightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
 import PageContent from "./PageContent.vue";
+import { makzn7Page } from "~/mocks/pages";
 
 const props = defineProps({
   teams: {

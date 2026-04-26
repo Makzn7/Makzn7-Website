@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative border-s-[0.3px] border-brand-text"
+    class="relative border-s-[0.3px] border-white-op50 border-brand-text"
     :style="`margin-inline-start: ${marginS}px; width: calc(100% - ${marginS}px);`"
   >
     <div class="grid grid-cols-3">

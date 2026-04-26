@@ -67,23 +67,38 @@ export const projects: Project[] = [
     },
     hoverMedia: {
       type: "image",
-      src: "https://picsum.photos/seed/hover1/400/300",
+      src: "/images/sample_project/pro1-1.jpg",
     },
     gallery: [
       {
         type: "image",
-        src: "https://picsum.photos/seed/aramco1/1920/1080",
+        src: "/images/sample_project/pro1-2.jpg",
         alt: "ARAMCO Founding Day scene 1",
       },
       {
         type: "image",
-        src: "https://picsum.photos/seed/aramco2/1920/1080",
+        src: "/images/sample_project/pro1-3.jpg",
         alt: "ARAMCO Founding Day scene 2",
       },
       {
         type: "image",
-        src: "https://picsum.photos/seed/aramco3/1920/1080",
+        src: "/images/sample_project/pro1-4.jpg",
         alt: "ARAMCO Founding Day scene 3",
+      },
+      {
+        type: "image",
+        src: "/images/sample_project/pro1-5.jpg",
+        alt: "ARAMCO Founding Day scene 4",
+      },
+      {
+        type: "image",
+        src: "/images/sample_project/pro1-6.png",
+        alt: "ARAMCO Founding Day scene 5",
+      },
+      {
+        type: "image",
+        src: "/images/sample_project/pro1-7.png",
+        alt: "ARAMCO Founding Day scene 6",
       },
     ],
     departments: [

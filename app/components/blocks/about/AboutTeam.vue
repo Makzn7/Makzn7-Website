@@ -4,9 +4,10 @@
       :title="$t('about.teamTitle')"
       :marginS="marginS"
       :titleS="titleS"
+      class="border-white-op50"
     />
     <div
-      class="w-full relative border-s-[0.3px] border-t-[0.3px] border-brand-text ps-12 pe-44"
+      class="w-full relative border-s-[0.3px] border-t-[0.3px] border-white-op50 border-brand-text ps-12 pe-44"
       :style="`margin-inline-start: ${marginS}px; padding-top: ${py}rem; padding-bottom: ${py}rem;`"
     >
       <div class="team-line"></div>
@@ -38,7 +39,7 @@
             >
               <img
                 :src="team.photo"
-                :alt="team.name"
+                :alt="team.name_en"
                 loading="lazy"
                 class="w-full h-full object-cover grayscale"
               />
@@ -53,7 +54,7 @@
               class="team-initials-wrapper group flex flex-col items-center justify-center w-full aspect-square"
             >
               <span
-                v-for="(letter, i) in getInitials(team.name)"
+                v-for="(letter, i) in getInitials(team.name_en)"
                 :key="i"
                 class="block uppercase font-bold leading-[1] transition-all duration-500 ease-in-out text-white group-hover:text-[var(--main-color)] group-hover:[text-shadow:2px_0_0_var(--main-color),-2px_0_0_var(--main-color),0_0_2px_var(--main-color)]"
                 :style="`font-size: clamp(60px, 8vw, 120px);`"
@@ -70,7 +71,7 @@
                   Math.round(nameS * 0.35)
                 )}px, ${(nameS / 20).toFixed(1)}vw, ${nameS}px);`"
               >
-                {{ team.name }}
+                {{ team.name_en }}
               </h3>
               <p
                 class="font-light"
@@ -81,7 +82,7 @@
                   1
                 )}vw, ${Math.round(nameS * 0.35)}px);`"
               >
-                {{ team.title }}
+                {{ team.title_en }}
               </p>
             </div>
           </div>

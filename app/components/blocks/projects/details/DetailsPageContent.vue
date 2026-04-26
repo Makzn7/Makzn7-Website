@@ -26,7 +26,9 @@
       </div>
 
       <!-- ══ Project Info ══ -->
-      <div class="info-section border-t-[0.3px] border-brand-text">
+      <div
+        class="info-section border-t-[0.3px] border-white-op50 border-brand-text"
+      >
         <!-- Row 1: Title + Type -->
         <div class="flex items-center justify-between gap-4 px-6 pt-5">
           <h1

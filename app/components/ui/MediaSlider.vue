@@ -6,11 +6,7 @@
         class="slider-track"
         :style="{ transform: `translateX(${-currentIndex * 100}%)` }"
       >
-        <div
-          v-for="(item, index) in items"
-          :key="index"
-          class="slider-slide"
-        >
+        <div v-for="(item, index) in items" :key="index" class="slider-slide">
           <!-- Image -->
           <img
             v-if="item.type === 'image'"
@@ -189,6 +185,7 @@ onUnmounted(() => {
   position: relative;
   width: 100%;
   overflow: hidden;
+  max-height: 65vh;
 }
 
 .slider-viewport {
@@ -205,6 +202,7 @@ onUnmounted(() => {
 .slider-slide {
   flex: 0 0 100%;
   width: 100%;
+  max-height: 65vh;
 }
 
 .slider-media {

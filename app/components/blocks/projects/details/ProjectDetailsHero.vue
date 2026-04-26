@@ -11,7 +11,7 @@
       </NuxtLink>
     </div>
     <div class="top-section w-full h-full cursor-none">
-      <div class="left-box z-10">
+      <div class="left-box z-10 after:opacity-50 before:opacity-50">
         <LeftSideContent />
       </div>
 
@@ -25,7 +25,7 @@
         </div>
 
         <!-- ══ الجدار (center-part) ══ -->
-        <div class="center-part">
+        <div class="center-part border-white-op50">
           <div ref="wallRef" class="sync-content">
             <DetailsPageContent :margin-top="0" :project="project" />
           </div>
@@ -43,7 +43,7 @@
         </div>
       </div>
 
-      <div class="right-box z-10">
+      <div class="right-box z-10 before:opacity-50 after:opacity-50">
         <RightSideContent />
       </div>
     </div>

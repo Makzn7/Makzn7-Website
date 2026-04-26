@@ -32,8 +32,14 @@
           style="animation-delay: 0.15s"
         >
           <!-- Options + Year -->
-          <div class="col-span-3 flex flex-col justify-between gap-6">
-            <div class="flex flex-col w-full gap-2 justify-start items-start">
+          <div class="col-span-2 flex flex-col justify-between gap-6">
+            <div
+              class="flex flex-col w-full gap-2 justify-start items-start"
+              :style="`font-size: clamp(${Math.max(
+                18,
+                Math.round(31 * 0.35)
+              )}px, ${(31 / 20).toFixed(1)}vw, ${31}px);`"
+            >
               <button
                 v-if="showTheme"
                 id="toggle-theme-mode"
@@ -57,20 +63,34 @@
             <div class="flex flex-col justify-start items-start gap-2">
               <NuxtLink
                 to="/privacy-policy"
-                class="white-link uppercase text-white text-[18px] sm:text-[24px] md:text-[30px] lg:text-[36px] xl:text-[39px] 2xl:text-[42px] leading-[1.2]"
+                class="white-link uppercase text-white leading-[1.2]"
+                :style="`font-size: clamp(${Math.max(
+                  18,
+                  Math.round(42 * 0.35)
+                )}px, ${(42 / 20).toFixed(1)}vw, ${42}px);`"
                 >{{ $t("buttons.privacyPolicy") }}</NuxtLink
               >
               <p
-                class="text-white font-light text-[20px] sm:text-[28px] md:text-[35px] lg:text-[42px] xl:text-[45px] 2xl:text-[49px] leading-[1.2]"
+                class="text-white font-light leading-[1.2]"
+                :style="`font-size: clamp(${Math.max(
+                  18,
+                  Math.round(49 * 0.35)
+                )}px, ${(49 / 20).toFixed(1)}vw, ${49}px);`"
               >
                 {{ new Date().getFullYear() }}
               </p>
             </div>
           </div>
           <!-- Contact Information List -->
-          <div class="col-span-2 text-lg flex flex-col justify-between gap-8">
+          <div
+            class="col-span-3 flex flex-col justify-between gap-8 font-extralight"
+            :style="`font-size: clamp(${Math.max(
+              18,
+              Math.round(37 * 0.35)
+            )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
+          >
             <!-- Email and Phone -->
-            <div class="flex flex-col font-light">
+            <div class="flex flex-col">
               <a
                 href="mailto:{{ settings.email }}"
                 class="white-link-sm font-en rtl:text-right"
@@ -88,7 +108,7 @@
             </div>
             <!-- Address -->
             <div class="space-y-1">
-              <p class="text-white font-light">
+              <p class="text-white">
                 {{
                   locale === "ar" ? settings.address_ar : settings.address_en
                 }}
@@ -96,10 +116,10 @@
             </div>
             <!-- VAT -->
             <div>
-              <p class="text-white font-light font-en rtl:text-right" dir="ltr">
+              <p class="text-white font-en rtl:text-right" dir="ltr">
                 {{ $t("contact.cr") }}: <bdi>{{ settings.cr_number }}</bdi>
               </p>
-              <p class="text-white font-light font-en rtl:text-right" dir="ltr">
+              <p class="text-white font-en rtl:text-right" dir="ltr">
                 {{ $t("contact.vat") }}: <bdi>{{ settings.vat_number }}</bdi>
               </p>
             </div>
@@ -119,7 +139,7 @@
             >
               <font-awesome-icon
                 icon="fa-brands fa-instagram"
-                style="width: 30px; height: 30px"
+                style="width: 40px; height: 40px"
               />
             </a>
 
@@ -133,7 +153,7 @@
             >
               <font-awesome-icon
                 icon="fa-brands fa-vimeo-v"
-                style="width: 30px; height: 30px"
+                style="width: 40px; height: 40px"
               />
             </a>
 
@@ -147,7 +167,7 @@
             >
               <font-awesome-icon
                 icon="fa-brands fa-linkedin-in"
-                style="width: 30px; height: 30px"
+                style="width: 40px; height: 40px"
               />
             </a>
 
@@ -161,7 +181,7 @@
             >
               <font-awesome-icon
                 icon="fa-brands fa-x-twitter"
-                style="width: 30px; height: 30px"
+                style="width: 40px; height: 40px"
               />
             </a>
           </div>

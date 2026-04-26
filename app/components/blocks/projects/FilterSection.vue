@@ -1,9 +1,11 @@
 <template>
   <div
-    class="w-full border-b-[0.3px] border-brand-text pe-[var(--railW)]"
+    class="w-full border-b-[0.3px] border-white-op50 border-brand-text pe-[var(--railW)]"
     :style="`padding-inline-start: ${marginS}px;`"
   >
-    <div class="flex justify-between items-start px-4 py-4 border-s-[0.3px]">
+    <div
+      class="flex justify-between items-start px-4 py-4 border-s-[0.3px] border-white-op50"
+    >
       <!-- كل مجموعة فلاتر حسب النوع -->
       <template v-for="(group, groupIndex) in groupedFilters" :key="groupIndex">
         <!-- إذا المجموعة أكثر من MAX_ROWS نقسمها لعدة أعمدة -->

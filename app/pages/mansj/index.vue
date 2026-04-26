@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ContactSection from "~/components/ui/ContactSection.vue";
 import MansjHero from "~/components/blocks/mansj/MansjHero.vue";
-import { team } from "~/mocks/mansjTeam";
+import { mansjTeam } from "~/mocks/team";
 
 const { scrollContainer, lockPageScroll, unlockPageScroll } =
   usePageScrollShell();
@@ -23,7 +23,7 @@ useHead({
 <template>
   <div
     ref="scrollContainer"
-    class="bg-[#0A305A]"
+    class="bg-[#0F2943]"
     style="--cursor-color: #ffffff"
     data-scroll-container
   >
@@ -31,7 +31,7 @@ useHead({
       <MansjHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"
-        :teams="team"
+        :teams="mansjTeam"
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>

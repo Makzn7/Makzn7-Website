@@ -73,7 +73,7 @@
         <div
           v-for="(project, index) in projects"
           :key="project.id"
-          class="content-item py-16 hover:underline transition-all duration-500 ease-in-out pc-project-px"
+          class="content-item py-16 transition-all duration-500 ease-in-out pc-project-px"
           :class="{ 'hover-item': showHover }"
           :data-image-url="project.hoverMedia?.src || project.heroMedia?.src"
           @mouseenter="showHover && onEnter($event)"
