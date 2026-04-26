@@ -9,7 +9,7 @@
       >{{ $t("nav.mansj") }}</NuxtLink
     >
     <NuxtLink
-      href="#"
+      to="/manjra"
       class="home-nav-link nav-hover [writing-mode:vertical-rl] cursor-none"
       >{{ $t("nav.manjra") }}</NuxtLink
     >

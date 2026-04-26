@@ -14,10 +14,16 @@
           :key="`${groupIndex}-${subIndex}`"
           class="flex flex-col gap-[5px] min-w-[100px] pe-6"
         >
+          <span
+            v-if="subIndex === 0"
+            class="font-light text-[14px] uppercase tracking-none text-brand-text/30 mb-0.5 whitespace-nowrap"
+          >
+            {{ $t(`filters.${group.type}`, group.type) }}:
+          </span>
           <button
             v-for="filter in subCol"
             :key="`${filter.type}-${filter.id}`"
-            class="white-link-sm text-start text-[13px] font-light uppercase leading-[1.45] transition-colors duration-200 whitespace-nowrap"
+            class="white-link-sm text-start text-[14px] font-light uppercase leading-[1.45] transition-colors duration-200 whitespace-nowrap"
             :class="
               isActive(filter)
                 ? 'active'
@@ -25,7 +31,7 @@
             "
             @click="$emit('toggle-filter', filter)"
           >
-            {{ filter.name }}
+            {{ locale === "ar" ? filter.name_ar : filter.name_en }}
           </button>
         </div>
       </template>
@@ -36,10 +42,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+const { locale } = useI18n();
+
 interface Filter {
   id: number | string;
   type: string;
-  name: string;
+  name_ar: string;
+  name_en: string;
   slug?: string;
 }
 

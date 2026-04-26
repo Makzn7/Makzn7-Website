@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import ManjraHero from "~/components/blocks/manjra/ManjraHero.vue";
 import ContactSection from "~/components/ui/ContactSection.vue";
-import MansjHero from "~/components/blocks/mansj/MansjHero.vue";
-import { mansjTeam } from "~/mocks/team";
+
+import { manjraTeam } from "~/mocks/team";
 
 const { scrollContainer, lockPageScroll, unlockPageScroll } =
   usePageScrollShell();
@@ -10,7 +11,7 @@ useGsapReveal();
 const { t } = useI18n();
 
 useHead({
-  title: "Mansaj - About",
+  title: "Manjra - About",
   meta: [
     {
       name: "description",
@@ -23,19 +24,19 @@ useHead({
 <template>
   <div
     ref="scrollContainer"
-    class="bg-[#0F2943]"
-    style="--cursor-color: #ffffff"
+    class="bg-[#D3C393]"
+    style="--cursor-color: #292b2c"
     data-scroll-container
   >
     <section class="sticky top-0 z-[1]" id="hero-section">
-      <MansjHero
+      <ManjraHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"
-        :teams="mansjTeam"
+        :teams="manjraTeam"
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>
-      <ContactSection bgColor="#0F2943" borderClasses="border-white-op50" />
+      <ContactSection borderClasses="border-white-op50" />
     </section>
   </div>
 </template>

@@ -126,7 +126,7 @@ html[dir="rtl"] .left-box {
   transform: translate(var(--railW), 0);
 }
 .center-box .center-part.border-white-op50 {
-  border-color: rgba(255, 255, 255, 0.5) !important;
+  border-color: var(--border-op-color, rgba(255, 255, 255, 0.5)) !important;
 }
 
 html[dir="rtl"] .center-box .center-part {

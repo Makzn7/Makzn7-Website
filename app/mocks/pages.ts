@@ -1,4 +1,4 @@
-import { mansjTeam, team } from "./team";
+import { team, mansjTeam, manjraTeam } from "./team";
 
 export const makzn7Page = {
   id: 1,
@@ -60,4 +60,41 @@ export const mansjPage = {
   ],
   teams: mansjTeam,
   buttonImage: "/images/pages/mansj/mansj-button.jpg",
+};
+
+export const manjraPage = {
+  id: 2,
+  sections: [
+    {
+      id: 1,
+      title_ar: "عن منجرة",
+      title_en: "About Manjra",
+      description_ar:
+        "منجرة، قسم من مكزن 7، هو ورشة بناء توفر خدمات بناء المشاهد وتصنيع الديكورات للإنتاجات السينمائية. مجهزة بالآلات والخبرات اللازمة، تقدم جودة عالية واهتمامًا بالتفاصيل في كل مشروع. التزامهم بالتميز والدقة يجعل منجرة خيارًا موثوقًا لصانعي الأفلام وشركات الإنتاج التي تبحث عن حلول بيئية موثوقة للأفلام.",
+      description_en:
+        "Manjra, a division of Makzn 7, is a construction workshop that provides set building, scene construction, and fabrication services for film productions. Equipped with the necessary machinery and expertise, they deliver top-quality craftsmanship and attention to detail in every project. Their commitment to excellence and precision makes Manjra a trusted choice for filmmakers and production companies seeking reliable film environment solutions.",
+      type: "text",
+    },
+    {
+      id: 2,
+      title_ar: null,
+      title_en: null,
+      description_ar: "",
+      description_en: "",
+      image: "/images/pages/manjra/manjra-top.jpg",
+      type: "image",
+    },
+    {
+      id: 3,
+      title_ar: "خدماتنا",
+      title_en: "Services",
+      description_ar:
+        "منجرة تقدم خدمات شاملة للإنتاج، متخصصة في بناء المشاهد والفن السينمائي والتصنيع، وتقدم بيئات مكتملة التنفيذ مصممة لتلبية الاحتياجات الإبداعية والتجارية. من الفكرة الأولية إلى التنفيذ النهائي، يجمع الفريق بين الدقة التقنية والحرفية الفنية لبناء مشاهد متينة وعالية الجودة تجلب الأفكار إلى الحياة.",
+      description_en:
+        "Our workshop offers comprehensive production services specializing in set construction, scenic art, and fabrication, delivering fully realized environments tailored to creative and commercial needs. From initial concept to final execution, the team combines technical precision with artistic craftsmanship to build durable, high-quality sets that bring ideas to life.",
+      type: "text",
+    },
+  ],
+  teams: manjraTeam,
+  buttonImage: "/images/pages/manjra/manjra-button.jpg",
 };

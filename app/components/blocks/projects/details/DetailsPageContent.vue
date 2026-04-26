@@ -29,7 +29,7 @@
       <div
         class="info-section border-t-[0.3px] border-white-op50 border-brand-text"
       >
-        <!-- Row 1: Title + Type -->
+        <!-- Row 1: Title -->
         <div class="flex items-center justify-between gap-4 px-6 pt-5">
           <h1
             class="font-semibold text-wrap"
@@ -42,79 +42,105 @@
           >
             {{ projectName }}
           </h1>
-          <span
-            v-if="projectType"
-            class="font-semibold whitespace-nowrap"
-            :style="`font-size: clamp(${Math.max(
-              14,
-              Math.round(props.typeSize * 0.5)
-            )}px, ${(props.typeSize / 19.36).toFixed(1)}vw, ${
-              props.typeSize
-            }px)`"
-          >
-            {{ projectType }}
-          </span>
         </div>
-
-        <!-- Row 2: Department Icons -->
-        <div
-          v-if="project.departments?.length"
-          class="flex items-center gap-3 px-6 py-3"
-        >
-          <div
-            v-for="dept in project.departments"
-            :key="dept.id"
-            class="ltr:pr-3 rtl:pl-3 py-2"
-          >
-            <img
-              :src="dept.heroImage ? dept.heroImage : getDepartmentIcon(dept)"
-              :alt="dept.name"
-              class="dept-icon"
-              :style="`width: ${props.iconSize}px; height: ${props.iconSize}px;`"
-            />
-          </div>
-        </div>
-
-        <!-- Row 3: Scopes + Year -->
-        <div class="flex items-center justify-between gap-4 px-6 mb-10">
-          <div v-if="project.scopes?.length" class="flex items-center">
+        <!-- Details -->
+        <div class="flex justify-between items-center gap-6 mb-12 px-6">
+          <!-- Row 2: Department + Scope -->
+          <div class="flex flex-col">
+            <!-- Department -->
             <div
-              v-for="(scope, index) in project.scopes"
-              class="flex flex-wrap"
-              :key="index"
+              v-if="project.departments?.length"
+              class="flex items-center gap-5"
             >
               <span
-                class="font-light uppercase"
                 :style="`font-size: clamp(${Math.max(
-                  11,
-                  Math.round(props.scopeSize * 0.5)
+                  16,
+                  Math.round(props.scopeSize * 0.35)
                 )}px, ${(props.scopeSize / 19.36).toFixed(1)}vw, ${
                   props.scopeSize
-                }px)`"
-                >{{ scope.name }}</span
+                }px);`"
+                class="uppercase font-light"
               >
-              <img
-                v-if="index < project.scopes.length - 1"
-                src="/icons/svg/green/3.svg"
-                height="35"
-                width="35"
-                alt=""
-              />
+                {{ $t("filters.departments") }}:
+              </span>
+              <div class="flex items-center gap-3">
+                <div
+                  v-for="dept in project.departments"
+                  :key="dept.id"
+                  class="ltr:pr-3 rtl:pl-3"
+                >
+                  <img
+                    :src="
+                      dept.heroImage ? dept.heroImage : getDepartmentIcon(dept)
+                    "
+                    :alt="dept.name_en"
+                    class="dept-icon"
+                    :style="`width: ${props.iconSize}px; height: ${props.iconSize}px;`"
+                  />
+                </div>
+              </div>
+            </div>
+            <!-- Scopes -->
+            <div v-if="project.scopes?.length" class="flex items-center">
+              <div
+                v-for="(scope, index) in project.scopes"
+                class="flex flex-wrap"
+                :key="index"
+              >
+                <span
+                  class="font-light uppercase"
+                  :style="`font-size: clamp(${Math.max(
+                    16,
+                    Math.round(props.scopeSize * 0.5)
+                  )}px, ${(props.scopeSize / 19.36).toFixed(1)}vw, ${
+                    props.scopeSize
+                  }px)`"
+                  >{{ locale === "ar" ? scope.name_ar : scope.name_en }}</span
+                >
+                <img
+                  v-if="index < project.scopes.length - 1"
+                  src="/icons/svg/green/3.svg"
+                  height="35"
+                  width="35"
+                  alt=""
+                />
+              </div>
             </div>
           </div>
-          <div v-if="project.year" class="flex flex-nowrap">
-            <img src="/icons/svg/white/1.svg" width="55" alt="" />
+          <!-- Row 3: Type + Year -->
+          <div class="flex items-center flex-col">
+            <!-- Type -->
             <span
-              class="font-semibold"
+              v-if="projectType"
+              class="font-semibold whitespace-nowrap self-end"
               :style="`font-size: clamp(${Math.max(
-                18,
-                Math.round(props.yearSize * 0.5)
-              )}px, ${(props.yearSize / 19.36).toFixed(1)}vw, ${
-                props.yearSize
+                16,
+                Math.round(props.typeSize * 0.5)
+              )}px, ${(props.typeSize / 19.36).toFixed(1)}vw, ${
+                props.typeSize
               }px)`"
             >
-              {{ project.year }}
+              {{ projectType }}
             </span>
+            <!-- Year -->
+            <div v-if="project.year" class="flex items-center">
+              <img
+                src="/icons/svg/white/1.svg"
+                class="w-[50px] h-[50px]"
+                alt=""
+              />
+              <span
+                class="font-semibold"
+                :style="`font-size: clamp(${Math.max(
+                  16,
+                  Math.round(props.yearSize * 0.5)
+                )}px, ${(props.yearSize / 19.36).toFixed(1)}vw, ${
+                  props.yearSize
+                }px)`"
+              >
+                {{ project.year }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -156,7 +182,7 @@ const props = withDefaults(
     marginTop: 4,
     project: null,
     titleSize: 63,
-    typeSize: 63,
+    typeSize: 41,
     iconSize: 42,
     scopeSize: 33,
     yearSize: 63,
@@ -169,9 +195,17 @@ const projectName = computed(() =>
   locale.value === "ar" ? props.project?.name_ar : props.project?.name_en
 );
 
-const projectType = computed(() => props.project?.types?.[0]?.name ?? "");
+const projectType = computed(() =>
+  locale.value === "ar"
+    ? props.project?.types?.[0]?.name_ar
+    : props.project?.types?.[0]?.name_en
+);
 
-const scopesDisplay = computed(() => props.project?.scopes ?? "");
+const scopesDisplay = computed(() =>
+  locale.value === "ar"
+    ? props.project?.scopes?.map((scope) => scope.name_ar).join(", ")
+    : props.project?.scopes?.map((scope) => scope.name_en).join(", ")
+);
 
 /** Build slider items: gallery first, fallback to heroMedia */
 const sliderItems = computed<Media[]>(() => {

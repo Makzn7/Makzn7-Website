@@ -107,7 +107,8 @@ const filters = [
   ...years.map((y, i) => ({
     type: "year",
     id: i + 1,
-    name: String(y),
+    name_ar: String(y),
+    name_en: String(y),
     slug: y,
   })),
   ...departments.map((d) => ({ type: "department", ...d })),

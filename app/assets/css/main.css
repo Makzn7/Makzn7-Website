@@ -152,7 +152,7 @@ html.has-scroll-smooth {
 }
 
 .border-white-op50 {
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: var(--border-op-color, rgba(255, 255, 255, 0.5));
 }
 
 .team-line {
@@ -168,20 +168,23 @@ html.has-scroll-smooth {
 .page-team-line {
   --team-space: 18rem;
   --team-line-height: 300px;
-  @apply hidden lg:block absolute top-0 ltr:right-[var(--team-space)] rtl:left-[var(--team-space)] w-[0.3px] h-[var(--team-line-height)] bg-white opacity-50;
+  @apply hidden lg:block absolute top-0 ltr:right-[var(--team-space)] rtl:left-[var(--team-space)] w-[0.3px] h-[var(--team-line-height)];
+  background-color: var(--border-op-color, rgba(255, 255, 255, 0.5));
 }
 .page-team-line::after {
   --team-space: 18rem;
   --team-line-height: 300px;
   content: "";
-  @apply absolute w-[0.3px] h-[var(--team-line-height)] bg-white ltr:left-[7.7rem] rtl:right-[7.7rem];
+  @apply absolute w-[0.3px] h-[var(--team-line-height)] ltr:left-[7.7rem] rtl:right-[7.7rem];
+  background-color: var(--border-op-color, rgba(255, 255, 255, 0.5));
   top: calc(var(--team-line-height) - 64px);
   transform: rotate(-55deg);
 }
 
 @layer base {
   .home-nav-link {
-    @apply text-brand-primary font-medium text-[16px] tracking-[0px] uppercase transition-all duration-500 ease-in-out;
+    @apply text-brand-primary font-extralight tracking-[0px] uppercase transition-all duration-500 ease-in-out;
+    font-size: clamp(16px, 0.9vw, 20px);
   }
   @screen 2xl {
     .home-nav-link {

@@ -1,9 +1,12 @@
 <!-- HomeHero2 -->
 <template>
-  <div class="app-container relative dark bg-[#0F2943]">
-    <div class="absolute logo-image py-4 px-6 rtl:right-[var(--railW)]">
+  <div
+    class="app-container relative dark bg-[#D3C393] text-[#292B2C]"
+    style="--color-primary: #292b2c; --border-op-color: rgba(41, 43, 44, 0.7)"
+  >
+    <div class="absolute logo-image pb-4 px-6 rtl:right-[var(--railW)]">
       <NuxtLink to="#">
-        <img src="/logos/departments/Mansj.svg" width="100" alt="Mansaj" />
+        <img src="/logos/departments/Manjra-Org.svg" width="100" alt="Manjra" />
       </NuxtLink>
     </div>
     <div class="top-section w-full h-full cursor-none">
@@ -26,8 +29,7 @@
               :teams="teams"
               :py="6"
               :marginB="2.5"
-              :pageDetails="mansjPage"
-              :clampRight="true"
+              :pageDetails="manjraPage"
             />
           </div>
         </div>
@@ -38,7 +40,7 @@
             <PageContent
               :margin-top="0"
               :teams="teams"
-              :pageDetails="mansjPage"
+              :pageDetails="manjraPage"
             />
           </div>
           <img
@@ -60,8 +62,7 @@
               :teams="teams"
               :py="6"
               :marginB="2.5"
-              :pageDetails="mansjPage"
-              :clampRight="true"
+              :pageDetails="manjraPage"
             />
           </div>
         </div>
@@ -81,7 +82,7 @@ import LeftSideContent from "~/components/ui/LeftSideContent.vue";
 import RightSideContent from "~/components/ui/RightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
 import PageContent from "./PageContent.vue";
-import { mansjPage } from "~/mocks/pages";
+import { manjraPage } from "~/mocks/pages";
 
 const props = defineProps({
   teams: {
@@ -123,6 +124,3 @@ function onHoverLeave() {
 }
 </script>
 
-<style>
-/* AboutHero uses base hero-scene.css styles — no overrides needed */
-</style>

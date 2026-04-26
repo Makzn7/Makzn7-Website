@@ -67,14 +67,22 @@
     "awardsTitle": "Awards"
   },
   "mansj": {
-    "aboutTitle": "About Mansj",
-    "aboutDescription": "Mansaj is a design house for Cinematic Costumes and Styling for film and media appearance content provided by the highest local expertise in the industry with an authentic cultural knowledge and experience.",
-    "servicesTitle": "Services",
-    "servicesDescription": "Mansj provide exceptional wardrobe design and styling services to the film industry, combining artistic creativity with technicalexpertise to bring characters to life and elevate the visual storytelling experience, from ccostume design to styling to cosultancy and warehouse rentals.",
     "teamTitle": "Team",
-    "showProject": "BROWSE MANSJ PROJECTS"
+    "showProjects": "Browse Mansj's Projects"
+  },
+  "manjra": {
+    "teamTitle": "Team",
+    "showProjects": "Browse Manjra’s Projects"
   },
   "team": {
     "title": "Our Team"
+  },
+  "filters": {
+    "year": "Year",
+    "department": "Department",
+    "type": "Type",
+    "scope": "Scope",
+    "scopes": "Scopes",
+    "departments": "Departments"
   }
 }
