@@ -33,7 +33,11 @@
               Math.round(37 * 0.35)
             )}px, ${(37 / 15.36).toFixed(1)}vw, ${37}px);`"
           >
-            {{ $t("home.aboutDescription") }}
+            {{
+              locale === "ar"
+                ? aboutData?.description_ar
+                : aboutData?.description_en
+            }}
           </p>
           <!-- discoverMore — appears earlier (delay 0.1s) -->
           <NuxtLink
@@ -57,9 +61,15 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import { useScrollAnimation } from "~/composables/useScrollAnimation";
+
+const props = defineProps<{
+  aboutData: any; // Replace 'any' with the actual type if available
+}>();
+
+const { locale } = useI18n();
 
 const sectionRef = ref(null);
 useScrollAnimation(sectionRef);

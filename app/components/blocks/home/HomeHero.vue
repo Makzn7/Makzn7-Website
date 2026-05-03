@@ -21,6 +21,7 @@
               :modelPath="modelPath"
               :modelType="modelType"
               :modelModeColor="modelModeColor"
+              :heroData="heroData"
             />
           </div>
         </div>
@@ -38,6 +39,7 @@
               :modelPath="modelPath"
               :modelType="modelType"
               :modelModeColor="modelModeColor"
+              :heroData="heroData"
             />
           </div>
           <img
@@ -58,6 +60,7 @@
               :modelPath="modelPath"
               :modelType="modelType"
               :modelModeColor="modelModeColor"
+              :heroData="heroData"
             />
           </div>
         </div>
@@ -71,21 +74,25 @@
   <CustomCursor />
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import LeftSideContent from "~/components/blocks/home/HomeHeroLeftSideContent.vue";
 import RightSideContent from "~/components/blocks/home/HomeHeroRightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
 import PageContent from "./PageContent.vue";
+import type { HomeResponse } from "~/types/homeResponse";
+
+const props = defineProps<{
+  homeData: HomeResponse | undefined | null;
+}>();
 
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
 const { locale } = useI18n();
 const colorMode = useColorMode();
 
-const { data: homeData } = useHome();
-
-const featuredProjects = computed(() => homeData.value?.projects ?? []);
-const hero3d = computed(() => homeData.value?.data?.hero_3d ?? null);
+const featuredProjects = computed(() => props.homeData?.projects ?? []);
+const hero3d = computed(() => props.homeData?.data?.hero_3d ?? null);
+const heroData = computed(() => props.homeData?.data?.hero ?? null);
 
 /* ── refs ── */
 const centerBoxRef = ref(null);

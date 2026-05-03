@@ -3,6 +3,10 @@ import HomeHero from "~/components/blocks/home/HomeHero.vue";
 import HomeAbout from "~/components/blocks/home/HomeAbout.vue";
 import ContactSection from "~/components/ui/ContactSection.vue";
 
+const { data: homeData } = useHome();
+
+const aboutData = computed(() => homeData.value?.data?.about ?? null);
+
 const splashRef = ref<HTMLElement | null>(null);
 const splashLogoRef = ref<HTMLElement | null>(null);
 const showSplash = ref(true);
@@ -72,10 +76,11 @@ onMounted(async () => {
       <HomeHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"
+        :homeData="homeData"
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>
-      <HomeAbout />
+      <HomeAbout :aboutData="aboutData" />
       <ContactSection border-classes="border-primary" />
     </section>
   </div>

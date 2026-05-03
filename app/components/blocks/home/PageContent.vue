@@ -33,7 +33,11 @@
             Math.round(descSize * 0.35)
           )}px, ${(descSize / 15.36).toFixed(1)}vw, ${descSize}px);`"
         >
-          {{ $t("home.heroDescription") }}
+          {{
+            locale === "ar"
+              ? heroData?.description_ar
+              : heroData?.description_en
+          }}
         </p>
       </div>
       <div class="relative image-3d-container">
@@ -119,6 +123,12 @@ const props = withDefaults(
     modelPath?: string;
     modelType?: string;
     modelModeColor?: string;
+    heroData?: {
+      title_ar: string;
+      title_en: string;
+      description_ar: string;
+      description_en: string;
+    } | null;
   }>(),
   {
     showHover: false,
@@ -132,6 +142,7 @@ const props = withDefaults(
     modelPath: "/images/3d/Eng",
     modelType: "string",
     modelModeColor: "#ffffff",
+    heroData: null,
   }
 );
 

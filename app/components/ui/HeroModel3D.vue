@@ -54,6 +54,7 @@ let scene = null;
 let camera = null;
 let tiltGroup = null; // mouse-driven tilt
 let rafId = null;
+let isMounted = false;
 
 /* ══════════════════════════════════════════════
    INIT
@@ -72,6 +73,9 @@ async function init() {
   const { GLTFLoader } = await import(
     "three/examples/jsm/loaders/GLTFLoader.js"
   );
+
+  /* Guard: component may have unmounted during async imports */
+  if (!isMounted) return;
 
   const w = container.offsetWidth;
   const h = container.offsetHeight;
@@ -117,6 +121,7 @@ async function init() {
     loader.load(
       props.modelPath,
       (gltf) => {
+        if (!isMounted) return;
         const model = gltf.scene;
 
         /* Center + normalise scale */
@@ -220,13 +225,23 @@ function onResize() {
    LIFECYCLE
 ══════════════════════════════════════════════ */
 onMounted(() => {
+  isMounted = true;
   init();
   window.addEventListener("resize", onResize);
 });
 
 onUnmounted(() => {
+  isMounted = false;
   if (rafId) cancelAnimationFrame(rafId);
-  renderer?.dispose();
+  if (renderer) {
+    renderer.forceContextLoss();
+    renderer.dispose();
+    renderer = null;
+  }
+  scene = null;
+  camera = null;
+  tiltGroup = null;
+  rafId = null;
   window.removeEventListener("resize", onResize);
 });
 </script>

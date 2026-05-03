@@ -14,4 +14,8 @@ export type HomeSettings = {
     mode_color?: string | null;
     mode_color_dark?: string | null;
   };
+  about: {
+    description_ar: string;
+    description_en: string;
+  };
 };
