@@ -54,7 +54,18 @@
     "address": "Riyadh, Saudi Arabia Thumama St, Al Sahafa Dist.",
     "phone": "(+966 55 038 1777)",
     "vat": "VAT",
-    "cr": "CR"
+    "cr": "CR",
+    "email": "Email",
+    "name": "Name",
+    "message": "Message",
+    "leftText1": "Let's",
+    "leftText2": "Work",
+    "leftText3": "Together!",
+    "submit": "Submit",
+    "success": "Your message has been sent successfully!",
+    "error": "An error occurred while sending your message. Please try again later.",
+    "contactSectionTitle": "Contact",
+    "goToLocation": "Go to Location"
   },
   "home": {
     "aboutTitle": "About Us",
@@ -74,6 +85,11 @@
     "teamTitle": "Team",
     "showProjects": "Browse Manjra’s Projects"
   },
+  "prophouse": {
+    "teamTitle": "Team",
+    "showProjects": "Browse PropHouse’s Projects",
+    "visitWebsite": "Visit PropHouse Website"
+  },
   "team": {
     "title": "Our Team"
   },
@@ -83,6 +99,10 @@
     "type": "Type",
     "scope": "Scope",
     "scopes": "Scopes",
-    "departments": "Departments"
+    "departments": "Departments",
+    "error": "Unable to load filters"
+  },
+  "projects": {
+    "empty": "No projects found"
   }
 }

@@ -26,11 +26,11 @@ useGsapReveal();
 const { t, locale } = useI18n();
 
 const route = useRoute();
-const project = ref<Project | null>(null);
 
+const id = route.params.id as string;
+
+const { data: project, pending: pendingProject } = useProject(id);
 // TODO: Fetch project data from an API or use a store instead of hardcoded data
-const id = Number.parseInt(route.params.id as string, 10);
-project.value = projects.find((p) => p.id === id) || null;
 
 const pageTitle = computed(() => {
   if (!project.value) return "Makzn7";

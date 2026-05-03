@@ -21,7 +21,7 @@
         </div>
       </div>
       <!-- Sections -->
-      <section v-for="(section, index) in pageDetails.sections" :key="index">
+      <section v-for="(section, index) in pageDetails?.sections" :key="index">
         <SectionTitle
           :title="locale === 'ar' ? section.title_ar : section.title_en"
           :marginS="marginS"
@@ -84,7 +84,6 @@ const props = withDefaults(
     imageW?: number;
     titleS?: number;
     descSize?: number;
-    teams?: Person[];
     awards?: Award[];
     py?: number;
     marginB?: number;
@@ -97,7 +96,6 @@ const props = withDefaults(
     imageW: 100,
     titleS: 110,
     descSize: 30,
-    teams: () => [],
     awards: () => [],
     py: 4,
     marginB: 2,

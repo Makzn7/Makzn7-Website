@@ -3,12 +3,33 @@
     class="w-full border-b-[0.3px] border-white-op50 border-brand-text pe-[var(--railW)]"
     :style="`padding-inline-start: ${marginS}px;`"
   >
+    <!-- Loading skeleton -->
     <div
+      v-if="loading"
+      class="flex items-start gap-8 px-4 py-4 border-s-[0.3px] border-white-op50"
+    >
+      <div v-for="i in 3" :key="i" class="flex flex-col gap-2">
+        <div class="h-2.5 w-16 rounded bg-white/10 animate-pulse" />
+        <div v-for="j in 4" :key="j" class="h-2.5 w-20 rounded bg-white/5 animate-pulse" />
+      </div>
+    </div>
+
+    <!-- Error state -->
+    <div
+      v-else-if="error"
+      class="flex px-4 py-4 border-s-[0.3px] border-white-op50"
+    >
+      <span class="text-brand-text/30 text-[12px] uppercase tracking-wider">
+        {{ $t("filters.error") }}
+      </span>
+    </div>
+
+    <!-- Filters -->
+    <div
+      v-else
       class="flex justify-between items-start px-4 py-4 border-s-[0.3px] border-white-op50"
     >
-      <!-- كل مجموعة فلاتر حسب النوع -->
       <template v-for="(group, groupIndex) in groupedFilters" :key="groupIndex">
-        <!-- إذا المجموعة أكثر من MAX_ROWS نقسمها لعدة أعمدة -->
         <div
           v-for="(subCol, subIndex) in splitGroup(group.items)"
           :key="`${groupIndex}-${subIndex}`"
@@ -49,7 +70,7 @@ interface Filter {
   type: string;
   name_ar: string;
   name_en: string;
-  slug?: string;
+  slug: string;
 }
 
 const props = withDefaults(
@@ -57,11 +78,15 @@ const props = withDefaults(
     marginS?: number;
     filters?: Filter[];
     activeFilters?: Filter[];
+    loading?: boolean;
+    error?: boolean;
   }>(),
   {
     marginS: 140,
     filters: () => [],
     activeFilters: () => [],
+    loading: false,
+    error: false,
   }
 );
 

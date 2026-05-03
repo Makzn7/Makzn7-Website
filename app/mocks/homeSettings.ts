@@ -10,7 +10,7 @@ export const homeSettings: HomeSettings = {
       "A comprehensive film design services company founded in 2020. It functions as a hub for facilities such as a film design house, a prop house, a wardrobe studio, and a construction workshop.",
   },
   hero_3d: {
-    type: "string",
+    type: "image",
     image_en: "/images/3d/EN_ALL_TEXT_NEW.gltf",
     image_ar: "/images/3d/ARB",
     image_dark_en: "/images/3d/EN_ALL_TEXT_NEW_DARK.gltf",

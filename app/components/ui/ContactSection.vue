@@ -26,8 +26,15 @@
           </h2>
         </div>
 
+        <!-- Loading skeleton -->
+        <div
+          v-if="pending"
+          class="h-48 animate-pulse rounded opacity-20 bg-white"
+        />
+
         <!-- Options + Contact Info + Social Media -->
         <div
+          v-else
           class="grid grid-cols-1 md:grid-cols-6 gap-16 lg:gap-16 fade-in-left"
           style="animation-delay: 0.15s"
         >
@@ -92,35 +99,35 @@
             <!-- Email and Phone -->
             <div class="flex flex-col">
               <a
-                href="mailto:{{ settings.email }}"
+                :href="`mailto:${settings?.email}`"
                 class="white-link-sm font-en rtl:text-right"
                 dir="ltr"
               >
-                {{ settings.email }}
+                {{ settings?.email }}
               </a>
               <a
-                :href="`tel:${settings.phone}`"
+                :href="`tel:${settings?.phone}`"
                 class="white-link-sm font-en rtl:text-right"
                 dir="ltr"
               >
-                ({{ settings.phone }})
+                ({{ settings?.phone }})
               </a>
             </div>
             <!-- Address -->
             <div class="space-y-1">
               <p class="text-white">
                 {{
-                  locale === "ar" ? settings.address_ar : settings.address_en
+                  locale === "ar" ? settings?.address_ar : settings?.address_en
                 }}
               </p>
             </div>
             <!-- VAT -->
             <div>
               <p class="text-white font-en rtl:text-right" dir="ltr">
-                {{ $t("contact.cr") }}: <bdi>{{ settings.cr_number }}</bdi>
+                {{ $t("contact.cr") }}: <bdi>{{ settings?.cr_number }}</bdi>
               </p>
               <p class="text-white font-en rtl:text-right" dir="ltr">
-                {{ $t("contact.vat") }}: <bdi>{{ settings.vat_number }}</bdi>
+                {{ $t("contact.vat") }}: <bdi>{{ settings?.vat_number }}</bdi>
               </p>
             </div>
           </div>
@@ -131,7 +138,7 @@
           >
             <!-- Instagram -->
             <a
-              :href="settings.social_links.instagram"
+              :href="settings?.social_links?.instagram"
               target="_blank"
               rel="noopener noreferrer"
               class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
@@ -145,7 +152,7 @@
 
             <!-- Vimeo -->
             <a
-              :href="settings.social_links.vimeo"
+              :href="settings?.social_links?.vimeo"
               target="_blank"
               rel="noopener noreferrer"
               class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
@@ -159,7 +166,7 @@
 
             <!-- LinkedIn -->
             <a
-              :href="settings.social_links.linkedin"
+              :href="settings?.social_links?.linkedin"
               target="_blank"
               rel="noopener noreferrer"
               class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
@@ -173,7 +180,7 @@
 
             <!-- X (Twitter) -->
             <a
-              :href="settings.social_links.twitter"
+              :href="settings?.social_links?.twitter"
               target="_blank"
               rel="noopener noreferrer"
               class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
@@ -194,7 +201,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useScrollAnimation } from "~/composables/useScrollAnimation";
-import { settings } from "~/mocks/settings";
+import { useSettings } from "~/composables/useSettings";
+
+const { data: settings, pending } = useSettings();
 
 const props = defineProps({
   bgColor: { type: String, default: "#000000" },

@@ -23,7 +23,6 @@
               :image-w="73"
               :title-s="109"
               :desc-size="28.5"
-              :teams="teams"
               :py="6"
               :marginB="2.5"
               :pageDetails="mansjPage"
@@ -35,11 +34,7 @@
         <!-- ══ الجدار (center-part) ══ -->
         <div class="center-part border-white-op50">
           <div ref="wallRef" class="sync-content">
-            <PageContent
-              :margin-top="0"
-              :teams="teams"
-              :pageDetails="mansjPage"
-            />
+            <PageContent :margin-top="0" :pageDetails="mansjPage" />
           </div>
           <img
             ref="previewImgRef"
@@ -57,7 +52,6 @@
               :image-w="70"
               :title-s="109"
               :desc-size="28.5"
-              :teams="teams"
               :py="6"
               :marginB="2.5"
               :pageDetails="mansjPage"
@@ -81,14 +75,9 @@ import LeftSideContent from "~/components/ui/LeftSideContent.vue";
 import RightSideContent from "~/components/ui/RightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
 import PageContent from "./PageContent.vue";
-import { mansjPage } from "~/mocks/pages";
 
-const props = defineProps({
-  teams: {
-    type: Array,
-    default: () => [],
-  },
-});
+const { data: mansjPage } = usePage("mansj");
+
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
 
 /* ── refs ── */

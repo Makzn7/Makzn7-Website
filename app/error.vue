@@ -16,18 +16,25 @@ function handleError() {
 <template>
   <div class="error-page">
     <div class="error-content">
-      <h1 class="error-code font-pixel text-brand-primary">
-        {{ statusCode }}
-      </h1>
-      <p class="error-message">
-        {{ isNotFound ? "Page not found" : "Something went wrong" }}
-      </p>
-      <button
-        class="error-button uppercase tracking-wider"
-        @click="handleError"
+      <h1
+        class="error-code"
+        :style="`font-size: clamp(${Math.max(80, Math.round(310 * 0.35))}px, ${(
+          310 / 20
+        ).toFixed(1)}vw, ${310}px);`"
       >
-        Home
-      </button>
+        <span class="bracket">(</span>
+        {{ statusCode }}
+        <span class="bracket">)</span>
+      </h1>
+      <p
+        class="font-en error-message font-light"
+        :style="`font-size: clamp(${Math.max(14, Math.round(35 * 0.35))}px, ${(
+          35 / 20
+        ).toFixed(1)}vw, ${35}px);`"
+      >
+        {{ isNotFound ? "Page not Found" : "Something went wrong" }}
+      </p>
+      <button class="font-en error-button" @click="handleError">Go Home</button>
     </div>
   </div>
 </template>
@@ -38,8 +45,8 @@ function handleError() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: #000000;
+  color: #ffffff;
 }
 
 .error-content {
@@ -47,30 +54,38 @@ function handleError() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .error-code {
-  font-size: clamp(80px, 15vw, 200px);
+  font-family: "DotGothic16", monospace;
   line-height: 1;
+  color: #ffffff;
+}
+
+.bracket {
+  font-family: "DotGothic16", monospace;
+  color: #ffffff;
 }
 
 .error-message {
-  font-size: clamp(16px, 2vw, 24px);
-  opacity: 0.6;
+  color: #ffffff;
+  letter-spacing: 0.05em;
 }
 
 .error-button {
-  margin-top: 1rem;
-  padding: 0.75rem 2rem;
-  border: 0.3px solid var(--color-text);
-  font-size: 14px;
-  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  padding: 0.75rem 2.5rem;
+  background-color: #54ea62;
+  border: 1px solid #54ea62;
+  color: #000000;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .error-button:hover {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-bg);
+  background-color: transparent;
+  color: #ffffff;
+  border-color: #ffffff;
 }
 </style>

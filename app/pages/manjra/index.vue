@@ -2,8 +2,6 @@
 import ManjraHero from "~/components/blocks/manjra/ManjraHero.vue";
 import ContactSection from "~/components/ui/ContactSection.vue";
 
-import { manjraTeam } from "~/mocks/team";
-
 const { scrollContainer, lockPageScroll, unlockPageScroll } =
   usePageScrollShell();
 useGsapReveal();
@@ -32,7 +30,6 @@ useHead({
       <ManjraHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"
-        :teams="manjraTeam"
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>

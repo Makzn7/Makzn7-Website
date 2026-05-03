@@ -102,7 +102,7 @@ const props = defineProps({
   titleS: { type: Number, default: 110 },
   nameS: { type: Number, default: 24 },
   teams: {
-    type: Array as () => Person[],
+    type: Array as () => Person[] | undefined | null,
     default: () => [],
   },
   py: { type: Number, default: 4 },

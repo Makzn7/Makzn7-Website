@@ -1,4 +1,4 @@
-import { team, mansjTeam, manjraTeam } from "./team";
+import { team, mansjTeam, manjraTeam, prophouseTeam } from "./team";
 
 export const makzn7Page = {
   id: 1,
@@ -97,4 +97,41 @@ export const manjraPage = {
   ],
   teams: manjraTeam,
   buttonImage: "/images/pages/manjra/manjra-button.jpg",
+};
+
+export const prophousePage = {
+  id: 2,
+  sections: [
+    {
+      id: 1,
+      title_ar: "عن بروب هاوس",
+      title_en: "About the PropHouse",
+      description_ar:
+        "بروب هاوس، قسم من مخزن 7، هو ورشة بناء توفر خدمات بناء المشاهد وتصنيع الديكورات للإنتاجات السينمائية. مجهزة بالآلات والخبرات اللازمة، تقدم جودة عالية واهتمامًا بالتفاصيل في كل مشروع. التزامهم بالتميز والدقة يجعل بروب هاوس خيارًا موثوقًا لصانعي الأفلام وشركات الإنتاج التي تبحث عن حلول بيئية موثوقة للأفلام.",
+      description_en:
+        "We provide top-quality prop and set services for filmmakers. From custom-designed props to period pieces, we craft and source everything you need to bring your vision to life. Whether for feature films, commercials, or indie projects.",
+      type: "text",
+    },
+    {
+      id: 2,
+      title_ar: null,
+      title_en: null,
+      description_ar: "",
+      description_en: "",
+      image: "/images/pages/prophouse/prophouse-top.jpg",
+      type: "image",
+    },
+    {
+      id: 3,
+      title_ar: "خدماتنا",
+      title_en: "Services",
+      description_ar:
+        "تصميم وتصنيع الدعائم المخصصة تأجير وتجهيز الدعائم إنشاء الدعائم الخاصة بالفترات الزمنية الدعائم للحركات البهلوانية إنشاء الدعائم الخيالية والتقليدية تعديل وإصلاح الأسلحة والدروع.",
+      description_en:
+        "Custom Prop Design & Fabrication Prop Sourcing & Rentals Period-specific Prop Creation Props for Stunts Replica & Fantasy Prop Creation Weapon & Armory Prop Modification & Repairs.",
+      type: "text",
+    },
+  ],
+  teams: prophouseTeam,
+  buttonImage: "/images/pages/prophouse/prophouse-button.jpg",
 };

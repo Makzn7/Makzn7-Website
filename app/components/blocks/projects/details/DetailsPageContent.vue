@@ -70,9 +70,7 @@
                   class="ltr:pr-3 rtl:pl-3"
                 >
                   <img
-                    :src="
-                      dept.heroImage ? dept.heroImage : getDepartmentIcon(dept)
-                    "
+                    :src="dept.hero_image"
                     :alt="dept.name_en"
                     class="dept-icon"
                     :style="`width: ${props.iconSize}px; height: ${props.iconSize}px;`"

@@ -252,3 +252,24 @@ export const manjraTeam: Person[] = [
     departmentIds: [2],
   },
 ];
+
+export const prophouseTeam: Person[] = [
+  {
+    id: 1,
+    name_ar: "محمد علاش",
+    name_en: "Mohammad Allash",
+    title_ar: "المدير الفني التنفيذي",
+    title_en: "Executive Technical Director",
+    photo: "/images/teams/Alallsh.jpg",
+    departmentIds: [2],
+  },
+  {
+    id: 2,
+    name_ar: "",
+    name_en: "Mohammed Gahaf",
+    title_ar: "",
+    title_en: "IT Manager/ Warehouse Supervisor",
+    photo: "/images/teams/Gahaf.png",
+    departmentIds: [1, 4],
+  },
+];

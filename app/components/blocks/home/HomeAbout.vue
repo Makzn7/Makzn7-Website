@@ -38,7 +38,7 @@
           <!-- discoverMore — appears earlier (delay 0.1s) -->
           <NuxtLink
             to="/about"
-            class="white-link flex items-center gap-6 uppercase text-white leading-[1.2] tracking-[2.28px] ms-auto fade-in-right"
+            class="white-link flex items-center gap-6 uppercase text-white leading-[1.2] tracking-tighter ms-auto fade-in-right"
             :style="`animation-delay: 0.1s; font-size: clamp(${Math.max(
               24,
               Math.round(57 * 0.35)

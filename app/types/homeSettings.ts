@@ -7,9 +7,11 @@ export type HomeSettings = {
   };
   hero_3d: {
     type: string;
-    image_en: string;
-    image_ar: string;
-    image_dark_en: string;
-    image_dark_ar: string;
+    image_en: string | null;
+    image_ar: string | null;
+    image_dark_en: string | null;
+    image_dark_ar: string | null;
+    mode_color?: string | null;
+    mode_color_dark?: string | null;
   };
 };

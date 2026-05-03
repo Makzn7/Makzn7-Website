@@ -21,7 +21,7 @@
         </div> -->
       </div>
       <!-- Sections -->
-      <section v-for="(section, index) in pageDetails.sections" :key="index">
+      <section v-for="(section, index) in pageDetails?.sections" :key="index">
         <SectionTitle
           :title="locale === 'ar' ? section.title_ar : section.title_en"
           :marginS="marginS"
@@ -59,11 +59,11 @@
           </div>
         </div>
       </section>
-      <MansjTeam
+      <ManjraTeam
         :marginS="marginS"
         :descSize="descSize"
         :titleS="titleS"
-        :teams="teams"
+        :teams="pageDetails?.teams"
         :py="py"
         :marginB="marginB"
       />
@@ -105,10 +105,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import MansjTeam from "./ManjraTeam.vue";
+import ManjraTeam from "./ManjraTeam.vue";
 import SectionTitle from "../../ui/SectionTitle.vue";
-import type { Person } from "~/types/person";
-import type { Award } from "~/types/award";
 import type { Page } from "~/types/page";
 
 const { locale } = useI18n();
@@ -121,8 +119,6 @@ const props = withDefaults(
     imageW?: number;
     titleS?: number;
     descSize?: number;
-    teams?: Person[];
-    awards?: Award[];
     py?: number;
     marginB?: number;
     pageDetails?: Page;
@@ -134,8 +130,6 @@ const props = withDefaults(
     imageW: 100,
     titleS: 110,
     descSize: 30,
-    teams: () => [],
-    awards: () => [],
     py: 4,
     marginB: 2,
   }

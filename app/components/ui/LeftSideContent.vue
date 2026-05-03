@@ -4,7 +4,7 @@
     class="flex flex-col flex-wrap justify-between ltr:items-end rtl:items-start h-full py-20 px-2"
   >
     <NuxtLink
-      to="/"
+      to="/contact"
       class="home-nav-link nav-hover [writing-mode:sideways-lr] cursor-none"
       >{{ $t("nav.contact") }}</NuxtLink
     >

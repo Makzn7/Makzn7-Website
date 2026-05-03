@@ -3,13 +3,33 @@
     class="relative border-s-[0.3px] border-white-op50 border-brand-text"
     :style="`margin-inline-start: ${marginS}px; width: calc(100% - ${marginS}px);`"
   >
-    <div class="grid grid-cols-3">
+    <!-- Loading skeleton -->
+    <div v-if="loading" class="grid grid-cols-3">
+      <div
+        v-for="i in 6"
+        :key="i"
+        class="h-[250px] animate-pulse bg-white/5 border-e-[0.3px] border-b-[0.3px] border-white/10"
+      />
+    </div>
+
+    <!-- Empty state -->
+    <div
+      v-else-if="!projects.length"
+      class="flex items-center justify-center h-[250px]"
+    >
+      <span class="text-brand-text/30 text-[12px] tracking-wider uppercase">
+        {{ $t("projects.empty") }}
+      </span>
+    </div>
+
+    <!-- Grid -->
+    <div v-else class="grid grid-cols-3">
       <div
         v-for="(project, index) in projects"
         :key="project.id ?? index"
         class="project-card group cursor-pointer"
       >
-        <NuxtLink :to="`/projects/${project.id}`" class="block w-full h-full">
+        <NuxtLink :to="`/projects/${project.slug}`" class="block w-full h-full">
           <div class="relative w-full h-full overflow-hidden">
             <img
               v-if="project.heroMedia?.src"
@@ -39,10 +59,9 @@
                 {{ project.name_en }}
               </span>
             </div>
-            <!-- طبقة شفافة تختفي عند الهوفر -->
             <div
               class="absolute inset-0 bg-black/30 transition-opacity duration-500 group-hover:opacity-0 pointer-events-none"
-            ></div>
+            />
           </div>
         </NuxtLink>
       </div>
@@ -53,18 +72,20 @@
 <script setup lang="ts">
 import type { Project } from "~/types/project";
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
     projects?: Project[];
     marginS?: number;
     py?: number;
     projectSize?: number;
+    loading?: boolean;
   }>(),
   {
     projects: () => [],
     marginS: 140,
     py: 4,
     projectSize: 38,
+    loading: false,
   }
 );
 </script>
@@ -72,7 +93,5 @@ const props = withDefaults(
 <style scoped>
 .project-card {
   height: 250px;
-  /* border-right: 0.3px solid var(--color-primary);
-  border-bottom: 0.3px solid var(--color-primary); */
 }
 </style>

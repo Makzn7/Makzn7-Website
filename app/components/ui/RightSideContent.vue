@@ -13,12 +13,17 @@
       class="home-nav-link nav-hover [writing-mode:vertical-rl] cursor-none"
       >{{ $t("nav.manjra") }}</NuxtLink
     >
-    <a
+    <NuxtLink
+      to="/prophouse"
+      class="home-nav-link nav-hover [writing-mode:vertical-rl] cursor-none"
+      >{{ $t("nav.prophouse") }}</NuxtLink
+    >
+    <!-- <a
       href="https://m7prophouse.com"
       target="_blank"
       class="home-nav-link nav-hover [writing-mode:vertical-rl] cursor-none"
       >{{ $t("nav.prophouse") }}</a
-    >
+    > -->
   </div>
 </template>
 

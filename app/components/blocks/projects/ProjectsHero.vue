@@ -1,4 +1,4 @@
-<!-- HomeHero2 -->
+<!-- ProjectsHero -->
 <template>
   <div class="app-container relative dark bg-brand-bg">
     <div class="absolute logo-image p-4">
@@ -22,7 +22,7 @@
         <div class="top-part px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
             <PageContent
-              :projects="data"
+              :projects="projects"
               :margin-top="3"
               :px="0"
               :margin-s="113"
@@ -33,6 +33,9 @@
               :marginB="2.5"
               :filters="filters"
               :active-filters="activeFilters"
+              :filters-pending="filtersPending"
+              :filters-error="!!filtersError"
+              :projects-pending="projectsPending"
               @toggle-filter="toggleFilter"
             />
           </div>
@@ -43,9 +46,12 @@
           <div ref="wallRef" class="sync-content">
             <PageContent
               :margin-top="0"
-              :projects="data"
+              :projects="projects"
               :filters="filters"
               :active-filters="activeFilters"
+              :filters-pending="filtersPending"
+              :filters-error="!!filtersError"
+              :projects-pending="projectsPending"
               @toggle-filter="toggleFilter"
             />
           </div>
@@ -65,9 +71,12 @@
               :image-w="70"
               :title-s="129"
               :desc-size="35.5"
-              :projects="data"
+              :projects="projects"
               :filters="filters"
               :active-filters="activeFilters"
+              :filters-pending="filtersPending"
+              :filters-error="!!filtersError"
+              :projects-pending="projectsPending"
               :py="6"
               :marginB="2.5"
               @toggle-filter="toggleFilter"
@@ -84,113 +93,145 @@
   <CustomCursor />
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue";
+import type { ProjectFilters } from "~/composables/useProjects";
 import LeftSideContent from "~/components/ui/LeftSideContent.vue";
 import RightSideContent from "~/components/ui/RightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
 import PageContent from "./PageContent.vue";
-import { projects } from "~/mocks/projects";
-import { departments } from "~/mocks/departments";
-import { scopes } from "~/mocks/scopes";
-import { projectTypes } from "~/mocks/projectTypes";
 
-const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
+interface FilterItem {
+  id: number | string;
+  type: string;
+  name_ar: string;
+  name_en: string;
+  slug: string;
+}
 
-const data = ref(projects);
+const emit = defineEmits<{
+  "lock-page-scroll": [];
+  "unlock-page-scroll": [];
+}>();
+
 const router = useRouter();
 const route = useRoute();
 
-const years = [2020, 2021, 2022, 2023, 2024, 2025];
+// ── Filters from API ──────────────────────────────────────────
+const {
+  data: filtersData,
+  pending: filtersPending,
+  error: filtersError,
+} = useProjectFilters();
 
-const filters = [
-  ...years.map((y, i) => ({
-    type: "year",
-    id: i + 1,
-    name_ar: String(y),
-    name_en: String(y),
-    slug: y,
+const filters = computed<FilterItem[]>(() => [
+  ...(filtersData.value?.years ?? []).map((y) => ({
+    type: "years",
+    id: y.id,
+    slug: y.slug,
+    name_ar: y.name_ar,
+    name_en: y.name_en,
   })),
-  ...departments.map((d) => ({ type: "department", ...d })),
-  ...projectTypes.map((t) => ({ type: "type", ...t })),
-  ...scopes.map((s) => ({ type: "scope", ...s })),
-];
+  ...(filtersData.value?.departments ?? []).map((d) => ({
+    type: "department",
+    id: d.id,
+    slug: d.slug,
+    name_ar: d.name_ar,
+    name_en: d.name_en,
+  })),
+  ...(filtersData.value?.types ?? []).map((t) => ({
+    type: "type",
+    id: t.id,
+    slug: t.slug,
+    name_ar: t.name_ar,
+    name_en: t.name_en,
+  })),
+  ...(filtersData.value?.scopes ?? []).map((s) => ({
+    type: "scope",
+    id: s.id,
+    slug: s.slug,
+    name_ar: s.name_ar,
+    name_en: s.name_en,
+  })),
+]);
 
-const activeFilters = ref([]);
+// ── Active Filters ────────────────────────────────────────────
+const activeFilters = ref<FilterItem[]>([]);
 
-const toggleFilter = (filter) => {
-  const type = filter.type;
-  const hasType = activeFilters.value.findIndex((f) => f.type === type);
-  const index = activeFilters.value.findIndex(
+const apiFilters = computed<ProjectFilters>(() => {
+  const result: ProjectFilters = {};
+  for (const f of activeFilters.value) {
+    if (f.type === "department") result.department = f.slug;
+    if (f.type === "type") result.type = f.slug;
+    if (f.type === "scope") result.scope = f.slug;
+    if (f.type === "years") result.years = f.slug;
+  }
+  return result;
+});
+
+// ── Projects from API ─────────────────────────────────────────
+const { data: projectsData, pending: projectsPending } =
+  useProjects(apiFilters);
+
+const projects = computed(() => projectsData.value?.data ?? []);
+
+// ── Filter Logic ──────────────────────────────────────────────
+const toggleFilter = (filter: FilterItem) => {
+  const typeIndex = activeFilters.value.findIndex(
+    (f) => f.type === filter.type
+  );
+  const exactIndex = activeFilters.value.findIndex(
     (f) => f.type === filter.type && f.slug === filter.slug
   );
-  if (hasType !== -1) {
-    if (index !== -1) {
-      // remove filter
-      activeFilters.value.splice(index, 1);
+
+  if (typeIndex !== -1) {
+    if (exactIndex !== -1) {
+      activeFilters.value.splice(exactIndex, 1);
     } else {
-      // replace with new filter of same type
-      activeFilters.value.splice(hasType, 1, filter);
+      activeFilters.value.splice(typeIndex, 1, filter);
     }
   } else {
-    // add new filter
     activeFilters.value.push(filter);
   }
-  filterProjects();
+
   updateUrl();
 };
 
 const updateUrl = async () => {
-  const query = {};
-
+  const query: Record<string, string> = {};
   for (const f of activeFilters.value) {
-    query[f.type] = String(f.slug);
+    query[f.type] = f.slug;
   }
-
-  await router.replace({
-    path: route.path,
-    query,
-  });
+  await router.replace({ path: route.path, query });
 };
 
-const filterProjects = () => {
-  let filtered = projects;
-  for (const f of activeFilters.value) {
-    filtered = filtered.filter((p) => {
-      if (f.type === "year") return p.year === f.slug;
-      if (f.type === "department")
-        return p.departments.some((d) => d.slug === f.slug);
-      if (f.type === "type") return p.types.some((t) => t.slug === f.slug);
-      if (f.type === "scope") return p.scopes.some((s) => s.slug === f.slug);
-      return true;
-    });
-  }
-  data.value = filtered;
-};
-
-/* ── refs ── */
-const centerBoxRef = ref(null);
-const wallRef = ref(null);
-const floorRef = ref(null);
-const ceilRef = ref(null);
-
-/* ── hero scroll (extracted to composable) ── */
-const { onWheel } = useHeroScroll(
-  { centerBoxRef, wallRef, floorRef, ceilRef },
-  emit
-);
-
+// ── Init active filters from URL on mount ─────────────────────
 onMounted(() => {
-  // apply initial filter from URL
   const params = new URLSearchParams(window.location.search);
   for (const [key, value] of params.entries()) {
-    const filter = filters.find(
-      (f) => f.type === key && String(f.slug) === value
-    );
-    if (filter) activeFilters.value.push(filter);
+    if (["department", "type", "scope", "years"].includes(key)) {
+      activeFilters.value.push({
+        type: key,
+        slug: value,
+        id: 0,
+        name_ar: value,
+        name_en: value,
+      });
+    }
   }
-  filterProjects();
 });
+
+// ── Scroll refs ───────────────────────────────────────────────
+const centerBoxRef = ref<HTMLElement | null>(null);
+const wallRef = ref<HTMLElement | null>(null);
+const floorRef = ref<HTMLElement | null>(null);
+const ceilRef = ref<HTMLElement | null>(null);
+const previewImgRef = ref<HTMLImageElement | null>(null);
+
+const { onWheel } = useHeroScroll(
+  { centerBoxRef, wallRef, floorRef, ceilRef },
+  emit as (event: "lock-page-scroll" | "unlock-page-scroll") => void
+);
 </script>
 
 <style>

@@ -76,13 +76,16 @@ import { ref } from "vue";
 import LeftSideContent from "~/components/blocks/home/HomeHeroLeftSideContent.vue";
 import RightSideContent from "~/components/blocks/home/HomeHeroRightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
-import { featuredProjects } from "~/mocks/projects";
-import { homeSettings } from "~/mocks/homeSettings";
 import PageContent from "./PageContent.vue";
 
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
 const { locale } = useI18n();
 const colorMode = useColorMode();
+
+const { data: homeData } = useHome();
+
+const featuredProjects = computed(() => homeData.value?.projects ?? []);
+const hero3d = computed(() => homeData.value?.data?.hero_3d ?? null);
 
 /* ── refs ── */
 const centerBoxRef = ref(null);
@@ -92,20 +95,18 @@ const ceilRef = ref(null);
 const previewImgRef = ref(null);
 
 const modelPath = computed(() => {
+  const h = hero3d.value;
+  if (!h) return null;
   if (locale.value === "ar") {
-    if (colorMode.value === "dark") return homeSettings.hero_3d.image_dark_ar;
-    return homeSettings.hero_3d.image_ar;
+    return colorMode.value === "dark" ? h.image_dark_ar : h.image_ar;
   }
-  if (colorMode.value === "dark") return homeSettings.hero_3d.image_dark_en;
-  return homeSettings.hero_3d.image_en;
+  return colorMode.value === "dark" ? h.image_dark_en : h.image_en;
 });
-const modelType = computed(() => {
-  return homeSettings.hero_3d.type;
-});
+const modelType = computed(() => hero3d.value?.type ?? "image");
 const modelModeColor = computed(() => {
-  if (colorMode.value === "dark")
-    return homeSettings.hero_3d.mode_color_dark || "#ffffff";
-  return homeSettings.hero_3d.mode_color || "#000000";
+  const h = hero3d.value;
+  if (colorMode.value === "dark") return h?.mode_color_dark ?? "#ffffff";
+  return h?.mode_color ?? "#000000";
 });
 
 /* ── hero scroll (extracted to composable) ── */
