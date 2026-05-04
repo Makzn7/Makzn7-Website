@@ -65,7 +65,32 @@
     "success": "Your message has been sent successfully!",
     "duplicate": "Message already received.",
     "validationError": "Please check the highlighted fields and try again.",
+    "rateLimited": "Too many requests. Please wait a moment and try again.",
+    "serverError": "We couldn't reach the server right now. Please try again shortly.",
     "error": "An error occurred while sending your message. Please try again later.",
+    "errors": {
+      "name": {
+        "required": "Please enter your name.",
+        "min": "Name must be at least {min} characters.",
+        "max": "Name must be at most {max} characters."
+      },
+      "email": {
+        "required": "Please enter your email.",
+        "invalid": "Please enter a valid email address.",
+        "max": "Email must be at most {max} characters."
+      },
+      "phone": {
+        "required": "Please enter your phone number.",
+        "invalid": "Phone may only contain digits, spaces, +, -, and parentheses.",
+        "min": "Phone must be at least {min} digits.",
+        "max": "Phone must be at most {max} characters."
+      },
+      "message": {
+        "required": "Please write a message.",
+        "min": "Message must be at least {min} characters.",
+        "max": "Message must be at most {max} characters."
+      }
+    },
     "contactSectionTitle": "Contact",
     "goToLocation": "Go to Location"
   },
