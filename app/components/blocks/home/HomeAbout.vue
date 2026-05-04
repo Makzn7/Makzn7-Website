@@ -26,19 +26,18 @@
         <!-- Content -->
         <div class="ms-40 me-8 flex flex-col gap-16">
           <!-- Description — appears after discoverMore -->
-          <p
+          <div
             class="font-light leading-[1.2] tracking-[-1.44px] rtl:tracking-normal rtl:leading-[1.8] fade-in-left"
             :style="`animation-delay: 0.25s; font-size: clamp(${Math.max(
               16,
               Math.round(37 * 0.35)
             )}px, ${(37 / 15.36).toFixed(1)}vw, ${37}px);`"
-          >
-            {{
-              locale === "ar"
+            v-html="
+              locale === 'ar'
                 ? aboutData?.description_ar
                 : aboutData?.description_en
-            }}
-          </p>
+            "
+          ></div>
           <!-- discoverMore — appears earlier (delay 0.1s) -->
           <NuxtLink
             to="/about"

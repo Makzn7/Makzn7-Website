@@ -52,7 +52,7 @@
   "contact": {
     "title": "Contact Us",
     "address": "Riyadh, Saudi Arabia Thumama St, Al Sahafa Dist.",
-    "phone": "(+966 55 038 1777)",
+    "phone": "Phone",
     "vat": "VAT",
     "cr": "CR",
     "email": "Email",
@@ -63,6 +63,8 @@
     "leftText3": "Together!",
     "submit": "Submit",
     "success": "Your message has been sent successfully!",
+    "duplicate": "Message already received.",
+    "validationError": "Please check the highlighted fields and try again.",
     "error": "An error occurred while sending your message. Please try again later.",
     "contactSectionTitle": "Contact",
     "goToLocation": "Go to Location"

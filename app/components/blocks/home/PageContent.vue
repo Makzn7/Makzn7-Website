@@ -24,7 +24,7 @@
           width="200"
           class="dark:invert fade-in"
         />
-        <p
+        <div
           :class="`font-light leading-[1.2] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8] fade-in-right ${
             showLogo ? 'ms-0' : 'ms-[230px]'
           }`"
@@ -32,13 +32,12 @@
             16,
             Math.round(descSize * 0.35)
           )}px, ${(descSize / 15.36).toFixed(1)}vw, ${descSize}px);`"
-        >
-          {{
-            locale === "ar"
+          v-html="
+            locale === 'ar'
               ? heroData?.description_ar
               : heroData?.description_en
-          }}
-        </p>
+          "
+        ></div>
       </div>
       <div class="relative image-3d-container">
         <HeroGrid1 aspectRatio="none" class="h-[700px]" :cols="45" :rows="40" />

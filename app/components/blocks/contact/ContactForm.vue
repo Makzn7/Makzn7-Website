@@ -1,5 +1,6 @@
 <template>
   <form
+    ref="formRef"
     class="flex flex-col justify-between h-full gap-8"
     @submit.prevent="handleSubmit"
   >
@@ -17,12 +18,15 @@
       >
         <component
           :is="field.tag"
-          v-model="form[field.key]"
+          :value="form[field.key]"
           :type="field.type"
+          :inputmode="field.inputmode"
+          :pattern="field.pattern"
           :placeholder="$t(`contact.${field.key}`)"
           :rows="field.rows"
           :required="true"
           class="w-full bg-transparent border-none outline-none text-white font-light placeholder:text-white/45 py-3 resize-none text-[clamp(14px,1.4vw,20px)]"
+          @input="(e: Event) => (form[field.key] = (e.target as HTMLInputElement).value)"
           @focus="focused = field.key"
           @blur="focused = null"
         />
@@ -49,32 +53,96 @@
 </template>
 
 <script setup lang="ts">
-const { t } = useI18n();
+const { t, locale } = useI18n();
+const { raw } = useApi();
 
-const form = reactive({ name: "", email: "", message: "" });
+const formRef = ref<HTMLFormElement | null>(null);
+const form = reactive<Record<string, string>>({
+  name: "",
+  email: "",
+  phone: "",
+  message: "",
+});
 const focused = ref<string | null>(null);
 const submitting = ref(false);
 const successMsg = ref("");
 const errorMsg = ref("");
 
 const fields = [
-  { key: "name", tag: "input", type: "text", rows: undefined },
-  { key: "email", tag: "input", type: "email", rows: undefined },
-  { key: "message", tag: "textarea", type: undefined, rows: 7 },
+  {
+    key: "name",
+    tag: "input",
+    type: "text",
+    inputmode: undefined,
+    pattern: undefined,
+    rows: undefined,
+  },
+  {
+    key: "email",
+    tag: "input",
+    type: "email",
+    inputmode: "email",
+    pattern: undefined,
+    rows: undefined,
+  },
+  {
+    key: "phone",
+    tag: "input",
+    type: "tel",
+    inputmode: "tel",
+    pattern: "[\\+\\d\\s\\-\\(\\)]+",
+    rows: undefined,
+  },
+  {
+    key: "message",
+    tag: "textarea",
+    type: undefined,
+    inputmode: undefined,
+    pattern: undefined,
+    rows: 7,
+  },
 ];
 
 async function handleSubmit() {
+  if (!formRef.value?.reportValidity()) return;
+
   submitting.value = true;
   successMsg.value = "";
   errorMsg.value = "";
+
+  let responseStatus = 201;
+
   try {
-    await new Promise((r) => setTimeout(r, 800));
-    successMsg.value = t("contact.success");
-    form.name = "";
-    form.email = "";
-    form.message = "";
-  } catch {
-    errorMsg.value = t("contact.error");
+    await raw("/contact", {
+      method: "POST",
+      body: {
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        message: form.message,
+        locale: locale.value,
+        source: "website",
+      },
+      onResponse({ response }) {
+        responseStatus = response.status;
+      },
+    });
+
+    if (responseStatus === 202) {
+      successMsg.value = t("contact.duplicate");
+    } else {
+      successMsg.value = t("contact.success");
+      form.name = "";
+      form.email = "";
+      form.phone = "";
+      form.message = "";
+    }
+  } catch (err: any) {
+    if (err?.status === 422) {
+      errorMsg.value = t("contact.validationError");
+    } else {
+      errorMsg.value = t("contact.error");
+    }
   } finally {
     submitting.value = false;
   }
