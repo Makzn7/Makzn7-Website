@@ -14,19 +14,20 @@
   >
     <!-- HeroGrid -->
     <div class="relative content-item pc-hero-grid">
-      <div class="flex items-center justify-between gap-8 my-12 mx-6">
+      <div
+        class="flex flex-col lg:flex-row items-center justify-between gap-8 my-6 lg:my-12 mx-3 lg:mx-6"
+      >
         <!-- dark:invert flips black logo to white in dark mode -->
         <img
           id="logo"
           v-if="showLogo"
           src="/logos/svg/logo_black.svg"
           alt="Makzn7"
-          width="200"
-          class="dark:invert fade-in"
+          class="hero-logo dark:invert fade-in"
         />
         <div
           :class="`font-light leading-[1.2] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8] fade-in-right ${
-            showLogo ? 'ms-0' : 'ms-[230px]'
+            showLogo ? 'ms-0' : 'lg:ms-[230px]'
           }`"
           :style="`animation-delay: 0.15s; font-size: clamp(${Math.max(
             16,
@@ -40,7 +41,12 @@
         ></div>
       </div>
       <div class="relative image-3d-container">
-        <HeroGrid1 aspectRatio="none" class="h-[700px]" :cols="45" :rows="40" />
+        <HeroGrid1
+          aspectRatio="none"
+          class="h-[400px] lg:h-[700px]"
+          :cols="45"
+          :rows="40"
+        />
         <!-- 3D model overlay — interactive tilt on hover -->
         <div class="absolute top-0 start-0 w-full h-full 3d-content">
           <ClientOnly>
@@ -59,7 +65,7 @@
     <!-- Selected Projects -->
     <div class="mt-4">
       <div
-        class="flex gap-2 justify-start items-center border-t-[0.3px] border-b-[0.3px] border-brand-text"
+        class="flex gap-2 justify-center lg:justify-start items-center border-t-[0.3px] border-b-[0.3px] border-brand-text"
       >
         <h2
           class="py-8 font-bold leading-[1.2] whitespace-nowrap pc-project-px"
@@ -72,21 +78,21 @@
         </h2>
       </div>
 
-      <div>
+      <div class="mt-4 lg:mt-0">
         <div
           v-for="(project, index) in projects"
           :key="project.id"
-          class="content-item py-16 transition-all duration-500 ease-in-out pc-project-px"
+          class="content-item py-5 lg:py-16 transition-all duration-500 ease-in-out pc-project-px"
           :class="{ 'hover-item': showHover }"
           :data-image-url="project.hoverMedia?.src || project.heroMedia?.src"
           @mouseenter="showHover && onEnter($event)"
           @mouseleave="showHover && $emit('hover-leave')"
         >
           <h3
-            class="leading-[1.05] font-light lg:max-w-[80%] hover:font-bold"
+            class="leading-[1.05] lg:font-light lg:max-w-[80%] hover:font-bold"
             :style="`font-size: clamp(${Math.max(
-              36,
-              Math.round(projectSize * 0.5)
+              18,
+              Math.round(32 * 0.5)
             )}px, ${(projectSize / 19.36).toFixed(1)}vw, ${projectSize}px)`"
           >
             {{ locale === "ar" ? project.name_ar : project.name_en }}
@@ -119,7 +125,7 @@ const props = withDefaults(
     projectSize?: number;
     showLogo?: boolean;
     withAnimations?: boolean;
-    modelPath?: string;
+    modelPath?: string | null;
     modelType?: string;
     modelModeColor?: string;
     heroData?: {
@@ -138,7 +144,7 @@ const props = withDefaults(
     projectSize: 120,
     showLogo: true,
     withAnimations: true,
-    modelPath: "/images/3d/Eng",
+    modelPath: null,
     modelType: "string",
     modelModeColor: "#ffffff",
     heroData: null,
@@ -185,5 +191,12 @@ function onEnter(e: MouseEvent) {
 .pc-project-px {
   padding-right: var(--ppx, 4rem);
   padding-left: var(--ppx, 4rem);
+}
+
+@media (max-width: 640px) {
+  .pc-project-px {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
 }
 </style>

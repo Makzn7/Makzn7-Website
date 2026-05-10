@@ -181,6 +181,10 @@ html.has-scroll-smooth {
   transform: rotate(-55deg);
 }
 
+.hero-logo {
+  width: clamp(120px, 8vw, 200px);
+}
+
 @layer base {
   .home-nav-link {
     @apply text-brand-primary font-extralight tracking-[0px] uppercase transition-all duration-500 ease-in-out;
@@ -242,4 +246,31 @@ html.has-scroll-smooth {
 }
 .fade-in-right.is-visible {
   animation: fadeInRight 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Mobile */
+
+@media (max-width: 640px) {
+}
+
+/* Tablet */
+
+@media (max-width: 768px) {
+  :root {
+    --railW: 2.75rem;
+    --railH: 1.75rem;
+    --offset: 0;
+    --gap: 4.75rem;
+    --persp: 100px;
+  }
+}
+
+/* Small Laptop */
+
+@media (max-width: 1024px) {
+}
+
+/* Desktop */
+
+@media (max-width: 1280px) {
 }

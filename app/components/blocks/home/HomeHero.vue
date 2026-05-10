@@ -94,6 +94,8 @@ const featuredProjects = computed(() => props.homeData?.projects ?? []);
 const hero3d = computed(() => props.homeData?.data?.hero_3d ?? null);
 const heroData = computed(() => props.homeData?.data?.hero ?? null);
 
+console.log(hero3d.value);
+
 /* ── refs ── */
 const centerBoxRef = ref(null);
 const wallRef = ref(null);
