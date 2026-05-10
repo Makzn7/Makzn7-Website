@@ -8,6 +8,7 @@
     class="page-content flex flex-col gap-12"
     :style="{
       '--mt': marginTop + 'rem',
+      '--mt-mobile': (props.mobileMarginTop ?? props.marginTop) + 'rem',
       '--px': px + 'rem',
       '--ppx': projectPX + 'rem',
     }"
@@ -48,11 +49,13 @@
           :rows="40"
         />
         <!-- 3D model overlay — interactive tilt on hover -->
-        <div class="absolute top-0 start-0 w-full h-full 3d-content">
+        <div
+          class="absolute top-[5%] start-[5%] w-[90%] h-[90%] lg:top-0 lg:start-0 lg:w-full lg:h-full model-3d-wrap"
+        >
           <ClientOnly>
             <HeroModel3D
               class="w-full h-full"
-              :modelScale="3.5"
+              :modelScale="effectiveModelScale"
               :modelPath="modelPath"
               :modelImageType="modelType"
               :modelModeColor="modelModeColor"
@@ -107,7 +110,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useScrollAnimation } from "~/composables/useScrollAnimation";
 import HeroGrid from "~/components/graphics/HeroGrid.vue";
 import HeroModel3D from "~/components/ui/HeroModel3D.vue";
@@ -128,6 +131,7 @@ const props = withDefaults(
     modelPath?: string | null;
     modelType?: string;
     modelModeColor?: string;
+    mobileMarginTop?: number;
     heroData?: {
       title_ar: string;
       title_en: string;
@@ -148,6 +152,7 @@ const props = withDefaults(
     modelType: "string",
     modelModeColor: "#ffffff",
     heroData: null,
+    mobileMarginTop: 4,
   }
 );
 
@@ -156,6 +161,20 @@ const { locale } = useI18n();
 
 const contentRef = ref(null);
 useScrollAnimation(contentRef);
+
+/* ── Mobile detection for responsive model scale ── */
+const isMobile = ref(false);
+function checkMobile() {
+  isMobile.value = window.innerWidth < 768;
+}
+onMounted(() => {
+  checkMobile();
+  window.addEventListener("resize", checkMobile);
+});
+onUnmounted(() => {
+  window.removeEventListener("resize", checkMobile);
+});
+const effectiveModelScale = computed(() => (isMobile.value ? 2.0 : 3.5));
 
 function onEnter(e: MouseEvent) {
   const target = e.currentTarget as HTMLElement | null;
@@ -184,6 +203,12 @@ function onEnter(e: MouseEvent) {
 <style scoped>
 .page-content {
   margin-top: var(--mt, 4rem);
+}
+
+@media (max-width: 767px) {
+  .page-content {
+    margin-top: var(--mt-mobile, var(--mt, 4rem));
+  }
 }
 .pc-hero-grid {
   padding: 0 var(--px, 1rem);

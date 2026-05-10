@@ -9,11 +9,12 @@
       <!-- center-box: الـ 3D perspective container -->
       <div ref="centerBoxRef" class="center-box" @wheel="onWheel">
         <!-- ══ السقف (top-part) — rotateX(-90deg) ══ -->
-        <div class="top-part px-[4.5rem]">
+        <div class="top-part px-[2.5rem] lg:px-[4.5rem]">
           <div ref="ceilRef" class="sync-content">
             <PageContent
               :projects="featuredProjects"
               :margin-top="4"
+              :mobile-margin-top="7"
               :px="0"
               :projectPX="3"
               :projectSize="124"
@@ -35,6 +36,7 @@
               @hover-enter="onHoverEnter"
               @hover-leave="onHoverLeave"
               :margin-top="1"
+              :mobile-margin-top="0.25"
               :px="0.5"
               :modelPath="modelPath"
               :modelType="modelType"
@@ -50,10 +52,11 @@
 
         <!-- ══ الأرض (bottom-part) — rotateX(+90deg) ══ -->
         <div class="bottom-part">
-          <div ref="floorRef" class="sync-content px-[4.5rem]">
+          <div ref="floorRef" class="sync-content px-[2.5rem] lg:px-[4.5rem]">
             <PageContent
               :projects="featuredProjects"
               :margin-top="6"
+              :mobile-margin-top="3.5"
               :px="0"
               :projectPX="3"
               :projectSize="124"
