@@ -24,12 +24,15 @@
           v-if="showLogo"
           src="/logos/svg/logo_black.svg"
           alt="Makzn7"
-          class="hero-logo dark:invert fade-in"
+          class="hero-logo dark:invert"
+          :class="{ 'fade-in': withAnimations }"
         />
         <div
-          :class="`font-light leading-[1.2] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8] fade-in-right ${
-            showLogo ? 'ms-0' : 'lg:ms-[230px]'
-          }`"
+          class="font-light leading-[1.2] tracking-[-0.59px] rtl:tracking-normal rtl:leading-[1.8]"
+          :class="[
+            showLogo ? 'ms-0' : 'lg:ms-[230px]',
+            withAnimations ? 'fade-in-right' : '',
+          ]"
           :style="`animation-delay: 0.15s; font-size: clamp(${Math.max(
             16,
             Math.round(descSize * 0.35)
@@ -54,6 +57,7 @@
         >
           <ClientOnly>
             <HeroModel3D
+              v-if="modelPath"
               class="w-full h-full"
               :modelScale="effectiveModelScale"
               :modelPath="modelPath"
@@ -112,7 +116,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useScrollAnimation } from "~/composables/useScrollAnimation";
-import HeroGrid from "~/components/graphics/HeroGrid.vue";
 import HeroModel3D from "~/components/ui/HeroModel3D.vue";
 import HeroGrid1 from "~/components/graphics/HeroGrid1.vue";
 import type { Project } from "~/types/project";
@@ -160,19 +163,33 @@ const emit = defineEmits(["hover-enter", "hover-leave"]);
 const { locale } = useI18n();
 
 const contentRef = ref(null);
-useScrollAnimation(contentRef);
+if (props.withAnimations) {
+  useScrollAnimation(contentRef);
+}
 
 /* ── Mobile detection for responsive model scale ── */
 const isMobile = ref(false);
-function checkMobile() {
-  isMobile.value = window.innerWidth < 768;
+let mobileQuery: MediaQueryList | null = null;
+let onMobileChange: ((event: MediaQueryListEvent) => void) | null = null;
+
+function setMobile(matches: boolean) {
+  isMobile.value = matches;
 }
+
 onMounted(() => {
-  checkMobile();
-  window.addEventListener("resize", checkMobile);
+  mobileQuery = window.matchMedia("(max-width: 767px)");
+  setMobile(mobileQuery.matches);
+  onMobileChange = (event) => {
+    setMobile(event.matches);
+  };
+  mobileQuery.addEventListener?.("change", onMobileChange);
 });
 onUnmounted(() => {
-  window.removeEventListener("resize", checkMobile);
+  if (mobileQuery && onMobileChange) {
+    mobileQuery.removeEventListener?.("change", onMobileChange);
+  }
+  mobileQuery = null;
+  onMobileChange = null;
 });
 const effectiveModelScale = computed(() => (isMobile.value ? 2.0 : 3.5));
 
@@ -183,15 +200,6 @@ function onEnter(e: MouseEvent) {
   const url = target.getAttribute("data-image-url");
   if (!url) return;
 
-  const parent = target.closest(".center-part");
-  if (!parent) return;
-
-  const pr = parent.getBoundingClientRect();
-  // emit("hover-enter", {
-  //   url,
-  //   x: Math.max(0, Math.random() * (pr.width - 100)),
-  //   y: Math.max(0, Math.random() * (pr.height - 100)),
-  // });
   emit("hover-enter", {
     url,
     x: 50,

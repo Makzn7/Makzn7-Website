@@ -23,10 +23,17 @@ export function useHeroScroll(
   let targetScroll = 0;
   let maxScroll = 0;
   let railH = 0;
+  let wallH = 0;
   let rafId: number | null = null;
+  let measureRafId: number | null = null;
   let pageScrollLocked = false;
   let ty = 0;
   let resizeObserver: ResizeObserver | null = null;
+  let intersectionObserver: IntersectionObserver | null = null;
+  let isVisible = true;
+  let lastWallTransform = "";
+  let lastFloorTransform = "";
+  let lastCeilTransform = "";
   const observedImages = new Set<HTMLImageElement>();
 
   function measureScrollLimits() {
@@ -38,16 +45,27 @@ export function useHeroScroll(
         getComputedStyle(document.documentElement).getPropertyValue("--railH")
       ) || 60;
 
-    const wallH = Math.max(0, box.offsetHeight - 2 * railH);
+    wallH = Math.max(0, box.offsetHeight - 2 * railH);
     const contentH = refs.wallRef.value?.scrollHeight || 0;
     maxScroll = Math.max(0, contentH - wallH);
 
     targetScroll = Math.min(targetScroll, maxScroll);
     scrollPos = Math.min(scrollPos, maxScroll);
+    applyTransforms();
+    requestLoop();
+  }
+
+  function scheduleMeasureScrollLimits() {
+    if (measureRafId !== null) return;
+    measureRafId = requestAnimationFrame(() => {
+      measureRafId = null;
+      measureScrollLimits();
+      syncImageListeners();
+    });
   }
 
   function onImageLoad() {
-    measureScrollLimits();
+    scheduleMeasureScrollLimits();
   }
 
   function syncImageListeners() {
@@ -79,6 +97,48 @@ export function useHeroScroll(
     emit(shouldLock ? "lock-page-scroll" : "unlock-page-scroll");
   }
 
+  function setTransform(
+    el: HTMLElement | null,
+    transform: string,
+    kind: "wall" | "floor" | "ceil"
+  ) {
+    if (!el) return;
+
+    if (kind === "wall") {
+      if (lastWallTransform === transform) return;
+      lastWallTransform = transform;
+    } else if (kind === "floor") {
+      if (lastFloorTransform === transform) return;
+      lastFloorTransform = transform;
+    } else if (lastCeilTransform === transform) {
+      return;
+    } else {
+      lastCeilTransform = transform;
+    }
+
+    el.style.transform = transform;
+  }
+
+  function applyTransforms() {
+    const y = Math.round(scrollPos * 100) / 100;
+    setTransform(refs.wallRef.value, `translate3d(0, ${-y}px, 0)`, "wall");
+    setTransform(
+      refs.floorRef.value,
+      `translate3d(0, ${-(y + wallH)}px, 0)`,
+      "floor"
+    );
+    setTransform(
+      refs.ceilRef.value,
+      `translate3d(0, ${-(y - railH)}px, 0)`,
+      "ceil"
+    );
+  }
+
+  function requestLoop() {
+    if (rafId !== null || !isVisible) return;
+    rafId = requestAnimationFrame(loop);
+  }
+
   function onWheel(e: WheelEvent) {
     if (window.scrollY > 1) {
       syncPageScrollLock(false);
@@ -94,6 +154,7 @@ export function useHeroScroll(
       e.stopPropagation();
       targetScroll = clampedTarget;
       syncPageScrollLock(true);
+      requestLoop();
       return;
     }
 
@@ -124,6 +185,7 @@ export function useHeroScroll(
       e.stopPropagation();
       targetScroll = clampedTarget;
       syncPageScrollLock(true);
+      requestLoop();
     } else {
       syncPageScrollLock(false);
     }
@@ -132,28 +194,37 @@ export function useHeroScroll(
   }
 
   function onKey(e: KeyboardEvent) {
+    if (window.scrollY > 1) return;
+
+    const previousTarget = targetScroll;
     if (e.key === "ArrowDown")
       targetScroll = Math.min(maxScroll, targetScroll + keyStep);
     if (e.key === "ArrowUp")
       targetScroll = Math.max(0, targetScroll - keyStep);
+
+    if (previousTarget !== targetScroll) {
+      e.preventDefault();
+      syncPageScrollLock(true);
+      requestLoop();
+    }
   }
 
   function loop() {
-    scrollPos += (targetScroll - scrollPos) * lerpFactor;
+    rafId = null;
+    if (!isVisible) return;
 
-    const box = refs.centerBoxRef.value;
-    const wallH = box ? box.offsetHeight - 2 * railH : 0;
+    const delta = targetScroll - scrollPos;
+    if (Math.abs(delta) < 0.08) {
+      scrollPos = targetScroll;
+    } else {
+      scrollPos += delta * lerpFactor;
+    }
 
-    if (refs.wallRef.value)
-      refs.wallRef.value.style.transform = `translateY(${-scrollPos}px)`;
+    applyTransforms();
 
-    if (refs.floorRef.value)
-      refs.floorRef.value.style.transform = `translateY(${-(scrollPos + wallH)}px)`;
-
-    if (refs.ceilRef.value)
-      refs.ceilRef.value.style.transform = `translateY(${-(scrollPos - railH)}px)`;
-
-    rafId = requestAnimationFrame(loop);
+    if (Math.abs(targetScroll - scrollPos) >= 0.08) {
+      requestLoop();
+    }
   }
 
   onMounted(() => {
@@ -164,11 +235,26 @@ export function useHeroScroll(
     box.addEventListener("touchstart", onTouchStart, { passive: true });
     box.addEventListener("touchmove", onTouchMove, { passive: false });
     window.addEventListener("keydown", onKey);
-    window.addEventListener("resize", measureScrollLimits);
+    window.addEventListener("resize", scheduleMeasureScrollLimits, {
+      passive: true,
+    });
+
+    if (typeof window !== "undefined" && "IntersectionObserver" in window) {
+      intersectionObserver = new IntersectionObserver(
+        ([entry]) => {
+          isVisible = entry?.isIntersecting ?? true;
+          if (isVisible) {
+            scheduleMeasureScrollLimits();
+            requestLoop();
+          }
+        },
+        { threshold: 0 }
+      );
+      intersectionObserver.observe(box);
+    }
 
     resizeObserver = new ResizeObserver(() => {
-      measureScrollLimits();
-      syncImageListeners();
+      scheduleMeasureScrollLimits();
     });
     resizeObserver.observe(box);
     resizeObserver.observe(wall);
@@ -180,8 +266,6 @@ export function useHeroScroll(
         measureScrollLimits();
       });
     });
-
-    loop();
   });
 
   onUnmounted(() => {
@@ -189,14 +273,16 @@ export function useHeroScroll(
     box?.removeEventListener("touchstart", onTouchStart);
     box?.removeEventListener("touchmove", onTouchMove);
     window.removeEventListener("keydown", onKey);
-    window.removeEventListener("resize", measureScrollLimits);
+    window.removeEventListener("resize", scheduleMeasureScrollLimits);
     resizeObserver?.disconnect();
+    intersectionObserver?.disconnect();
     observedImages.forEach((img) => {
       img.removeEventListener("load", onImageLoad);
       img.removeEventListener("error", onImageLoad);
     });
     observedImages.clear();
     if (rafId) cancelAnimationFrame(rafId);
+    if (measureRafId) cancelAnimationFrame(measureRafId);
     syncPageScrollLock(false);
   });
 

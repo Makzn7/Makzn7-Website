@@ -4,13 +4,22 @@ import { onBeforeUnmount, onMounted, ref } from "vue";
 const enabled = ref(false);
 const hRef = ref<HTMLElement | null>(null);
 const vRef = ref<HTMLElement | null>(null);
+let rafId: number | null = null;
+let lastX = 0;
+let lastY = 0;
 
 const move = (e: MouseEvent) => {
   if (!enabled.value || !hRef.value || !vRef.value) return;
-  const x = e.clientX;
-  const y = e.clientY;
-  hRef.value.style.transform = `translateY(${y}px)`;
-  vRef.value.style.transform = `translateX(${x}px)`;
+  lastX = e.clientX;
+  lastY = e.clientY;
+
+  if (rafId !== null) return;
+  rafId = requestAnimationFrame(() => {
+    rafId = null;
+    if (!hRef.value || !vRef.value) return;
+    hRef.value.style.transform = `translate3d(0, ${lastY}px, 0)`;
+    vRef.value.style.transform = `translate3d(${lastX}px, 0, 0)`;
+  });
 };
 
 onMounted(() => {
@@ -21,6 +30,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener("mousemove", move);
+  if (rafId) cancelAnimationFrame(rafId);
 });
 </script>
 

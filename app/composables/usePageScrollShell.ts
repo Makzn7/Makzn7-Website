@@ -15,6 +15,8 @@ export function usePageScrollShell(options: ScrollShellOptions = {}) {
 
   const scrollContainer = ref<HTMLElement | null>(null);
   let scroll: LocomotiveScrollInstance | null = null;
+  let onLenisScroll: (() => void) | null = null;
+  let onRefresh: (() => void) | null = null;
 
   onMounted(async () => {
     const { $LocomotiveScroll } = useNuxtApp();
@@ -32,16 +34,24 @@ export function usePageScrollShell(options: ScrollShellOptions = {}) {
 
       const lenis = scroll.lenisInstance;
       if (lenis) {
-        lenis.on("scroll", ScrollTrigger.update);
-        ScrollTrigger.addEventListener("refresh", () => lenis.resize?.());
+        onLenisScroll = () => ScrollTrigger.update();
+        onRefresh = () => lenis.resize?.();
+        lenis.on("scroll", onLenisScroll);
+        ScrollTrigger.addEventListener("refresh", onRefresh);
       }
       ScrollTrigger.refresh();
     }
   });
 
   onBeforeUnmount(() => {
+    const lenis = scroll?.lenisInstance;
+    if (lenis && onLenisScroll) lenis.off?.("scroll", onLenisScroll);
+    if (onRefresh) ScrollTrigger.removeEventListener("refresh", onRefresh);
     if (scroll) scroll.destroy();
     ScrollTrigger.getAll().forEach((t) => t.kill());
+    onLenisScroll = null;
+    onRefresh = null;
+    scroll = null;
   });
 
   function lockPageScroll() {

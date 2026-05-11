@@ -31,7 +31,7 @@ import gsap from "gsap";
 
 const props = defineProps({
   /** Path served from /public */
-  modelPath: { type: String, default: "/images/3d/Eng" },
+  modelPath: { type: String, default: null },
   /** Max tilt angle in radians (default ≈ 25°) */
   maxTiltY: { type: Number, default: 0.44 },
   /** Max vertical tilt in radians (default ≈ 12°) */
@@ -45,28 +45,40 @@ const props = defineProps({
 /* ── refs ── */
 const containerRef = ref<HTMLDivElement | null>(null);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
-const loading = ref(true);
+const loading = ref(false);
 const loadError = ref(false);
 
 /* ── Three.js state ── */
-let renderer = null;
-let scene = null;
-let camera = null;
-let tiltGroup = null; // mouse-driven tilt
-let rafId = null;
+let renderer: any = null;
+let scene: any = null;
+let camera: any = null;
+let tiltGroup: any = null; // mouse-driven tilt
+let modelRoot: any = null;
+let renderRafId: number | null = null;
+let mouseRafId: number | null = null;
+let resizeRafId: number | null = null;
+let pendingMouseEvent: MouseEvent | null = null;
+let resizeObserver: ResizeObserver | null = null;
+let intersectionObserver: IntersectionObserver | null = null;
 let isMounted = false;
+let isVisible = false;
+let initStarted = false;
 
 /* ══════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════ */
 async function init() {
+  if (initStarted) return;
+  initStarted = true;
+
   const canvas = canvasRef.value;
   const container = containerRef.value;
-  if (!canvas || !container) {
+  if (!canvas || !container || !props.modelPath) {
     loading.value = false;
-    loadError.value = true;
     return;
   }
+
+  loading.value = true;
 
   /* Dynamically import Three.js (avoids SSR issues) */
   const THREE = await import("three");
@@ -77,13 +89,21 @@ async function init() {
   /* Guard: component may have unmounted during async imports */
   if (!isMounted) return;
 
-  const w = container.offsetWidth;
-  const h = container.offsetHeight;
+  const w = container.clientWidth;
+  const h = container.clientHeight;
 
   /* ── Renderer ── */
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setSize(w, h);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const isMobile = window.matchMedia("(max-width: 767px)").matches;
+  renderer = new THREE.WebGLRenderer({
+    canvas,
+    antialias: !isMobile,
+    alpha: true,
+    powerPreference: "high-performance",
+  });
+  renderer.setSize(w, h, false);
+  renderer.setPixelRatio(
+    Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 2)
+  );
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.2;
@@ -96,10 +116,11 @@ async function init() {
   camera.position.z = 4;
 
   /* ── Lights ── */
-  const ambient = new THREE.AmbientLight(props.modelModeColor, 1.0);
+  const lightColor = props.modelModeColor || "#ffffff";
+  const ambient = new THREE.AmbientLight(lightColor, 1.0);
   scene.add(ambient);
 
-  const key = new THREE.DirectionalLight(props.modelModeColor, 2.5);
+  const key = new THREE.DirectionalLight(lightColor, 2.5);
   key.position.set(4, 6, 5);
   scene.add(key);
 
@@ -115,6 +136,15 @@ async function init() {
   tiltGroup = new THREE.Group();
   scene.add(tiltGroup);
 
+  resizeObserver = new ResizeObserver(() => {
+    if (resizeRafId !== null) return;
+    resizeRafId = requestAnimationFrame(() => {
+      resizeRafId = null;
+      onResize();
+    });
+  });
+  resizeObserver.observe(container);
+
   /* ── Load model ── */
   try {
     const loader = new GLTFLoader();
@@ -123,6 +153,7 @@ async function init() {
       (gltf) => {
         if (!isMounted) return;
         const model = gltf.scene;
+        modelRoot = model;
 
         /* Center + normalise scale */
         const box = new THREE.Box3().setFromObject(model);
@@ -136,6 +167,7 @@ async function init() {
 
         tiltGroup.add(model);
         loading.value = false;
+        requestRender();
 
         /* Entrance animation */
         model.scale.setScalar(0);
@@ -146,6 +178,8 @@ async function init() {
           duration: 1.2,
           ease: "elastic.out(1, 0.6)",
           delay: 0.2,
+          onUpdate: requestRender,
+          onComplete: requestRender,
         });
       },
       undefined,
@@ -161,19 +195,38 @@ async function init() {
     loadError.value = true;
   }
 
-  /* ── Render loop ── */
-  function animate() {
-    rafId = requestAnimationFrame(animate);
-    renderer.render(scene, camera);
+  requestRender();
+}
+
+function requestRender() {
+  if (!isVisible || !renderer || !scene || !camera || renderRafId !== null) {
+    return;
   }
-  animate();
+
+  renderRafId = requestAnimationFrame(() => {
+    renderRafId = null;
+    if (!isVisible || !renderer || !scene || !camera) return;
+    renderer.render(scene, camera);
+  });
 }
 
 /* ══════════════════════════════════════════════
    MOUSE TILT
 ══════════════════════════════════════════════ */
 function onMouseMove(e: MouseEvent) {
-  if (!tiltGroup || loading.value) return;
+  pendingMouseEvent = e;
+  if (mouseRafId !== null) return;
+
+  mouseRafId = requestAnimationFrame(() => {
+    mouseRafId = null;
+    const event = pendingMouseEvent;
+    pendingMouseEvent = null;
+    if (event) applyMouseMove(event);
+  });
+}
+
+function applyMouseMove(e: MouseEvent) {
+  if (!tiltGroup || loading.value || !isVisible) return;
 
   const container = containerRef.value;
   if (!container) return;
@@ -193,11 +246,14 @@ function onMouseMove(e: MouseEvent) {
     duration: 0.6,
     ease: "power2.out",
     overwrite: "auto",
+    onUpdate: requestRender,
+    onComplete: requestRender,
   });
 }
 
 function onMouseLeave() {
   if (!tiltGroup) return;
+  pendingMouseEvent = null;
 
   /* Spring back to neutral */
   gsap.to(tiltGroup.rotation, {
@@ -206,6 +262,8 @@ function onMouseLeave() {
     duration: 1.2,
     ease: "elastic.out(1, 0.5)",
     overwrite: "auto",
+    onUpdate: requestRender,
+    onComplete: requestRender,
   });
 }
 
@@ -214,11 +272,13 @@ function onMouseLeave() {
 ══════════════════════════════════════════════ */
 function onResize() {
   if (!renderer || !camera || !containerRef.value) return;
-  const w = containerRef.value.offsetWidth;
-  const h = containerRef.value.offsetHeight;
-  renderer.setSize(w, h);
+  const w = containerRef.value.clientWidth;
+  const h = containerRef.value.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
+  requestRender();
 }
 
 /* ══════════════════════════════════════════════
@@ -226,13 +286,43 @@ function onResize() {
 ══════════════════════════════════════════════ */
 onMounted(() => {
   isMounted = true;
-  init();
-  window.addEventListener("resize", onResize);
+
+  const container = containerRef.value;
+  if (!container) {
+    loading.value = false;
+    return;
+  }
+
+  if ("IntersectionObserver" in window) {
+    intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry?.isIntersecting ?? false;
+        if (isVisible) {
+          init();
+          requestRender();
+        }
+      },
+      { rootMargin: "160px 0px", threshold: 0 }
+    );
+    intersectionObserver.observe(container);
+  } else {
+    isVisible = true;
+    init();
+  }
 });
 
 onUnmounted(() => {
   isMounted = false;
-  if (rafId) cancelAnimationFrame(rafId);
+  if (renderRafId) cancelAnimationFrame(renderRafId);
+  if (mouseRafId) cancelAnimationFrame(mouseRafId);
+  if (resizeRafId) cancelAnimationFrame(resizeRafId);
+  resizeObserver?.disconnect();
+  intersectionObserver?.disconnect();
+  if (tiltGroup) gsap.killTweensOf(tiltGroup.rotation);
+  if (modelRoot) {
+    gsap.killTweensOf(modelRoot.scale);
+    disposeObject(modelRoot);
+  }
   if (renderer) {
     renderer.forceContextLoss();
     renderer.dispose();
@@ -241,9 +331,30 @@ onUnmounted(() => {
   scene = null;
   camera = null;
   tiltGroup = null;
-  rafId = null;
-  window.removeEventListener("resize", onResize);
+  modelRoot = null;
+  renderRafId = null;
+  mouseRafId = null;
+  resizeRafId = null;
 });
+
+function disposeObject(object: any) {
+  object.traverse?.((child: any) => {
+    if (child.geometry) child.geometry.dispose?.();
+
+    const materials = Array.isArray(child.material)
+      ? child.material
+      : child.material
+        ? [child.material]
+        : [];
+
+    materials.forEach((material: any) => {
+      Object.values(material).forEach((value: any) => {
+        if (value?.isTexture) value.dispose?.();
+      });
+      material.dispose?.();
+    });
+  });
+}
 </script>
 
 <style scoped>

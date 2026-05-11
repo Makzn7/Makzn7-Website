@@ -14,7 +14,6 @@ const splashAnimating = ref(false);
 
 const { scrollContainer, lockPageScroll, unlockPageScroll } =
   usePageScrollShell();
-useGsapReveal();
 
 const { t } = useI18n();
 

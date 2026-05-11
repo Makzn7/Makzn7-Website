@@ -1,5 +1,6 @@
 export interface LenisInstance {
   on(event: string, callback: (...args: unknown[]) => void): void;
+  off?(event: string, callback: (...args: unknown[]) => void): void;
   resize?(): void;
 }
 

@@ -13,6 +13,7 @@
           <div ref="ceilRef" class="sync-content">
             <PageContent
               :projects="featuredProjects"
+              :with-animations="false"
               :margin-top="4"
               :mobile-margin-top="7"
               :px="0"
@@ -55,6 +56,7 @@
           <div ref="floorRef" class="sync-content px-[2.5rem] lg:px-[4.5rem]">
             <PageContent
               :projects="featuredProjects"
+              :with-animations="false"
               :margin-top="6"
               :mobile-margin-top="3.5"
               :px="0"
@@ -96,8 +98,6 @@ const colorMode = useColorMode();
 const featuredProjects = computed(() => props.homeData?.projects ?? []);
 const hero3d = computed(() => props.homeData?.data?.hero_3d ?? null);
 const heroData = computed(() => props.homeData?.data?.hero ?? null);
-
-console.log(hero3d.value);
 
 /* ── refs ── */
 const centerBoxRef = ref(null);
