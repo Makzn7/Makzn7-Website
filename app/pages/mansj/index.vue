@@ -33,7 +33,7 @@ useHead({
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>
-      <ContactSection bgColor="#0F2943" borderClasses="border-white-op50" />
+      <ContactSection borderClasses="border-white-op50" />
     </section>
   </div>
 </template>
