@@ -263,6 +263,12 @@ html.has-scroll-smooth {
     --gap: 4.75rem;
     --persp: 100px;
   }
+  .section-body {
+    margin-inline-start: 0 !important;
+  }
+  .image-section {
+    margin-inline-end: 0 !important;
+  }
 }
 
 /* Small Laptop */

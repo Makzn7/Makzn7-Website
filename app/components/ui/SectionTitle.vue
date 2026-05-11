@@ -1,17 +1,16 @@
 <template>
   <div
-    class="w-full border-s-[0.3px] border-t-[0.3px] border-brand-text px-8 py-12"
+    class="section-title w-full lg:border-s-[0.3px] lg:border-t-[0.3px] border-brand-text px-6 py-6 lg:px-8 lg:py-12"
     :style="`margin-inline-start: ${marginS}px;`"
   >
-    <h1
-      class="leading-[1.2] tracking-[0px]"
-      :style="`font-size: clamp(${Math.max(
-        40,
-        Math.round(titleS * 0.35)
-      )}px, ${(titleS / 20).toFixed(1)}vw, ${titleS}px);`"
+    <h2
+      class="font-light lg:font-normal leading-[1.2] tracking-[0px]"
+      :style="`font-size: clamp(34px, ${(titleS / 20).toFixed(
+        1
+      )}vw, ${titleS}px);`"
     >
       {{ title }}
-    </h1>
+    </h2>
   </div>
 </template>
 <script setup lang="ts">
@@ -21,3 +20,10 @@ const props = defineProps({
   title: { type: String, default: "" },
 });
 </script>
+<style scoped>
+@media (max-width: 768px) {
+  .section-title {
+    margin-inline-start: 0 !important;
+  }
+}
+</style>

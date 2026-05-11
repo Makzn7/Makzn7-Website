@@ -1,19 +1,37 @@
 <template>
-  <div class="relative" :style="`margin-top: ${marginTop}rem;`">
+  <div
+    class="page-content relative"
+    :style="{
+      '--mt': marginTop + 'rem',
+      '--mt-mobile': (props.mobileMarginTop ?? props.marginTop) + 'rem',
+    }"
+  >
     <!-- content -->
     <div class="flex flex-col w-full min-h-screen text-white">
       <!--  -->
       <div
-        class="w-full border-b-[0.3px] border-white-op50 border-brand-text h-[90px]"
+        class="w-full lg:border-b-[0.3px] border-white-op50 border-brand-text h-[90px]"
       >
         <div
-          class="border-e-[0.3px] border-white-op50 h-full"
+          class="flex logo-image p-4 w-full lg:hidden justify-center items-center"
+        >
+          <NuxtLink to="/">
+            <img
+              src="/logos/svg/logo_black.svg"
+              width="100"
+              alt="Makzn7"
+              class="dark:invert"
+            />
+          </NuxtLink>
+        </div>
+        <div
+          class="lg:border-e-[0.3px] border-white-op50 h-full"
           :style="`width: ${marginS}px;`"
         ></div>
       </div>
       <!--  -->
       <div
-        class="w-full border-s-[0.3px] border-white-op50 border-brand-text"
+        class="hidden lg:block w-full lg:border-s-[0.3px] border-white-op50 border-brand-text"
         :style="`margin-inline-start: ${marginS}px;`"
       >
         <div>
@@ -29,11 +47,11 @@
           class="border-white-op50"
         />
         <div
-          class="w-full border-s-[0.3px] border-t-[0.3px] border-white-op50 border-brand-text px-8 py-16"
+          class="section-body w-full lg:border-s-[0.3px] lg:border-t-[0.3px] border-white-op50 border-brand-text px-6 py-6 lg:px-8 lg:py-16"
           :style="`margin-inline-start: ${marginS}px;`"
         >
           <div
-            class="font-light tracking-[0px] pe-[8rem]"
+            class="font-light tracking-[0px] lg:pe-[8rem]"
             :style="`font-size: clamp(${Math.max(
               16,
               Math.round(descSize * 0.35)
@@ -79,6 +97,7 @@ import type { Page } from "~/types/page";
 const props = withDefaults(
   defineProps<{
     marginTop?: number;
+    mobileMarginTop?: number;
     marginS?: number;
     px?: number;
     imageW?: number;
@@ -91,6 +110,7 @@ const props = withDefaults(
   }>(),
   {
     marginTop: 4,
+    mobileMarginTop: 4,
     marginS: 140,
     px: 1,
     imageW: 100,
@@ -104,3 +124,18 @@ const props = withDefaults(
 
 const { locale } = useI18n();
 </script>
+<style scoped>
+.page-content {
+  margin-top: var(--mt, 4rem);
+}
+
+@media (max-width: 767px) {
+  .page-content {
+    margin-top: var(--mt-mobile, var(--mt, 4rem));
+  }
+  .pc-project-px {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
+}
+</style>

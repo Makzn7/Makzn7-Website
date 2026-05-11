@@ -204,12 +204,6 @@ function onEnter(e: MouseEvent) {
 .page-content {
   margin-top: var(--mt, 4rem);
 }
-
-@media (max-width: 767px) {
-  .page-content {
-    margin-top: var(--mt-mobile, var(--mt, 4rem));
-  }
-}
 .pc-hero-grid {
   padding: 0 var(--px, 1rem);
 }
@@ -218,7 +212,10 @@ function onEnter(e: MouseEvent) {
   padding-left: var(--ppx, 4rem);
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767px) {
+  .page-content {
+    margin-top: var(--mt-mobile, var(--mt, 4rem));
+  }
   .pc-project-px {
     padding-right: 2rem;
     padding-left: 2rem;

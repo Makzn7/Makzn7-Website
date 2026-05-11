@@ -1,7 +1,10 @@
 <!-- HomeHero2 -->
 <template>
   <div class="app-container relative dark bg-brand-bg">
-    <div class="absolute logo-image p-4 rtl:right-[var(--railW)]">
+    <div
+      class="hidden absolute logo-image p-4 w-full lg:flex justify-start items-center"
+      style="width: calc(100% - (var(--railW) * 2))"
+    >
       <NuxtLink to="/">
         <img
           src="/logos/svg/logo_black.svg"
@@ -19,10 +22,11 @@
       <!-- center-box: الـ 3D perspective container -->
       <div ref="centerBoxRef" class="center-box" @wheel="onWheel">
         <!-- ══ السقف (top-part) — rotateX(-90deg) ══ -->
-        <div class="top-part px-[5.5rem]">
+        <div class="top-part px-[2.5rem] lg:px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
             <PageContent
               :margin-top="3"
+              :mobile-margin-top="2"
               :px="0"
               :margin-s="113"
               :image-w="73"
@@ -41,6 +45,7 @@
           <div ref="wallRef" class="sync-content">
             <PageContent
               :margin-top="0"
+              :mobile-margin-top="0"
               :pageDetails="makzn7Page"
               :awards="awards"
             />
@@ -53,9 +58,10 @@
 
         <!-- ══ الأرض (bottom-part) — rotateX(+90deg) ══ -->
         <div class="bottom-part">
-          <div ref="floorRef" class="sync-content px-[5.5rem]">
+          <div ref="floorRef" class="sync-content px-[2.5rem] lg:px-[5.5rem]">
             <PageContent
               :margin-top="5"
+              :mobile-margin-top="3.5"
               :px="0"
               :margin-s="115"
               :image-w="70"

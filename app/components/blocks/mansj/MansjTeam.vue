@@ -4,18 +4,14 @@
       :title="$t('about.teamTitle')"
       :marginS="marginS"
       :titleS="titleS"
-      class="border-white-op50"
+      class="border-white-op50 border-t-[0.3px]"
     />
     <div
-      class="w-full relative border-s-[0.3px] border-t-[0.3px] border-white-op50 border-brand-text ps-12 pe-44"
-      :style="`margin-inline-start: ${marginS}px; padding-top: ${py}rem; padding-bottom: ${
-        py - 2
-      }rem;`"
+      class="section-body w-full relative lg:border-s-[0.3px] border-t-[0.3px] border-white-op50 border-brand-text px-6 py-6 lg:ps-12 lg:pe-44"
+      :style="`margin-inline-start: ${marginS}px;`"
     >
       <div class="page-team-line"></div>
-      <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 overflow-visible"
-      >
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 overflow-visible">
         <template v-for="(team, index) in teams" :key="index">
           <!-- Slanted line in 4th column after first 3 items -->
           <div
@@ -69,7 +65,7 @@
               <h3
                 class="font-semibold"
                 :style="`font-size: clamp(${Math.max(
-                  18,
+                  16,
                   Math.round(nameS * 0.35)
                 )}px, ${(nameS / 20).toFixed(1)}vw, ${nameS}px);`"
               >
