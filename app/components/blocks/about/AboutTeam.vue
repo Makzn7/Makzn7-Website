@@ -4,7 +4,7 @@
       :title="$t('about.teamTitle')"
       :marginS="marginS"
       :titleS="titleS"
-      class="border-white-op50"
+      class="border-white-op50 border-b-[0.3px] border-t-[0.3px] lg:border-t-0"
     />
     <div
       class="section-body w-full relative lg:border-s-[0.3px] lg:border-t-[0.3px] border-white-op50 border-brand-text px-6 py-6 lg:ps-12 lg:pe-44"
