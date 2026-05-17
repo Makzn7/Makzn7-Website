@@ -1,8 +1,11 @@
 <!-- HomeHero2 -->
 <template>
   <div
-    class="app-container relative dark bg-[#D3C393] text-[#292B2C]"
-    style="--color-primary: #292b2c; --border-op-color: rgba(41, 43, 44, 0.7)"
+    class="app-container relative dark bg-[var(--manjra-bg-color)] text-[var(--manjra-text-color)]"
+    style="
+      --color-primary: var(--manjra-text-color);
+      --border-op-color: rgba(41, 43, 44, 0.7);
+    "
   >
     <div
       class="hidden absolute logo-image p-4 w-full lg:flex justify-start items-center"

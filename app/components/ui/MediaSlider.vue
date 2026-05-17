@@ -1,18 +1,33 @@
 <template>
   <div class="media-slider" ref="sliderRef">
     <!-- Main display -->
-    <div class="slider-viewport" ref="viewportRef">
+    <div
+      class="slider-viewport"
+      ref="viewportRef"
+      @pointerdown="onPointerDown"
+      @pointermove="onPointerMove"
+      @pointerup="onPointerUp"
+      @pointercancel="onPointerUp"
+      @lostpointercapture="onPointerUp"
+    >
       <div
         class="slider-track"
-        :style="{ transform: `translateX(${-currentIndex * 100}%)` }"
+        :class="{ 'is-dragging': isDragging }"
+        :style="trackStyle"
       >
-        <div v-for="(item, index) in items" :key="index" class="slider-slide">
+        <div
+          v-for="(item, index) in items"
+          :key="index"
+          class="slider-slide"
+          :style="{ width: `${getSlideWidth(index)}px` }"
+        >
           <!-- Image -->
           <img
             v-if="item.type === 'image'"
             :src="item.src"
             :alt="item.alt || ''"
             class="slider-media"
+            draggable="false"
             loading="lazy"
           />
           <!-- Video -->
@@ -32,6 +47,7 @@
             :src="item.src"
             :alt="item.alt || ''"
             class="slider-media"
+            draggable="false"
             loading="lazy"
           />
         </div>
@@ -73,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import type { Media } from "~/types/project";
 
 const props = withDefaults(
@@ -88,61 +104,177 @@ const props = withDefaults(
   }
 );
 
+/* ── refs ── */
 const sliderRef = ref<HTMLElement | null>(null);
 const viewportRef = ref<HTMLElement | null>(null);
 const currentIndex = ref(0);
+const isDragging = ref(false);
+const dragOffset = ref(0);
+const viewportWidth = ref(0);
+const isDesktop = ref(false);
 
-let autoplayTimer: ReturnType<typeof setInterval> | null = null;
-let touchStartX = 0;
-let touchDeltaX = 0;
+/* On desktop we show the current image plus ~15% of the next one as a
+   "peek" — except on the last image, which fills the viewport. */
+const PEEK_RATIO = 0.15;
 
+const slideWidth = computed(() =>
+  isDesktop.value
+    ? Math.round(viewportWidth.value * (1 - PEEK_RATIO))
+    : viewportWidth.value
+);
+
+function getSlideWidth(index: number): number {
+  // Last slide gets full width — there's no following image to peek at.
+  if (index === props.items.length - 1) return viewportWidth.value;
+  return slideWidth.value;
+}
+
+const trackOffset = computed(() => {
+  let offset = 0;
+  for (let i = 0; i < currentIndex.value; i++) {
+    offset += getSlideWidth(i);
+  }
+  return -offset;
+});
+
+/* Visual offset combines the snapped position with any live drag delta */
+const trackStyle = computed(() => ({
+  transform: `translate3d(${trackOffset.value + dragOffset.value}px, 0, 0)`,
+}));
+
+/* ── navigation ── */
 function prev() {
-  if (currentIndex.value > 0) {
-    currentIndex.value--;
-  }
+  if (currentIndex.value > 0) currentIndex.value--;
 }
-
 function next() {
-  if (currentIndex.value < props.items.length - 1) {
-    currentIndex.value++;
-  }
+  if (currentIndex.value < props.items.length - 1) currentIndex.value++;
 }
-
 function goTo(index: number) {
   currentIndex.value = index;
 }
 
-/* Touch / swipe support */
-function onTouchStart(e: TouchEvent) {
-  touchStartX = e.touches[0]?.clientX ?? 0;
-  touchDeltaX = 0;
+/* ── measurement ── */
+function measure() {
+  const el = viewportRef.value;
+  if (!el || typeof window === "undefined") return;
+  viewportWidth.value = el.clientWidth;
+  isDesktop.value = window.matchMedia("(min-width: 1024px)").matches;
 }
 
-function onTouchMove(e: TouchEvent) {
-  touchDeltaX = (e.touches[0]?.clientX ?? 0) - touchStartX;
+/* ── pointer-driven drag (covers touch + mouse + pen uniformly) ── */
+let pointerStartX = 0;
+let pointerStartY = 0;
+let pointerId: number | null = null;
+let dragAxisLocked: "h" | "v" | null = null;
+const AXIS_LOCK_DISTANCE = 6; // px before we commit to horizontal or vertical
+
+function rtlSign() {
+  return typeof document !== "undefined" &&
+    document.documentElement.dir === "rtl"
+    ? -1
+    : 1;
 }
 
-function onTouchEnd() {
-  const threshold = 50;
-  if (touchDeltaX > threshold) {
-    // Check RTL
-    const isRTL = document.documentElement.dir === "rtl";
-    isRTL ? next() : prev();
-  } else if (touchDeltaX < -threshold) {
-    const isRTL = document.documentElement.dir === "rtl";
-    isRTL ? prev() : next();
+function onPointerDown(e: PointerEvent) {
+  if (props.items.length <= 1) return;
+  // Ignore right/middle clicks
+  if (e.pointerType === "mouse" && e.button !== 0) return;
+  // Ignore clicks bubbling up from interactive children (e.g. dot buttons)
+  if ((e.target as HTMLElement | null)?.closest("button")) return;
+
+  pointerStartX = e.clientX;
+  pointerStartY = e.clientY;
+  pointerId = e.pointerId;
+  dragAxisLocked = null;
+  dragOffset.value = 0;
+  isDragging.value = true;
+
+  // Pause autoplay while user is interacting
+  stopAutoplay();
+}
+
+function onPointerMove(e: PointerEvent) {
+  if (!isDragging.value || e.pointerId !== pointerId) return;
+
+  const deltaX = e.clientX - pointerStartX;
+  const deltaY = e.clientY - pointerStartY;
+
+  /* Axis lock: once the user has moved past a small threshold, decide if
+     they're swiping the slider (horizontal) or scrolling the page
+     (vertical). If vertical, abandon the drag so the page can scroll. */
+  if (dragAxisLocked === null) {
+    if (Math.abs(deltaX) < AXIS_LOCK_DISTANCE && Math.abs(deltaY) < AXIS_LOCK_DISTANCE) {
+      return;
+    }
+    dragAxisLocked = Math.abs(deltaX) > Math.abs(deltaY) ? "h" : "v";
+    if (dragAxisLocked === "v") {
+      cancelDrag();
+      return;
+    }
+    // Take pointer capture only after we know it's a horizontal swipe so
+    // we don't hijack vertical scrolls.
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      /* setPointerCapture can throw if the pointer is no longer active */
+    }
   }
+
+  // Resist beyond the edges so the track feels tied to the content
+  let resistedDelta = deltaX;
+  const atStart = currentIndex.value === 0;
+  const atEnd = currentIndex.value === props.items.length - 1;
+  const isRtl = rtlSign() === -1;
+  // Treat "moving away from a boundary" with resistance
+  const movingPastStart = isRtl ? deltaX < 0 : deltaX > 0;
+  const movingPastEnd = isRtl ? deltaX > 0 : deltaX < 0;
+  if ((atStart && movingPastStart) || (atEnd && movingPastEnd)) {
+    resistedDelta = deltaX * 0.35;
+  }
+  dragOffset.value = resistedDelta;
 }
 
-/* Keyboard support */
+function onPointerUp(e: PointerEvent) {
+  if (!isDragging.value) return;
+  if (e.pointerId !== pointerId && pointerId !== null) return;
+
+  isDragging.value = false;
+  pointerId = null;
+
+  const delta = dragOffset.value;
+  const isRtl = rtlSign() === -1;
+  // Threshold: 18% of slide width or 40px, whichever is larger
+  const threshold = Math.max(40, slideWidth.value * 0.18);
+
+  if (delta > threshold) {
+    isRtl ? next() : prev();
+  } else if (delta < -threshold) {
+    isRtl ? prev() : next();
+  }
+
+  dragOffset.value = 0;
+  dragAxisLocked = null;
+  startAutoplay();
+}
+
+function cancelDrag() {
+  isDragging.value = false;
+  dragOffset.value = 0;
+  pointerId = null;
+  dragAxisLocked = null;
+}
+
+/* ── keyboard ── */
 function onKeydown(e: KeyboardEvent) {
-  if (e.key === "ArrowLeft") prev();
-  else if (e.key === "ArrowRight") next();
+  if (e.key === "ArrowLeft") (rtlSign() === -1 ? next : prev)();
+  else if (e.key === "ArrowRight") (rtlSign() === -1 ? prev : next)();
 }
 
-/* Autoplay */
+/* ── autoplay ── */
+let autoplayTimer: ReturnType<typeof setInterval> | null = null;
 function startAutoplay() {
   if (!props.autoplay || props.items.length <= 1) return;
+  stopAutoplay();
   autoplayTimer = setInterval(() => {
     if (currentIndex.value < props.items.length - 1) {
       currentIndex.value++;
@@ -151,7 +283,6 @@ function startAutoplay() {
     }
   }, props.interval);
 }
-
 function stopAutoplay() {
   if (autoplayTimer) {
     clearInterval(autoplayTimer);
@@ -159,22 +290,29 @@ function stopAutoplay() {
   }
 }
 
+/* ── lifecycle ── */
+let resizeObserver: ResizeObserver | null = null;
+let mediaQuery: MediaQueryList | null = null;
+
 onMounted(() => {
-  const el = viewportRef.value;
-  if (el) {
-    el.addEventListener("touchstart", onTouchStart, { passive: true });
-    el.addEventListener("touchmove", onTouchMove, { passive: true });
-    el.addEventListener("touchend", onTouchEnd);
+  measure();
+  if (typeof ResizeObserver !== "undefined" && viewportRef.value) {
+    resizeObserver = new ResizeObserver(() => measure());
+    resizeObserver.observe(viewportRef.value);
+  }
+  if (typeof window !== "undefined") {
+    mediaQuery = window.matchMedia("(min-width: 1024px)");
+    mediaQuery.addEventListener?.("change", measure);
+    window.addEventListener("keydown", onKeydown);
   }
   startAutoplay();
 });
 
 onUnmounted(() => {
-  const el = viewportRef.value;
-  if (el) {
-    el.removeEventListener("touchstart", onTouchStart);
-    el.removeEventListener("touchmove", onTouchMove);
-    el.removeEventListener("touchend", onTouchEnd);
+  resizeObserver?.disconnect();
+  mediaQuery?.removeEventListener?.("change", measure);
+  if (typeof window !== "undefined") {
+    window.removeEventListener("keydown", onKeydown);
   }
   stopAutoplay();
 });
@@ -184,32 +322,69 @@ onUnmounted(() => {
 .media-slider {
   position: relative;
   width: 100%;
-  overflow: hidden;
-  max-height: 65vh;
+  height: 100%;
+  /* `contain: layout paint` isolates re-paints from drag updates */
+  contain: layout paint;
+  background: var(--color-bg-secondary, #0a0a0a);
 }
 
 .slider-viewport {
   width: 100%;
+  /* Inherits height from the parent (callers set their own aspect ratio /
+     max-height). Falls back to a sensible value if mounted standalone. */
+  height: 100%;
+  min-height: 220px;
   overflow: hidden;
+  /* Hint the browser this is a horizontal swipe region — improves
+     touch-action ergonomics so vertical page scroll still works. */
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.slider-viewport.is-dragging,
+.slider-track.is-dragging {
+  cursor: grabbing;
 }
 
 .slider-track {
   display: flex;
-  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  height: 100%;
   will-change: transform;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.slider-track.is-dragging {
+  transition: none;
 }
 
 .slider-slide {
-  flex: 0 0 100%;
-  width: 100%;
-  max-height: 65vh;
+  /* width set inline (depends on viewport + peek + last-slide rule) */
+  flex: 0 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Tiny gap between slides so the peek edge reads as a separate image */
+  padding-right: 1px;
+}
+html[dir="rtl"] .slider-slide {
+  padding-right: 0;
+  padding-left: 1px;
+}
+.slider-slide:last-child {
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .slider-media {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* `contain` keeps the whole image visible — the brief explicitly asked
+     for full visibility rather than crop. */
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
 
 /* Arrows */
@@ -227,44 +402,46 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.3s ease, opacity 0.3s ease;
+  transition:
+    background 0.3s ease,
+    opacity 0.3s ease;
   opacity: 0;
 }
 
 .media-slider:hover .slider-arrow {
   opacity: 1;
 }
-
 .slider-arrow:hover {
   background: rgba(0, 0, 0, 0.7);
 }
-
 .slider-arrow--prev {
   left: 12px;
 }
-
 .slider-arrow--next {
   right: 12px;
 }
-
 html[dir="rtl"] .slider-arrow--prev {
   left: auto;
   right: 12px;
 }
-
 html[dir="rtl"] .slider-arrow--next {
   right: auto;
   left: 12px;
 }
-
 .slider-arrow--disabled {
   opacity: 0 !important;
   pointer-events: none;
 }
-
 .arrow-icon {
   font-size: 18px;
   line-height: 1;
+}
+
+/* Hide arrows on touch-only devices — drag covers navigation */
+@media (hover: none) {
+  .slider-arrow {
+    display: none;
+  }
 }
 
 /* Dots */

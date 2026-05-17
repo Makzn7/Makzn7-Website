@@ -44,20 +44,19 @@
           "
         ></div>
       </div>
-      <div class="relative image-3d-container">
+      <div ref="modelFrameRef" class="relative image-3d-container">
         <HeroGrid1
           aspectRatio="none"
-          class="h-[400px] lg:h-[700px]"
+          class="hero-grid-visual"
           :cols="45"
           :rows="40"
         />
         <!-- 3D model overlay — interactive tilt on hover -->
-        <div
-          class="absolute top-[5%] start-[5%] w-[90%] h-[90%] lg:top-0 lg:start-0 lg:w-full lg:h-full model-3d-wrap"
-        >
+        <div class="model-3d-wrap">
           <ClientOnly>
             <HeroModel3D
               v-if="modelPath"
+              :key="modelPath"
               class="w-full h-full"
               :modelScale="effectiveModelScale"
               :modelPath="modelPath"
@@ -162,36 +161,61 @@ const props = withDefaults(
 const emit = defineEmits(["hover-enter", "hover-leave"]);
 const { locale } = useI18n();
 
-const contentRef = ref(null);
+const contentRef = ref<HTMLElement | null>(null);
+const modelFrameRef = ref<HTMLElement | null>(null);
 if (props.withAnimations) {
   useScrollAnimation(contentRef);
 }
 
-/* ── Mobile detection for responsive model scale ── */
-const isMobile = ref(false);
-let mobileQuery: MediaQueryList | null = null;
-let onMobileChange: ((event: MediaQueryListEvent) => void) | null = null;
+/* ── Responsive model frame + scale ── */
+const modelFrame = ref({ width: 1024, height: 700 });
+let modelResizeObserver: ResizeObserver | null = null;
+let windowResizeHandler: (() => void) | null = null;
 
-function setMobile(matches: boolean) {
-  isMobile.value = matches;
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
+
+function updateModelFrame() {
+  const frame = modelFrameRef.value;
+  if (!frame) return;
+  const width = frame.clientWidth;
+  const height = frame.clientHeight;
+  if (!width || !height) return;
+  modelFrame.value = {
+    width,
+    height,
+  };
 }
 
 onMounted(() => {
-  mobileQuery = window.matchMedia("(max-width: 767px)");
-  setMobile(mobileQuery.matches);
-  onMobileChange = (event) => {
-    setMobile(event.matches);
-  };
-  mobileQuery.addEventListener?.("change", onMobileChange);
-});
-onUnmounted(() => {
-  if (mobileQuery && onMobileChange) {
-    mobileQuery.removeEventListener?.("change", onMobileChange);
+  updateModelFrame();
+
+  if (modelFrameRef.value && "ResizeObserver" in window) {
+    modelResizeObserver = new ResizeObserver(() => updateModelFrame());
+    modelResizeObserver.observe(modelFrameRef.value);
+  } else {
+    windowResizeHandler = () => updateModelFrame();
+    window.addEventListener("resize", windowResizeHandler);
   }
-  mobileQuery = null;
-  onMobileChange = null;
 });
-const effectiveModelScale = computed(() => (isMobile.value ? 2.0 : 3.5));
+
+onUnmounted(() => {
+  modelResizeObserver?.disconnect();
+  if (windowResizeHandler) {
+    window.removeEventListener("resize", windowResizeHandler);
+  }
+  modelResizeObserver = null;
+  windowResizeHandler = null;
+});
+
+const effectiveModelScale = computed(() => {
+  const { width, height } = modelFrame.value;
+  const aspect = width / Math.max(height, 1);
+  const widthScale = clamp(2.15 + (width - 320) * 0.00155, 2.2, 3.55);
+  const aspectScale = aspect < 0.9 ? 0.92 : aspect < 1.15 ? 0.97 : 1;
+  return Number((widthScale * aspectScale).toFixed(2));
+});
 
 function onEnter(e: MouseEvent) {
   const target = e.currentTarget as HTMLElement | null;
@@ -219,8 +243,36 @@ function onEnter(e: MouseEvent) {
   padding-right: var(--ppx, 4rem);
   padding-left: var(--ppx, 4rem);
 }
+.image-3d-container {
+  height: clamp(25rem, 52vw, 43.75rem);
+  overflow: visible;
+}
+.hero-grid-visual {
+  height: 100%;
+  min-height: 100%;
+}
+.model-3d-wrap {
+  position: absolute;
+  inset: clamp(0rem, 1.4vw, 1.25rem);
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .image-3d-container {
+    height: clamp(30rem, 66vw, 40rem);
+  }
+  .model-3d-wrap {
+    inset: 0;
+  }
+}
 
 @media (max-width: 767px) {
+  .image-3d-container {
+    height: clamp(22rem, 96vw, 32rem);
+    margin-inline: -0.5rem;
+  }
+  .model-3d-wrap {
+    inset: -3% -6% 1%;
+  }
   .page-content {
     margin-top: var(--mt-mobile, var(--mt, 4rem));
   }

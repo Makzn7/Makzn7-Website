@@ -2,13 +2,8 @@
   <div
     ref="containerRef"
     class="hero-model-wrapper"
-    :class="{ 'is-dragging': dragging }"
     @mousemove="onMouseMove"
     @mouseleave="onMouseLeave"
-    @pointerdown="onPointerDown"
-    @pointermove="onPointerMove"
-    @pointerup="onPointerUp"
-    @pointercancel="onPointerUp"
   >
     <canvas ref="canvasRef" class="hero-model-canvas"></canvas>
 
@@ -52,13 +47,11 @@ const containerRef = ref<HTMLDivElement | null>(null);
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const loading = ref(false);
 const loadError = ref(false);
-const dragging = ref(false);
 
 /* ── Three.js state ── */
 let renderer: any = null;
 let scene: any = null;
 let camera: any = null;
-let rotationGroup: any = null; // persistent drag rotation
 let tiltGroup: any = null; // mouse-driven tilt
 let modelRoot: any = null;
 let renderRafId: number | null = null;
@@ -67,67 +60,24 @@ let resizeRafId: number | null = null;
 let pendingMouseEvent: MouseEvent | null = null;
 let modelBaseMaxDim = 1;
 let modelBaseCenter: any = null;
-let modelBaseSize: any = null;
 let resizeObserver: ResizeObserver | null = null;
 let intersectionObserver: IntersectionObserver | null = null;
 let isMounted = false;
 let isVisible = false;
 let initStarted = false;
-let dragPointerId: number | null = null;
-let dragStartX = 0;
-let dragStartY = 0;
-let dragStartRotationX = 0;
-let dragStartRotationY = 0;
-
-const DRAG_ROTATE_SPEED = 0.01;
-const DRAG_TILT_SPEED = 0.005;
-const DRAG_TILT_LIMIT = Math.PI * 0.28;
 
 function getRendererPixelRatio() {
   return window.devicePixelRatio || 1;
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
 }
 
 function getFinalModelScale() {
   return props.modelScale / modelBaseMaxDim;
 }
 
-function fitCameraToModel(scale = getFinalModelScale()) {
-  if (!camera || !modelBaseSize || !containerRef.value) return;
-
-  const width = containerRef.value.clientWidth;
-  const height = containerRef.value.clientHeight;
-  if (!width || !height) return;
-
-  const aspect = width / height;
-  const verticalFov = (camera.fov * Math.PI) / 180;
-  const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * aspect);
-  const fitFov = Math.min(verticalFov, horizontalFov);
-  const baseRadius =
-    Math.sqrt(
-      modelBaseSize.x * modelBaseSize.x +
-        modelBaseSize.y * modelBaseSize.y +
-        modelBaseSize.z * modelBaseSize.z
-    ) * 0.5;
-
-  const radius = baseRadius * scale;
-  const distance = (radius * 1.12) / Math.sin(fitFov / 2);
-
-  camera.position.set(0, 0, Math.max(distance, 2.2));
-  camera.near = Math.max(camera.position.z / 120, 0.01);
-  camera.far = Math.max(200, camera.position.z + radius * 6);
-  camera.lookAt(0, 0, 0);
-  camera.updateProjectionMatrix();
-}
-
 function applyModelScale(scale = getFinalModelScale()) {
   if (!modelRoot || !modelBaseCenter) return;
   modelRoot.scale.setScalar(scale);
   modelRoot.position.copy(modelBaseCenter).multiplyScalar(-scale);
-  fitCameraToModel(scale);
   requestRender();
 }
 
@@ -180,18 +130,24 @@ async function init() {
   camera.position.z = 4;
 
   /* ── Lights ── */
-  const ambient = new THREE.AmbientLight("#ffffff", 1);
+  const ambient = new THREE.HemisphereLight("#ffffff", "#f2f2f2", 1.25);
   scene.add(ambient);
 
-  const key = new THREE.DirectionalLight("#ffffff", 0.35);
+  const key = new THREE.DirectionalLight("#ffffff", 1.6);
   key.position.set(4, 6, 5);
   scene.add(key);
 
-  /* ── Rotation group — drag 360, tilt group — mouse hover ── */
-  rotationGroup = new THREE.Group();
+  const fill = new THREE.DirectionalLight("#ffffff", 0.75);
+  fill.position.set(-5, 2, -3);
+  scene.add(fill);
+
+  const rim = new THREE.DirectionalLight("#ffffff", 0.5);
+  rim.position.set(0, -4, -6);
+  scene.add(rim);
+
+  /* ── Tilt group — mouse-driven only ── */
   tiltGroup = new THREE.Group();
-  rotationGroup.add(tiltGroup);
-  scene.add(rotationGroup);
+  scene.add(tiltGroup);
 
   resizeObserver = new ResizeObserver(() => {
     if (resizeRafId !== null) return;
@@ -219,12 +175,10 @@ async function init() {
         const maxDim = Math.max(size.x, size.y, size.z);
         modelBaseMaxDim = maxDim || 1;
         modelBaseCenter = center.clone();
-        modelBaseSize = size.clone();
 
         const finalScale = getFinalModelScale();
         model.scale.setScalar(finalScale);
         model.position.copy(center).multiplyScalar(-finalScale);
-        fitCameraToModel(finalScale);
 
         tiltGroup.add(model);
         loading.value = false;
@@ -287,7 +241,7 @@ function onMouseMove(e: MouseEvent) {
 }
 
 function applyMouseMove(e: MouseEvent) {
-  if (!tiltGroup || dragging.value || loading.value || !isVisible) return;
+  if (!tiltGroup || loading.value || !isVisible) return;
 
   const container = containerRef.value;
   if (!container) return;
@@ -313,7 +267,7 @@ function applyMouseMove(e: MouseEvent) {
 }
 
 function onMouseLeave() {
-  if (!tiltGroup || dragging.value) return;
+  if (!tiltGroup) return;
   pendingMouseEvent = null;
 
   /* Spring back to neutral */
@@ -328,63 +282,6 @@ function onMouseLeave() {
   });
 }
 
-function onPointerDown(e: PointerEvent) {
-  if (!rotationGroup || loading.value) return;
-
-  const container = containerRef.value;
-  if (!container) return;
-
-  dragging.value = true;
-  dragPointerId = e.pointerId;
-  dragStartX = e.clientX;
-  dragStartY = e.clientY;
-  dragStartRotationX = rotationGroup.rotation.x;
-  dragStartRotationY = rotationGroup.rotation.y;
-
-  gsap.killTweensOf(rotationGroup.rotation);
-  if (tiltGroup) {
-    gsap.to(tiltGroup.rotation, {
-      x: 0,
-      y: 0,
-      duration: 0.2,
-      ease: "power2.out",
-      onUpdate: requestRender,
-      onComplete: requestRender,
-    });
-  }
-
-  container.setPointerCapture?.(e.pointerId);
-  if (e.pointerType === "mouse") e.preventDefault();
-}
-
-function onPointerMove(e: PointerEvent) {
-  if (!dragging.value || dragPointerId !== e.pointerId || !rotationGroup) {
-    return;
-  }
-
-  const dx = e.clientX - dragStartX;
-  const dy = e.clientY - dragStartY;
-
-  rotationGroup.rotation.y = dragStartRotationY + dx * DRAG_ROTATE_SPEED;
-  rotationGroup.rotation.x = clamp(
-    dragStartRotationX + dy * DRAG_TILT_SPEED,
-    -DRAG_TILT_LIMIT,
-    DRAG_TILT_LIMIT
-  );
-
-  requestRender();
-  if (e.pointerType === "mouse") e.preventDefault();
-}
-
-function onPointerUp(e: PointerEvent) {
-  if (dragPointerId !== null && dragPointerId !== e.pointerId) return;
-
-  containerRef.value?.releasePointerCapture?.(e.pointerId);
-  dragging.value = false;
-  dragPointerId = null;
-  requestRender();
-}
-
 /* ══════════════════════════════════════════════
    RESIZE
 ══════════════════════════════════════════════ */
@@ -396,7 +293,7 @@ function onResize() {
   renderer.setPixelRatio(getRendererPixelRatio());
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
-  fitCameraToModel();
+  camera.updateProjectionMatrix();
   requestRender();
 }
 
@@ -447,7 +344,6 @@ onUnmounted(() => {
   resizeObserver?.disconnect();
   intersectionObserver?.disconnect();
   if (tiltGroup) gsap.killTweensOf(tiltGroup.rotation);
-  if (rotationGroup) gsap.killTweensOf(rotationGroup.rotation);
   if (modelRoot) {
     gsap.killTweensOf(modelRoot.scale);
     disposeObject(modelRoot);
@@ -459,17 +355,13 @@ onUnmounted(() => {
   }
   scene = null;
   camera = null;
-  rotationGroup = null;
   tiltGroup = null;
   modelRoot = null;
   modelBaseMaxDim = 1;
   modelBaseCenter = null;
-  modelBaseSize = null;
   renderRafId = null;
   mouseRafId = null;
   resizeRafId = null;
-  dragging.value = false;
-  dragPointerId = null;
 });
 
 function disposeObject(object: any) {
@@ -497,8 +389,6 @@ function disposeObject(object: any) {
   position: relative;
   width: 100%;
   height: 100%;
-  touch-action: pan-y;
-  user-select: none;
 }
 
 .hero-model-canvas {

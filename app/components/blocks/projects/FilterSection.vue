@@ -1,7 +1,7 @@
 <template>
   <div
     class="filter-section w-full border-y-[0.3px] lg:border-t-0 border-white-op50 border-brand-text pe-[var(--railW)]"
-    :style="`margin-inline-start: ${marginS}px;`"
+    :style="`padding-inline-start: ${marginS}px;`"
   >
     <!-- Loading skeleton -->
     <div
@@ -380,7 +380,7 @@ onBeforeUnmount(() => {
 <style scoped>
 @media (max-width: 768px) {
   .filter-section {
-    margin-inline-start: 0 !important;
+    padding-inline-start: 0 !important;
   }
 }
 
@@ -567,7 +567,6 @@ onBeforeUnmount(() => {
   border: 0.3px solid rgba(255, 255, 255, 0.25);
   color: rgba(255, 255, 255, 0.7);
   background: transparent;
-  border-radius: 999px;
   transition: color 0.2s ease, border-color 0.2s ease,
     background-color 0.2s ease;
 }

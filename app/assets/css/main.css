@@ -36,6 +36,9 @@
 
   --team-line-height: 340px;
   --team-space: 23rem;
+
+  --manjra-bg-color: #d3c393;
+  --manjra-text-color: #292b2c;
 }
 
 /* ══════════════════════════════════════════════
@@ -50,6 +53,9 @@
   --color-primary: #ffffff;
   --color-border: rgba(255, 255, 255, 0.5);
   --border-color: #54ea62;
+  --main-color: #54ea62;
+  --manjra-bg-color: #707070;
+  --manjra-text-color: #e1fe53;
 }
 
 /* ══════════════════════════════════════════════
