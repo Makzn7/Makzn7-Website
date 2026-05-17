@@ -10,6 +10,9 @@ interface HeroScrollRefs {
 interface HeroScrollOptions {
   lerpFactor?: number;
   keyStep?: number;
+  touchSensitivity?: number;
+  touchMomentumFriction?: number;
+  touchMinMomentumVelocity?: number;
 }
 
 export function useHeroScroll(
@@ -17,7 +20,13 @@ export function useHeroScroll(
   emit: (event: "lock-page-scroll" | "unlock-page-scroll") => void,
   options: HeroScrollOptions = {}
 ) {
-  const { lerpFactor = 0.1, keyStep = 60 } = options;
+  const {
+    lerpFactor = 0.22,
+    keyStep = 60,
+    touchSensitivity = 1.5,
+    touchMomentumFriction = 0.93,
+    touchMinMomentumVelocity = 0.05,
+  } = options;
 
   let scrollPos = 0;
   let targetScroll = 0;
@@ -35,6 +44,14 @@ export function useHeroScroll(
   let lastFloorTransform = "";
   let lastCeilTransform = "";
   const observedImages = new Set<HTMLImageElement>();
+
+  /* ── touch momentum state ── */
+  let lastTouchY = 0;
+  let lastTouchTime = 0;
+  let touchVelocity = 0; // px/ms — positive means scrolling content up (finger moves up)
+  let momentumRafId: number | null = null;
+  let lastMomentumTime = 0;
+  const MAX_TOUCH_DT = 50;
 
   function measureScrollLimits() {
     const box = refs.centerBoxRef.value;
@@ -161,9 +178,22 @@ export function useHeroScroll(
     syncPageScrollLock(false);
   }
 
+  function cancelMomentum() {
+    if (momentumRafId !== null) {
+      cancelAnimationFrame(momentumRafId);
+      momentumRafId = null;
+    }
+    touchVelocity = 0;
+  }
+
   function onTouchStart(e: TouchEvent) {
     const touch = e.touches[0];
-    if (touch) ty = touch.clientY;
+    if (!touch) return;
+    /* New finger contact always cancels any momentum from previous flick */
+    cancelMomentum();
+    ty = touch.clientY;
+    lastTouchY = touch.clientY;
+    lastTouchTime = performance.now();
   }
 
   function onTouchMove(e: TouchEvent) {
@@ -173,10 +203,26 @@ export function useHeroScroll(
     if (window.scrollY > 1) {
       syncPageScrollLock(false);
       ty = touch.clientY;
+      lastTouchY = touch.clientY;
+      lastTouchTime = performance.now();
+      touchVelocity = 0;
       return;
     }
 
-    const nextTarget = targetScroll + (ty - touch.clientY);
+    const now = performance.now();
+    const dt = Math.min(MAX_TOUCH_DT, Math.max(1, now - lastTouchTime));
+    /*
+      Amplify finger delta so a swipe travels a sensible distance — native
+      mobile scroll typically moves content faster than the finger. Without
+      this, even a quick flick only nudges the hero a few dozen px.
+    */
+    const fingerDelta = (ty - touch.clientY) * touchSensitivity;
+
+    /* EMA-smoothed velocity for the momentum kick on touchend */
+    const instantV = ((lastTouchY - touch.clientY) * touchSensitivity) / dt;
+    touchVelocity = touchVelocity * 0.6 + instantV * 0.4;
+
+    const nextTarget = targetScroll + fingerDelta;
     const clampedTarget = Math.max(0, Math.min(maxScroll, nextTarget));
     const canConsumeInsideHero = clampedTarget !== targetScroll;
 
@@ -191,6 +237,63 @@ export function useHeroScroll(
     }
 
     ty = touch.clientY;
+    lastTouchY = touch.clientY;
+    lastTouchTime = now;
+  }
+
+  function onTouchEnd() {
+    /* Bail early if we don't have enough flick to be worth animating */
+    if (Math.abs(touchVelocity) < touchMinMomentumVelocity) {
+      touchVelocity = 0;
+      return;
+    }
+    /* Skip momentum at the edges or when the page scroll has taken over */
+    if (
+      (touchVelocity > 0 && targetScroll >= maxScroll) ||
+      (touchVelocity < 0 && targetScroll <= 0) ||
+      (typeof window !== "undefined" && window.scrollY > 1)
+    ) {
+      touchVelocity = 0;
+      return;
+    }
+
+    syncPageScrollLock(true);
+    lastMomentumTime = performance.now();
+    if (momentumRafId === null) {
+      momentumRafId = requestAnimationFrame(momentumTick);
+    }
+  }
+
+  function momentumTick() {
+    momentumRafId = null;
+    if (!isVisible) {
+      touchVelocity = 0;
+      return;
+    }
+
+    const now = performance.now();
+    const dt = Math.min(MAX_TOUCH_DT, Math.max(1, now - lastMomentumTime));
+    lastMomentumTime = now;
+
+    /* Frame-rate-independent exponential decay */
+    const decay = Math.pow(touchMomentumFriction, dt / 16.667);
+    touchVelocity *= decay;
+
+    const next = targetScroll + touchVelocity * dt;
+    const clamped = Math.max(0, Math.min(maxScroll, next));
+    targetScroll = clamped;
+    requestLoop();
+
+    if (clamped !== next) {
+      /* Hit an edge — release lock so further finger flicks can scroll page */
+      touchVelocity = 0;
+      return;
+    }
+    if (Math.abs(touchVelocity) < touchMinMomentumVelocity) {
+      touchVelocity = 0;
+      return;
+    }
+    momentumRafId = requestAnimationFrame(momentumTick);
   }
 
   function onKey(e: KeyboardEvent) {
@@ -234,6 +337,8 @@ export function useHeroScroll(
 
     box.addEventListener("touchstart", onTouchStart, { passive: true });
     box.addEventListener("touchmove", onTouchMove, { passive: false });
+    box.addEventListener("touchend", onTouchEnd, { passive: true });
+    box.addEventListener("touchcancel", onTouchEnd, { passive: true });
     window.addEventListener("keydown", onKey);
     window.addEventListener("resize", scheduleMeasureScrollLimits, {
       passive: true,
@@ -272,6 +377,8 @@ export function useHeroScroll(
     const box = refs.centerBoxRef.value;
     box?.removeEventListener("touchstart", onTouchStart);
     box?.removeEventListener("touchmove", onTouchMove);
+    box?.removeEventListener("touchend", onTouchEnd);
+    box?.removeEventListener("touchcancel", onTouchEnd);
     window.removeEventListener("keydown", onKey);
     window.removeEventListener("resize", scheduleMeasureScrollLimits);
     resizeObserver?.disconnect();
@@ -283,6 +390,7 @@ export function useHeroScroll(
     observedImages.clear();
     if (rafId) cancelAnimationFrame(rafId);
     if (measureRafId) cancelAnimationFrame(measureRafId);
+    cancelMomentum();
     syncPageScrollLock(false);
   });
 

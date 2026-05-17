@@ -45,41 +45,27 @@
         ></div>
       </div>
       <div class="relative image-3d-container">
-        <!--
-          Mobile reflections (top/bottom slivers) skip the heavy HeroGrid SVG
-          and the HeroModel3D WebGL canvas — they're only ~28px tall on mobile
-          and the GPU cost of having 3 WebGL canvases + 3 huge SVGs all
-          GPU-promoted while translate3d updates each frame was the main cause
-          of laggy scroll. A simple sized placeholder keeps layout intact.
-        -->
+        <HeroGrid1
+          aspectRatio="none"
+          class="h-[400px] lg:h-[700px]"
+          :cols="45"
+          :rows="40"
+        />
+        <!-- 3D model overlay — interactive tilt on hover -->
         <div
-          v-if="disableHeavyVisuals"
-          aria-hidden="true"
-          class="h-[400px] lg:h-[700px] w-full"
-        ></div>
-        <template v-else>
-          <HeroGrid1
-            aspectRatio="none"
-            class="h-[400px] lg:h-[700px]"
-            :cols="heroGridCols"
-            :rows="heroGridRows"
-          />
-          <!-- 3D model overlay — interactive tilt on hover -->
-          <div
-            class="absolute top-[5%] start-[5%] w-[90%] h-[90%] lg:top-0 lg:start-0 lg:w-full lg:h-full model-3d-wrap"
-          >
-            <ClientOnly>
-              <HeroModel3D
-                v-if="modelPath"
-                class="w-full h-full"
-                :modelScale="effectiveModelScale"
-                :modelPath="modelPath"
-                :modelImageType="modelType"
-                :modelModeColor="modelModeColor"
-              />
-            </ClientOnly>
-          </div>
-        </template>
+          class="absolute top-[5%] start-[5%] w-[90%] h-[90%] lg:top-0 lg:start-0 lg:w-full lg:h-full model-3d-wrap"
+        >
+          <ClientOnly>
+            <HeroModel3D
+              v-if="modelPath"
+              class="w-full h-full"
+              :modelScale="effectiveModelScale"
+              :modelPath="modelPath"
+              :modelImageType="modelType"
+              :modelModeColor="modelModeColor"
+            />
+          </ClientOnly>
+        </div>
       </div>
     </div>
 
@@ -155,11 +141,6 @@ const props = withDefaults(
       description_ar: string;
       description_en: string;
     } | null;
-    /**
-     * When true, skip the heavy HeroGrid1 SVG and HeroModel3D WebGL canvas
-     * (used by reflection slivers on mobile where they're invisible/clipped).
-     */
-    disableHeavyVisuals?: boolean;
   }>(),
   {
     showHover: false,
@@ -175,7 +156,6 @@ const props = withDefaults(
     modelModeColor: "#ffffff",
     heroData: null,
     mobileMarginTop: 4,
-    disableHeavyVisuals: false,
   }
 );
 
@@ -212,10 +192,6 @@ onUnmounted(() => {
   onMobileChange = null;
 });
 const effectiveModelScale = computed(() => (isMobile.value ? 2.0 : 3.5));
-
-/* Lighter SVG grid on mobile — fewer paths to rasterize/composite */
-const heroGridCols = computed(() => (isMobile.value ? 22 : 45));
-const heroGridRows = computed(() => (isMobile.value ? 18 : 40));
 
 function onEnter(e: MouseEvent) {
   const target = e.currentTarget as HTMLElement | null;

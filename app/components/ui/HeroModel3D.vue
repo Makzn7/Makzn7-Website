@@ -102,7 +102,7 @@ async function init() {
   });
   renderer.setSize(w, h, false);
   renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 2)
+    Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 2)
   );
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -124,21 +124,13 @@ async function init() {
   key.position.set(4, 6, 5);
   scene.add(key);
 
-  /*
-    Mobile keeps only ambient + key light. Each additional directional light
-    forces another lighting calc per fragment — on mobile GPUs that's a
-    measurable drop in frame time, and the visual difference inside a tiny
-    canvas is negligible.
-  */
-  if (!isMobile) {
-    const fill = new THREE.DirectionalLight("#54ea62", 1);
-    fill.position.set(-5, 2, -3);
-    scene.add(fill);
+  const fill = new THREE.DirectionalLight("#54ea62", 1);
+  fill.position.set(-5, 2, -3);
+  scene.add(fill);
 
-    const rim = new THREE.DirectionalLight("#54ea62", 0.8);
-    rim.position.set(0, -4, -6);
-    scene.add(rim);
-  }
+  const rim = new THREE.DirectionalLight("#54ea62", 0.8);
+  rim.position.set(0, -4, -6);
+  scene.add(rim);
 
   /* ── Tilt group — mouse-driven only ── */
   tiltGroup = new THREE.Group();
