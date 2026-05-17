@@ -1,12 +1,20 @@
 <template>
   <div class="app-container relative dark bg-brand-bg">
-    <div class="absolute logo-image p-4">
+    <div
+      class="absolute flex justify-between items-center logo-image px-4 h-[4rem] lg:h-[6rem]"
+    >
+      <NuxtLink to="/projects" class="group hover:text-primary">
+        <img
+          src="/icons/svg/white/12.svg"
+          class="back-image ltr:rotate-180 fill-current transition-colors group-hover:text-primary"
+          alt="back to projects"
+        />
+      </NuxtLink>
       <NuxtLink to="/">
         <img
           src="/logos/svg/logo_black.svg"
-          width="100"
           alt="Makzn7"
-          class="dark:invert"
+          class="dark:invert project-logo-image"
         />
       </NuxtLink>
     </div>
@@ -18,16 +26,24 @@
       <!-- center-box: الـ 3D perspective container -->
       <div ref="centerBoxRef" class="center-box" @wheel="onWheel">
         <!-- ══ السقف (top-part) — rotateX(-90deg) ══ -->
-        <div class="top-part px-[5.5rem]">
+        <div class="top-part px-[2.5rem] lg:px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
-            <DetailsPageContent :margin-top="3" :project="project" />
+            <DetailsPageContent
+              :margin-top="10"
+              :marginTopMobile="6"
+              :project="project"
+            />
           </div>
         </div>
 
         <!-- ══ الجدار (center-part) ══ -->
         <div class="center-part border-white-op50">
           <div ref="wallRef" class="sync-content">
-            <DetailsPageContent :margin-top="0" :project="project" />
+            <DetailsPageContent
+              :margin-top="7"
+              :marginTopMobile="4"
+              :project="project"
+            />
           </div>
           <img
             ref="previewImgRef"
@@ -37,8 +53,12 @@
 
         <!-- ══ الأرض (bottom-part) — rotateX(+90deg) ══ -->
         <div class="bottom-part">
-          <div ref="floorRef" class="sync-content px-[5.5rem]">
-            <DetailsPageContent :margin-top="5" :project="project" />
+          <div ref="floorRef" class="sync-content px-[2.5rem] lg:px-[5.5rem]">
+            <DetailsPageContent
+              :margin-top="12"
+              :marginTopMobile="7"
+              :project="project"
+            />
           </div>
         </div>
       </div>
@@ -81,3 +101,27 @@ const { onWheel } = useHeroScroll(
   emit
 );
 </script>
+<style scoped>
+.logo-image {
+  right: calc(var(--railW) + 8px);
+}
+
+.project-logo-image {
+  width: 100px;
+  height: auto;
+}
+.back-image {
+  width: 50px;
+  height: auto;
+  object-fit: cover;
+}
+
+@media (max-width: 767px) {
+  .project-logo-image {
+    width: 60px;
+  }
+  .back-image {
+    width: 30px;
+  }
+}
+</style>

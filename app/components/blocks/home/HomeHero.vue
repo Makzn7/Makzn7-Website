@@ -47,7 +47,7 @@
           </div>
           <img
             ref="previewImgRef"
-            class="preview-image h-[400px] w-[400px] object-fill"
+            class="preview-image h-[150px] w-[200px] lg:h-[400px] lg:w-[550px] object-fill"
           />
         </div>
 

@@ -1,6 +1,12 @@
 <template>
-  <div class="relative" :style="`margin-top: ${marginTop}rem;`">
-    <div v-if="project" class="flex flex-col w-full min-h-screen text-white">
+  <div
+    class="relative page-content"
+    :style="`--mt: ${marginTop}rem; --mt-mobile: ${marginTopMobile}rem;`"
+  >
+    <div
+      v-if="project"
+      class="flex flex-col w-full min-h-screen text-white border-t-[0.3px] border-white-op50 border-brand-text"
+    >
       <!-- ══ Media Slider ══ -->
       <div class="slider-section">
         <MediaSlider
@@ -29,36 +35,88 @@
       <div
         class="info-section border-t-[0.3px] border-white-op50 border-brand-text"
       >
-        <!-- Row 1: Title -->
-        <div class="flex items-center justify-between gap-4 px-6 pt-5">
+        <!-- Row 1: Title + Type + Year -->
+        <div
+          class="flex flex-wrap lg:flex-nowrap items-center justify-between lg:gap-4 pt-5 border-b-[0.3px] border-white-op50 border-brand-text"
+        >
           <h1
-            class="font-semibold text-wrap"
+            class="font-semibold text-wrap w-full px-4 lg:px-6 pb-5 border-b-[0.3px] lg:border-b-0 border-white-op50 border-brand-text lg:border-0 lg:pb-0"
             :style="`font-size: clamp(${Math.max(
-              36,
-              Math.round(props.titleSize * 0.5)
-            )}px, ${(props.titleSize / 19.36).toFixed(1)}vw, ${
+              18,
+              Math.round(props.titleSize * 0.35)
+            )}px, ${(props.titleSize / 20).toFixed(1)}vw, ${
               props.titleSize
             }px)`"
           >
             {{ projectName }}
           </h1>
+          <div class="w-full lg:w-auto grid grid-cols-2">
+            <!-- Type -->
+            <div
+              v-if="projectType"
+              class="flex flex-col justify-center items-center whitespace-nowrap lg:px-8 pb-5 pt-2 lg:border-s-[0.3px] border-white-op50 border-brand-text"
+            >
+              <span
+                class="font-light uppercase"
+                :style="`font-size: clamp(${Math.max(
+                  14,
+                  Math.round(25 * 0.35)
+                )}px, ${(25 / 20).toFixed(1)}vw, ${25}px)`"
+                >{{ $t("filters.type") }}:</span
+              >
+              <span
+                class="font-normal uppercase"
+                :style="`font-size: clamp(${Math.max(
+                  14,
+                  Math.round(props.typeSize * 0.35)
+                )}px, ${(props.typeSize / 20).toFixed(1)}vw, ${
+                  props.typeSize
+                }px)`"
+              >
+                {{ projectType }}
+              </span>
+            </div>
+            <!-- Year -->
+            <div
+              v-if="project.year"
+              class="flex flex-col justify-center items-center whitespace-nowrap lg:px-8 pb-5 pt-2 border-s-[0.3px] border-white-op50 border-brand-text"
+            >
+              <span
+                class="font-light uppercase"
+                :style="`font-size: clamp(${Math.max(
+                  14,
+                  Math.round(25 * 0.35)
+                )}px, ${(25 / 20).toFixed(1)}vw, ${25}px)`"
+                >{{ $t("filters.year") }}:</span
+              >
+              <span
+                class="font-normal uppercase"
+                :style="`font-size: clamp(${Math.max(
+                  14,
+                  Math.round(props.yearSize * 0.35)
+                )}px, ${(props.yearSize / 20).toFixed(1)}vw, ${
+                  props.yearSize
+                }px)`"
+              >
+                {{ project.year }}
+              </span>
+            </div>
+          </div>
         </div>
         <!-- Details -->
-        <div class="flex justify-between items-center gap-6 mb-12 px-6">
+        <div class="flex justify-between items-center gap-6 mb-12">
           <!-- Row 2: Department + Scope -->
-          <div class="flex flex-col">
+          <div class="flex flex-col w-full">
             <!-- Department -->
             <div
               v-if="project.departments?.length"
-              class="flex items-center gap-5"
+              class="flex flex-col items-start justify-start w-full gap-1 py-4 px-6 border-b-[0.3px] border-white-op50 border-brand-text"
             >
               <span
                 :style="`font-size: clamp(${Math.max(
-                  16,
-                  Math.round(props.scopeSize * 0.35)
-                )}px, ${(props.scopeSize / 19.36).toFixed(1)}vw, ${
-                  props.scopeSize
-                }px);`"
+                  14,
+                  Math.round(25 * 0.35)
+                )}px, ${(25 / 20).toFixed(1)}vw, ${25}px);`"
                 class="uppercase font-light"
               >
                 {{ $t("filters.departments") }}:
@@ -79,65 +137,47 @@
               </div>
             </div>
             <!-- Scopes -->
-            <div v-if="project.scopes?.length" class="flex items-center">
-              <div
-                v-for="(scope, index) in project.scopes"
-                class="flex flex-wrap"
-                :key="index"
-              >
+            <div
+              v-if="project.scopes?.length"
+              class="flex flex-col items-start justify-start w-full gap-1 py-4 px-6"
+            >
+              <div>
                 <span
                   class="font-light uppercase"
                   :style="`font-size: clamp(${Math.max(
-                    16,
-                    Math.round(props.scopeSize * 0.5)
-                  )}px, ${(props.scopeSize / 19.36).toFixed(1)}vw, ${
-                    props.scopeSize
-                  }px)`"
-                  >{{ locale === "ar" ? scope.name_ar : scope.name_en }}</span
+                    14,
+                    Math.round(25 * 0.35)
+                  )}px, ${(25 / 20).toFixed(1)}vw, ${25}px);`"
+                  >{{ $t("filters.scopes") }}:</span
                 >
-                <img
-                  v-if="index < project.scopes.length - 1"
-                  src="/icons/svg/green/3.svg"
-                  height="35"
-                  width="35"
-                  alt=""
-                />
               </div>
-            </div>
-          </div>
-          <!-- Row 3: Type + Year -->
-          <div class="flex items-center flex-col">
-            <!-- Type -->
-            <span
-              v-if="projectType"
-              class="font-semibold whitespace-nowrap self-end"
-              :style="`font-size: clamp(${Math.max(
-                16,
-                Math.round(props.typeSize * 0.5)
-              )}px, ${(props.typeSize / 19.36).toFixed(1)}vw, ${
-                props.typeSize
-              }px)`"
-            >
-              {{ projectType }}
-            </span>
-            <!-- Year -->
-            <div v-if="project.year" class="flex items-center">
-              <img
-                src="/icons/svg/white/1.svg"
-                class="w-[50px] h-[50px]"
-                alt=""
-              />
-              <span
-                class="font-semibold"
-                :style="`font-size: clamp(${Math.max(
-                  16,
-                  Math.round(props.yearSize * 0.5)
-                )}px, ${(props.yearSize / 19.36).toFixed(1)}vw, ${
-                  props.yearSize
-                }px)`"
-              >
-                {{ project.year }}
-              </span>
+
+              <div class="w-full flex flex-wrap items-center">
+                <div
+                  v-for="(scope, index) in project.scopes"
+                  class="flex flex-wrap items-center"
+                  :key="index"
+                >
+                  <span
+                    class="font-light uppercase"
+                    :style="`font-size: clamp(${Math.max(
+                      14,
+                      Math.round(props.scopeSize * 0.35)
+                    )}px, ${(props.scopeSize / 20).toFixed(1)}vw, ${
+                      props.scopeSize
+                    }px)`"
+                    >{{ locale === "ar" ? scope.name_ar : scope.name_en }}</span
+                  >
+                  <img
+                    v-if="index < project.scopes.length - 1"
+                    src="/icons/svg/green/3.svg"
+                    height="35"
+                    width="35"
+                    alt=""
+                    class="divider-image"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -154,7 +194,7 @@
 
     <!-- spacer -->
     <div
-      class="content-item h-[2rem] md:h-[3rem] lg:h-[4rem] 2xl:h-[5rem]"
+      class="content-item h-[4rem] md:h-[8rem] lg:h-[11rem] 2xl:h-[12rem]"
     ></div>
   </div>
 </template>
@@ -169,6 +209,7 @@ import MediaSlider from "~/components/ui/MediaSlider.vue";
 const props = withDefaults(
   defineProps<{
     marginTop?: number;
+    marginTopMobile?: number;
     project?: Project | null;
     titleSize?: number;
     typeSize?: number;
@@ -178,12 +219,13 @@ const props = withDefaults(
   }>(),
   {
     marginTop: 4,
+    marginTopMobile: 4,
     project: null,
     titleSize: 63,
-    typeSize: 41,
+    typeSize: 33,
     iconSize: 42,
     scopeSize: 33,
-    yearSize: 63,
+    yearSize: 33,
   }
 );
 
@@ -257,5 +299,27 @@ function getDepartmentIcon(dept: Department): string {
 }
 .dept-icon:hover {
   opacity: 1;
+}
+
+.page-content {
+  margin-top: var(--mt, 4rem);
+}
+
+.divider-image {
+  height: 35px;
+  width: 35px;
+}
+
+@media (max-width: 767px) {
+  .slider-section {
+    max-height: 85vh;
+  }
+  .page-content {
+    margin-top: var(--mt-mobile, var(--mt, 4rem));
+  }
+  .divider-image {
+    height: 20px;
+    width: 20px;
+  }
 }
 </style>

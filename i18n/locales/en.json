@@ -127,7 +127,12 @@
     "scope": "Scope",
     "scopes": "Scopes",
     "departments": "Departments",
-    "error": "Unable to load filters"
+    "error": "Unable to load filters",
+    "button": "Filters",
+    "title": "Filter Projects",
+    "clear": "Clear",
+    "done": "Done",
+    "close": "Close"
   },
   "projects": {
     "empty": "No projects found"
