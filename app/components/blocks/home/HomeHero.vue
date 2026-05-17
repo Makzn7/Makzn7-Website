@@ -24,6 +24,7 @@
               :modelType="modelType"
               :modelModeColor="modelModeColor"
               :heroData="heroData"
+              :disable-heavy-visuals="isMobile"
             />
           </div>
         </div>
@@ -66,6 +67,7 @@
               :modelType="modelType"
               :modelModeColor="modelModeColor"
               :heroData="heroData"
+              :disable-heavy-visuals="isMobile"
             />
           </div>
         </div>
@@ -80,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import LeftSideContent from "~/components/blocks/home/HomeHeroLeftSideContent.vue";
 import RightSideContent from "~/components/blocks/home/HomeHeroRightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
@@ -119,6 +121,29 @@ const modelModeColor = computed(() => {
   const h = hero3d.value;
   if (colorMode.value === "dark") return h?.mode_color_dark ?? "#ffffff";
   return h?.mode_color ?? "#000000";
+});
+
+/* ── mobile detection — drives reflection-sliver optimisations ── */
+const isMobile = ref(false);
+let mobileQuery: MediaQueryList | null = null;
+let onMobileChange: ((event: MediaQueryListEvent) => void) | null = null;
+
+onMounted(() => {
+  if (typeof window === "undefined") return;
+  mobileQuery = window.matchMedia("(max-width: 767px)");
+  isMobile.value = mobileQuery.matches;
+  onMobileChange = (event) => {
+    isMobile.value = event.matches;
+  };
+  mobileQuery.addEventListener?.("change", onMobileChange);
+});
+
+onUnmounted(() => {
+  if (mobileQuery && onMobileChange) {
+    mobileQuery.removeEventListener?.("change", onMobileChange);
+  }
+  mobileQuery = null;
+  onMobileChange = null;
 });
 
 /* ── hero scroll (extracted to composable) ── */
