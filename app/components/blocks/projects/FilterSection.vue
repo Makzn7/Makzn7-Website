@@ -66,9 +66,7 @@
       </div>
 
       <!-- ══ Mobile: trigger button row ══ -->
-      <div
-        class="lg:hidden flex items-center justify-between gap-3 px-4 py-3 border-s-[0.3px] border-white-op50"
-      >
+      <div class="lg:hidden flex items-center justify-between gap-3 px-4 py-3">
         <button
           type="button"
           class="flex items-center gap-2 text-[13px] uppercase font-light tracking-[1px] text-brand-text/80"
@@ -291,8 +289,7 @@ function onBodyScroll() {
   const el = bodyEl.value;
   if (!el) return;
   hasScrolled.value = true;
-  scrollAtBottom.value =
-    el.scrollTop + el.clientHeight >= el.scrollHeight - 8;
+  scrollAtBottom.value = el.scrollTop + el.clientHeight >= el.scrollHeight - 8;
 }
 
 function measureOverflow() {
@@ -302,8 +299,7 @@ function measureOverflow() {
     return;
   }
   hasOverflow.value = el.scrollHeight - el.clientHeight > 4;
-  scrollAtBottom.value =
-    el.scrollTop + el.clientHeight >= el.scrollHeight - 8;
+  scrollAtBottom.value = el.scrollTop + el.clientHeight >= el.scrollHeight - 8;
 }
 
 const groupedFilters = computed(() => {
@@ -421,10 +417,10 @@ onBeforeUnmount(() => {
   background: #000;
   color: #fff;
   border-top: 0.3px solid var(--main-color, #54ea62);
-  border-inline-start: 0.3px solid var(--main-color, #54ea62);
+  /* border-inline-start: 0.3px solid var(--main-color, #54ea62);
   border-inline-end: 0.3px solid var(--main-color, #54ea62);
   border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  border-top-right-radius: 4px; */
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
@@ -537,7 +533,6 @@ onBeforeUnmount(() => {
   }
 }
 
-
 .filter-sheet__group {
   padding: 14px 0;
   border-bottom: 0.3px solid rgba(255, 255, 255, 0.12);
@@ -573,9 +568,7 @@ onBeforeUnmount(() => {
   color: rgba(255, 255, 255, 0.7);
   background: transparent;
   border-radius: 999px;
-  transition:
-    color 0.2s ease,
-    border-color 0.2s ease,
+  transition: color 0.2s ease, border-color 0.2s ease,
     background-color 0.2s ease;
 }
 .filter-sheet__chip:hover {
@@ -603,10 +596,7 @@ onBeforeUnmount(() => {
   text-transform: uppercase;
   font-weight: 400;
   border-radius: 2px;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    opacity 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
 }
 
 .filter-sheet__action--ghost {
