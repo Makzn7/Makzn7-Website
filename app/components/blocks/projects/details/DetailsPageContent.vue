@@ -54,7 +54,7 @@
             <!-- Type -->
             <div
               v-if="projectType"
-              class="flex flex-col justify-center items-center whitespace-nowrap lg:px-8 pb-5 pt-2 lg:border-s-[0.3px] border-white-op50 border-brand-text"
+              class="flex flex-col justify-center items-center whitespace-nowrap lg:px-8 py-4 lg:py-0 lg:pb-5 lg:pt-2 lg:border-s-[0.3px] border-white-op50 border-brand-text"
             >
               <span
                 class="font-light uppercase"
@@ -79,7 +79,7 @@
             <!-- Year -->
             <div
               v-if="project.year"
-              class="flex flex-col justify-center items-center whitespace-nowrap lg:px-8 pb-5 pt-2 border-s-[0.3px] border-white-op50 border-brand-text"
+              class="flex flex-col justify-center items-center whitespace-nowrap lg:px-8 py-4 lg:py-0 lg:pb-5 lg:pt-2 border-s-[0.3px] border-white-op50 border-brand-text"
             >
               <span
                 class="font-light uppercase"
@@ -110,7 +110,7 @@
             <!-- Department -->
             <div
               v-if="project.departments?.length"
-              class="flex flex-col items-start justify-start w-full gap-1 py-4 px-6 border-b-[0.3px] border-white-op50 border-brand-text"
+              class="flex flex-col items-start justify-start w-full gap-1 py-4 px-4 lg:px-6 border-b-[0.3px] border-white-op50 border-brand-text"
             >
               <span
                 :style="`font-size: clamp(${Math.max(
@@ -139,7 +139,7 @@
             <!-- Scopes -->
             <div
               v-if="project.scopes?.length"
-              class="flex flex-col items-start justify-start w-full gap-1 py-4 px-6"
+              class="flex flex-col items-start justify-start w-full gap-1 py-4 px-4 lg:px-6"
             >
               <div>
                 <span

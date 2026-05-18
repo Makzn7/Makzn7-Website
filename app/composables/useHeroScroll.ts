@@ -49,9 +49,14 @@ export function useHeroScroll(
   let lastTouchY = 0;
   let lastTouchTime = 0;
   let touchVelocity = 0; // px/ms — positive means scrolling content up (finger moves up)
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchStartedInSlider = false;
+  let touchAxisLocked: "h" | "v" | null = null;
   let momentumRafId: number | null = null;
   let lastMomentumTime = 0;
   const MAX_TOUCH_DT = 50;
+  const TOUCH_AXIS_LOCK_DISTANCE = 6;
 
   function measureScrollLimits() {
     const box = refs.centerBoxRef.value;
@@ -186,6 +191,11 @@ export function useHeroScroll(
     touchVelocity = 0;
   }
 
+  function resetTouchGesture() {
+    touchStartedInSlider = false;
+    touchAxisLocked = null;
+  }
+
   function onTouchStart(e: TouchEvent) {
     const touch = e.touches[0];
     if (!touch) return;
@@ -194,11 +204,39 @@ export function useHeroScroll(
     ty = touch.clientY;
     lastTouchY = touch.clientY;
     lastTouchTime = performance.now();
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    touchStartedInSlider = Boolean(
+      (e.target as Element | null)?.closest(".media-slider")
+    );
+    touchAxisLocked = null;
   }
 
   function onTouchMove(e: TouchEvent) {
     const touch = e.touches[0];
     if (!touch) return;
+
+    if (touchStartedInSlider) {
+      const totalDeltaX = touch.clientX - touchStartX;
+      const totalDeltaY = touch.clientY - touchStartY;
+
+      if (touchAxisLocked === null) {
+        if (
+          Math.abs(totalDeltaX) < TOUCH_AXIS_LOCK_DISTANCE &&
+          Math.abs(totalDeltaY) < TOUCH_AXIS_LOCK_DISTANCE
+        ) {
+          return;
+        }
+        touchAxisLocked =
+          Math.abs(totalDeltaX) > Math.abs(totalDeltaY) ? "h" : "v";
+      }
+
+      if (touchAxisLocked === "h") {
+        syncPageScrollLock(false);
+        touchVelocity = 0;
+        return;
+      }
+    }
 
     if (window.scrollY > 1) {
       syncPageScrollLock(false);
@@ -242,6 +280,15 @@ export function useHeroScroll(
   }
 
   function onTouchEnd() {
+    const wasSliderHorizontalSwipe =
+      touchStartedInSlider && touchAxisLocked === "h";
+    resetTouchGesture();
+
+    if (wasSliderHorizontalSwipe) {
+      touchVelocity = 0;
+      return;
+    }
+
     /* Bail early if we don't have enough flick to be worth animating */
     if (Math.abs(touchVelocity) < touchMinMomentumVelocity) {
       touchVelocity = 0;

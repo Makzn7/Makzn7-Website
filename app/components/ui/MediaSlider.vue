@@ -3,12 +3,16 @@
     <!-- Main display -->
     <div
       class="slider-viewport"
+      :class="{ 'is-dragging': isDragging }"
       ref="viewportRef"
       @pointerdown="onPointerDown"
       @pointermove="onPointerMove"
       @pointerup="onPointerUp"
       @pointercancel="onPointerUp"
       @lostpointercapture="onPointerUp"
+      @touchmove="onTouchMoveNative"
+      @touchend="onTouchEndNative"
+      @touchcancel="onTouchEndNative"
     >
       <div
         class="slider-track"
@@ -19,7 +23,7 @@
           v-for="(item, index) in items"
           :key="index"
           class="slider-slide"
-          :style="{ width: `${getSlideWidth(index)}px` }"
+          :style="{ width: `${slideWidth}px` }"
         >
           <!-- Image -->
           <img
@@ -111,30 +115,13 @@ const currentIndex = ref(0);
 const isDragging = ref(false);
 const dragOffset = ref(0);
 const viewportWidth = ref(0);
-const isDesktop = ref(false);
+const isRtl = ref(false);
 
-/* On desktop we show the current image plus ~15% of the next one as a
-   "peek" — except on the last image, which fills the viewport. */
-const PEEK_RATIO = 0.15;
-
-const slideWidth = computed(() =>
-  isDesktop.value
-    ? Math.round(viewportWidth.value * (1 - PEEK_RATIO))
-    : viewportWidth.value
-);
-
-function getSlideWidth(index: number): number {
-  // Last slide gets full width — there's no following image to peek at.
-  if (index === props.items.length - 1) return viewportWidth.value;
-  return slideWidth.value;
-}
+const slideWidth = computed(() => viewportWidth.value);
 
 const trackOffset = computed(() => {
-  let offset = 0;
-  for (let i = 0; i < currentIndex.value; i++) {
-    offset += getSlideWidth(i);
-  }
-  return -offset;
+  const offset = currentIndex.value * slideWidth.value;
+  return isRtl.value ? offset : -offset;
 });
 
 /* Visual offset combines the snapped position with any live drag delta */
@@ -158,7 +145,7 @@ function measure() {
   const el = viewportRef.value;
   if (!el || typeof window === "undefined") return;
   viewportWidth.value = el.clientWidth;
-  isDesktop.value = window.matchMedia("(min-width: 1024px)").matches;
+  isRtl.value = document.documentElement.dir === "rtl";
 }
 
 /* ── pointer-driven drag (covers touch + mouse + pen uniformly) ── */
@@ -167,13 +154,6 @@ let pointerStartY = 0;
 let pointerId: number | null = null;
 let dragAxisLocked: "h" | "v" | null = null;
 const AXIS_LOCK_DISTANCE = 6; // px before we commit to horizontal or vertical
-
-function rtlSign() {
-  return typeof document !== "undefined" &&
-    document.documentElement.dir === "rtl"
-    ? -1
-    : 1;
-}
 
 function onPointerDown(e: PointerEvent) {
   if (props.items.length <= 1) return;
@@ -203,7 +183,10 @@ function onPointerMove(e: PointerEvent) {
      they're swiping the slider (horizontal) or scrolling the page
      (vertical). If vertical, abandon the drag so the page can scroll. */
   if (dragAxisLocked === null) {
-    if (Math.abs(deltaX) < AXIS_LOCK_DISTANCE && Math.abs(deltaY) < AXIS_LOCK_DISTANCE) {
+    if (
+      Math.abs(deltaX) < AXIS_LOCK_DISTANCE &&
+      Math.abs(deltaY) < AXIS_LOCK_DISTANCE
+    ) {
       return;
     }
     dragAxisLocked = Math.abs(deltaX) > Math.abs(deltaY) ? "h" : "v";
@@ -220,14 +203,16 @@ function onPointerMove(e: PointerEvent) {
     }
   }
 
+  e.preventDefault();
+  e.stopPropagation();
+
   // Resist beyond the edges so the track feels tied to the content
   let resistedDelta = deltaX;
   const atStart = currentIndex.value === 0;
   const atEnd = currentIndex.value === props.items.length - 1;
-  const isRtl = rtlSign() === -1;
   // Treat "moving away from a boundary" with resistance
-  const movingPastStart = isRtl ? deltaX < 0 : deltaX > 0;
-  const movingPastEnd = isRtl ? deltaX > 0 : deltaX < 0;
+  const movingPastStart = isRtl.value ? deltaX < 0 : deltaX > 0;
+  const movingPastEnd = isRtl.value ? deltaX > 0 : deltaX < 0;
   if ((atStart && movingPastStart) || (atEnd && movingPastEnd)) {
     resistedDelta = deltaX * 0.35;
   }
@@ -242,14 +227,13 @@ function onPointerUp(e: PointerEvent) {
   pointerId = null;
 
   const delta = dragOffset.value;
-  const isRtl = rtlSign() === -1;
   // Threshold: 18% of slide width or 40px, whichever is larger
   const threshold = Math.max(40, slideWidth.value * 0.18);
 
   if (delta > threshold) {
-    isRtl ? next() : prev();
+    isRtl.value ? next() : prev();
   } else if (delta < -threshold) {
-    isRtl ? prev() : next();
+    isRtl.value ? prev() : next();
   }
 
   dragOffset.value = 0;
@@ -264,10 +248,23 @@ function cancelDrag() {
   dragAxisLocked = null;
 }
 
+function onTouchMoveNative(e: TouchEvent) {
+  if (isDragging.value && dragAxisLocked === "h") {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+}
+
+function onTouchEndNative(e: TouchEvent) {
+  if (dragAxisLocked === "h") {
+    e.stopPropagation();
+  }
+}
+
 /* ── keyboard ── */
 function onKeydown(e: KeyboardEvent) {
-  if (e.key === "ArrowLeft") (rtlSign() === -1 ? next : prev)();
-  else if (e.key === "ArrowRight") (rtlSign() === -1 ? prev : next)();
+  if (e.key === "ArrowLeft") (isRtl.value ? next : prev)();
+  else if (e.key === "ArrowRight") (isRtl.value ? prev : next)();
 }
 
 /* ── autoplay ── */
@@ -292,7 +289,6 @@ function stopAutoplay() {
 
 /* ── lifecycle ── */
 let resizeObserver: ResizeObserver | null = null;
-let mediaQuery: MediaQueryList | null = null;
 
 onMounted(() => {
   measure();
@@ -301,8 +297,6 @@ onMounted(() => {
     resizeObserver.observe(viewportRef.value);
   }
   if (typeof window !== "undefined") {
-    mediaQuery = window.matchMedia("(min-width: 1024px)");
-    mediaQuery.addEventListener?.("change", measure);
     window.addEventListener("keydown", onKeydown);
   }
   startAutoplay();
@@ -310,7 +304,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   resizeObserver?.disconnect();
-  mediaQuery?.removeEventListener?.("change", measure);
   if (typeof window !== "undefined") {
     window.removeEventListener("keydown", onKeydown);
   }
@@ -358,31 +351,19 @@ onUnmounted(() => {
 }
 
 .slider-slide {
-  /* width set inline (depends on viewport + peek + last-slide rule) */
   flex: 0 0 auto;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Tiny gap between slides so the peek edge reads as a separate image */
-  padding-right: 1px;
-}
-html[dir="rtl"] .slider-slide {
-  padding-right: 0;
-  padding-left: 1px;
-}
-.slider-slide:last-child {
-  padding-right: 0;
-  padding-left: 0;
 }
 
 .slider-media {
   display: block;
   width: 100%;
   height: 100%;
-  /* `contain` keeps the whole image visible — the brief explicitly asked
-     for full visibility rather than crop. */
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   pointer-events: none;
   -webkit-user-drag: none;
 }

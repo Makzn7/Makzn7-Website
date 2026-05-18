@@ -1,7 +1,7 @@
 <template>
   <div class="app-container relative dark bg-brand-bg">
     <div
-      class="absolute flex justify-between items-center logo-image px-4 h-[4rem] lg:h-[6rem]"
+      class="absolute flex justify-between items-center logo-image py-2 lg:py-0 px-4 lg:h-[6rem]"
     >
       <NuxtLink to="/projects" class="group hover:text-primary">
         <img
