@@ -19,7 +19,7 @@
             :style="`font-size: clamp(${Math.max(
               16,
               Math.round(103 * 0.35)
-            )}px, ${(103 / 15.36).toFixed(1)}vw, ${103}px);`"
+            )}px, ${(103 / 20).toFixed(1)}vw, ${103}px);`"
           >
             {{ $t("home.aboutTitle") }}
           </h2>
@@ -33,7 +33,7 @@
             :style="`animation-delay: 0.25s; font-size: clamp(${Math.max(
               16,
               Math.round(37 * 0.35)
-            )}px, ${(37 / 15.36).toFixed(1)}vw, ${37}px);`"
+            )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
             v-html="
               locale === 'ar'
                 ? aboutData?.description_ar
@@ -47,13 +47,13 @@
             :style="`animation-delay: 0.1s; font-size: clamp(${Math.max(
               24,
               Math.round(57 * 0.35)
-            )}px, ${(57 / 15.36).toFixed(1)}vw, ${57}px);`"
+            )}px, ${(57 / 20).toFixed(1)}vw, ${57}px);`"
           >
             <span>
               {{ $t("buttons.discoverMore") }}
             </span>
             <span
-              class="font-pixel mb-[8px] lg:mb-[20px] inline-block text-brand-primary"
+              class="font-pixel mb-[8px] lg:mb-[16px] inline-block text-primary"
               >-></span
             >
           </NuxtLink>

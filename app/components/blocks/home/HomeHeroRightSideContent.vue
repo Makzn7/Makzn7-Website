@@ -9,12 +9,12 @@
       >{{ $t("nav.mansj") }}</NuxtLink
     >
     <NuxtLink
-      to="#"
+      to="/manjra"
       class="home-nav-link nav-hover [writing-mode:vertical-rl] cursor-none"
       >{{ $t("nav.manjra") }}</NuxtLink
     >
     <a
-      href="https://m7prophouse.com"
+      href="/prophouse"
       target="_blank"
       class="home-nav-link nav-hover [writing-mode:vertical-rl] cursor-none"
       >{{ $t("nav.prophouse") }}</a

@@ -1,22 +1,25 @@
 <!-- HomeHero2 -->
 <template>
   <div
-    class="app-container relative dark bg-[var(--manjra-bg-color)] text-[var(--manjra-text-color)]"
-    style="
-      --color-primary: var(--manjra-text-color);
-      --border-op-color: rgba(41, 43, 44, 0.7);
-    "
+    class="app-container relative bg-[var(--manjra-bg-color)] text-[var(--manjra-text-color)]"
   >
     <div
       class="hidden absolute logo-image p-4 w-full lg:flex justify-start items-center"
       style="width: calc(100% - (var(--railW) * 2))"
     >
-      <NuxtLink to="#">
-        <img src="/logos/departments/Manjra-Org.svg" width="100" alt="Manjra" />
+      <NuxtLink to="/">
+        <img
+          src="/logos/svg/logo_black.svg"
+          width="100"
+          alt="Makzn7"
+          class="dark:invert"
+        />
       </NuxtLink>
     </div>
     <div class="top-section w-full h-full cursor-none">
-      <div class="left-box z-10 after:opacity-50 before:opacity-50">
+      <div
+        class="left-box manjra-nav-rail z-10 after:opacity-50 before:opacity-50"
+      >
         <LeftSideContent />
       </div>
 
@@ -76,7 +79,9 @@
         </div>
       </div>
 
-      <div class="right-box z-10 after:opacity-50 before:opacity-50">
+      <div
+        class="right-box manjra-nav-rail z-10 after:opacity-50 before:opacity-50"
+      >
         <RightSideContent />
       </div>
     </div>
@@ -126,3 +131,17 @@ function onHoverLeave() {
   }, 500);
 }
 </script>
+
+<style>
+.dark .manjra-nav-rail {
+  --color-primary: #ffffff;
+  --main-color: #ffffff;
+  --primary-color: #ffffff;
+}
+
+.dark .manjra-nav-rail::before,
+.dark .manjra-nav-rail::after {
+  background-color: #ffffff;
+  opacity: 1;
+}
+</style>

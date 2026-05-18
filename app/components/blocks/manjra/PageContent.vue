@@ -7,21 +7,30 @@
     }"
   >
     <!-- content -->
-    <div class="flex flex-col w-full min-h-screen text-[#292B2C]">
+    <div
+      class="flex flex-col w-full min-h-screen text-[var(--manjra-text-color)]"
+    >
       <!--  -->
       <div
-        class="w-full border-b-[0.3px] border-white-op50 border-brand-text h-[60px] lg:h-[120px] px-6 lg:px-0"
+        class="w-full border-b-[0.3px] border-white-op50 border-brand-text h-[60px] lg:h-[90px] px-6 lg:px-0"
       >
         <div class="flex lg:hidden justify-between items-center h-full">
-          <img
-            src="/logos/svg/logo_black.svg"
-            alt="Makzn7"
-            class="w-[70px] lg:w-[100px]"
-          />
+          <NuxtLink to="/">
+            <img
+              src="/logos/svg/logo_black.svg"
+              alt="Makzn7"
+              class="w-[70px] lg:w-[100px]"
+            />
+          </NuxtLink>
           <img
             src="/logos/departments/Manjra-Org.svg"
             alt="Manjra"
-            class="w-[50px] lg:w-[100px]"
+            class="block dark:hidden w-[50px] lg:w-[100px]"
+          />
+          <img
+            src="/logos/departments/Manjra_Dark.svg"
+            alt="Manjra"
+            class="hidden dark:block w-[50px] lg:w-[100px]"
           />
         </div>
         <div
@@ -31,12 +40,21 @@
       </div>
       <!--  -->
       <div
-        class="hidden lg:block w-full border-s-[0.3px] border-white-op50 border-brand-text h-[100px]"
+        class="hidden lg:block w-full border-s-[0.3px] border-white-op50 border-brand-text p-4"
         :style="`margin-inline-start: ${marginS}px;`"
       >
-        <!-- <div>
-          <img src="/icons/svg/green/2.svg" width="100" alt="Makzn7" />
-        </div> -->
+        <div>
+          <img
+            src="/logos/departments/Manjra-Org.svg"
+            alt="Manjra"
+            class="block dark:hidden w-[50px] lg:w-[100px]"
+          />
+          <img
+            src="/logos/departments/Manjra_Dark.svg"
+            alt="Manjra"
+            class="hidden dark:block w-[50px] lg:w-[100px]"
+          />
+        </div>
       </div>
       <!-- Sections -->
       <section v-for="(section, index) in pageDetails?.sections" :key="index">

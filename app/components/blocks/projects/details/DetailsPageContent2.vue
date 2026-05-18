@@ -34,9 +34,9 @@
           <h1
             class="font-semibold text-wrap"
             :style="`font-size: clamp(${Math.max(
-              36,
-              Math.round(props.titleSize * 0.5)
-            )}px, ${(props.titleSize / 19.36).toFixed(1)}vw, ${
+              18,
+              Math.round(props.titleSize * 0.35)
+            )}px, ${(props.titleSize / 20).toFixed(1)}vw, ${
               props.titleSize
             }px)`"
           >
@@ -56,7 +56,7 @@
                 :style="`font-size: clamp(${Math.max(
                   16,
                   Math.round(props.scopeSize * 0.35)
-                )}px, ${(props.scopeSize / 19.36).toFixed(1)}vw, ${
+                )}px, ${(props.scopeSize / 20).toFixed(1)}vw, ${
                   props.scopeSize
                 }px);`"
                 class="uppercase font-light"
@@ -89,8 +89,8 @@
                   class="font-light uppercase"
                   :style="`font-size: clamp(${Math.max(
                     16,
-                    Math.round(props.scopeSize * 0.5)
-                  )}px, ${(props.scopeSize / 19.36).toFixed(1)}vw, ${
+                    Math.round(props.scopeSize * 0.35)
+                  )}px, ${(props.scopeSize / 20).toFixed(1)}vw, ${
                     props.scopeSize
                   }px)`"
                   >{{ locale === "ar" ? scope.name_ar : scope.name_en }}</span
@@ -113,8 +113,8 @@
               class="font-semibold whitespace-nowrap self-end"
               :style="`font-size: clamp(${Math.max(
                 16,
-                Math.round(props.typeSize * 0.5)
-              )}px, ${(props.typeSize / 19.36).toFixed(1)}vw, ${
+                Math.round(props.typeSize * 0.35)
+              )}px, ${(props.typeSize / 20).toFixed(1)}vw, ${
                 props.typeSize
               }px)`"
             >
@@ -131,8 +131,8 @@
                 class="font-semibold"
                 :style="`font-size: clamp(${Math.max(
                   16,
-                  Math.round(props.yearSize * 0.5)
-                )}px, ${(props.yearSize / 19.36).toFixed(1)}vw, ${
+                  Math.round(props.yearSize * 0.35)
+                )}px, ${(props.yearSize / 20).toFixed(1)}vw, ${
                   props.yearSize
                 }px)`"
               >

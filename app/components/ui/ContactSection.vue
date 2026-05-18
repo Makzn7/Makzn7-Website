@@ -22,7 +22,7 @@
             :style="`animation-delay: 0s; font-size: clamp(${Math.max(
               16,
               Math.round(103 * 0.35)
-            )}px, ${(103 / 15.36).toFixed(1)}vw, ${103}px);`"
+            )}px, ${(103 / 20).toFixed(1)}vw, ${103}px);`"
           >
             {{ $t("home.contactTitle") }}
           </h2>
@@ -153,7 +153,7 @@
                   :href="settings?.social_links?.instagram"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
+                  class="social-icon group transition-all duration-500 ease-in-out"
                   aria-label="Instagram"
                 >
                   <font-awesome-icon
@@ -167,7 +167,7 @@
                   :href="settings?.social_links?.vimeo"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
+                  class="social-icon group transition-all duration-500 ease-in-out"
                   aria-label="Vimeo"
                 >
                   <font-awesome-icon
@@ -181,7 +181,7 @@
                   :href="settings?.social_links?.linkedin"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
+                  class="social-icon group transition-all duration-500 ease-in-out"
                   aria-label="LinkedIn"
                 >
                   <font-awesome-icon
@@ -195,7 +195,7 @@
                   :href="settings?.social_links?.twitter"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="social-icon group hover:!text-brand-primary transition-all duration-500 ease-in-out"
+                  class="social-icon group transition-all duration-500 ease-in-out"
                   aria-label="X (Twitter)"
                 >
                   <font-awesome-icon
@@ -255,6 +255,9 @@ function toggleLocale() {
   height: 48px;
   cursor: pointer;
   color: #ffffff;
+}
+.social-icon:hover {
+  color: var(--main-color);
 }
 
 .hand-icon-large svg,

@@ -23,6 +23,10 @@
             />
           </NuxtLink>
         </div>
+        <div
+          class="hidden lg:block border-e-[0.3px] border-white-op50 h-full"
+          :style="`width: ${marginS}px;`"
+        ></div>
       </div>
       <FilterSection
         :margin-s="marginS"

@@ -1,12 +1,19 @@
 <!-- HomeHero2 -->
 <template>
-  <div class="app-container relative dark bg-[#4F38A0]">
+  <div
+    class="app-container relative bg-[var(--prophouse-bg-color)] text-[var(--prophouse-text-color)]"
+  >
     <div
       class="hidden absolute logo-image p-4 w-full lg:flex justify-start items-center"
       style="width: calc(100% - (var(--railW) * 2))"
     >
-      <NuxtLink to="#">
-        <img src="/logos/departments/Prophouse.svg" width="100" alt="PropHouse" />
+      <NuxtLink to="/">
+        <img
+          src="/logos/svg/logo_black.svg"
+          width="100"
+          alt="Makzn7"
+          class="invert"
+        />
       </NuxtLink>
     </div>
     <div class="top-section w-full h-full cursor-none">

@@ -22,8 +22,12 @@ useHead({
 <template>
   <div
     ref="scrollContainer"
-    class="bg-[#4F38A0]"
-    style="--cursor-color: #ffffff"
+    class="bg-[var(--prophouse-bg-color)] text-[var(--prophouse-text-color)]"
+    style="
+      --cursor-color: var(--prophouse-text-color);
+      --primary-color: var(--prophouse-text-color);
+      --color-primary: var(--prophouse-text-color);
+    "
     data-scroll-container
   >
     <section class="sticky top-0 z-[1]" id="hero-section">

@@ -23,7 +23,13 @@ useHead({
   <div
     ref="scrollContainer"
     class="bg-[var(--manjra-bg-color)] text-[var(--manjra-text-color)]"
-    style="--cursor-color: var(--manjra-text-color)"
+    style="
+      --cursor-color: var(--manjra-text-color);
+      --primary-color: var(--manjra-text-color);
+      --color-primary: var(--manjra-text-color);
+      --color-border: var(--manjra-border-color, rgba(41, 43, 44, 0.7));
+      --border-op-color: var(--manjra-border-color, rgba(41, 43, 44, 0.7));
+    "
     data-scroll-container
   >
     <section class="sticky top-0 z-[1]" id="hero-section">

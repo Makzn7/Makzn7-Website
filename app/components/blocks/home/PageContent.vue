@@ -36,7 +36,7 @@
           :style="`animation-delay: 0.15s; font-size: clamp(${Math.max(
             16,
             Math.round(descSize * 0.35)
-          )}px, ${(descSize / 15.36).toFixed(1)}vw, ${descSize}px);`"
+          )}px, ${(descSize / 20).toFixed(1)}vw, ${descSize}px);`"
           v-html="
             locale === 'ar'
               ? heroData?.description_ar
@@ -78,7 +78,7 @@
           :style="`animation-delay: 0.15s; font-size: clamp(${Math.max(
             16,
             Math.round(59 * 0.35)
-          )}px, ${(59 / 15.36).toFixed(1)}vw, ${59}px);`"
+          )}px, ${(59 / 20).toFixed(1)}vw, ${59}px);`"
         >
           {{ $t("titles.selectedProjects") }}
         </h2>
@@ -94,15 +94,17 @@
           @mouseenter="showHover && onEnter($event)"
           @mouseleave="showHover && $emit('hover-leave')"
         >
-          <h3
-            class="leading-[1.05] lg:font-light lg:max-w-[80%] hover:font-bold"
-            :style="`font-size: clamp(${Math.max(
-              18,
-              Math.round(32 * 0.5)
-            )}px, ${(projectSize / 19.36).toFixed(1)}vw, ${projectSize}px)`"
-          >
-            {{ locale === "ar" ? project.name_ar : project.name_en }}
-          </h3>
+          <NuxtLink :to="`/projects/${project.slug}`">
+            <h3
+              class="leading-[1.05] lg:font-light lg:max-w-[80%] hover:font-bold"
+              :style="`font-size: clamp(${Math.max(
+                18,
+                Math.round(32 * 0.35)
+              )}px, ${(projectSize / 20).toFixed(1)}vw, ${projectSize}px)`"
+            >
+              {{ locale === "ar" ? project.name_ar : project.name_en }}
+            </h3>
+          </NuxtLink>
         </div>
       </div>
     </div>
