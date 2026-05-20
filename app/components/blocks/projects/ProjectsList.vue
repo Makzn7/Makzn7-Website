@@ -23,7 +23,11 @@
     </div>
 
     <!-- Grid -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <div
+      v-else
+      ref="listEl"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+    >
       <div
         v-for="(project, index) in projects"
         :key="project.id ?? index"
@@ -31,12 +35,22 @@
       >
         <NuxtLink :to="`/projects/${project.slug}`" class="block w-full h-full">
           <div class="relative w-full h-full overflow-hidden">
+            <!-- Per-image loading placeholder -->
+            <div
+              v-if="project.heroMedia?.src && !loadedImages.has(project.id)"
+              class="absolute inset-0 bg-white/5 animate-pulse"
+              aria-hidden="true"
+            />
             <img
               v-if="project.heroMedia?.src"
               :src="project.heroMedia.src"
               :alt="locale === 'ar' ? project.name_ar : project.name_en"
               loading="lazy"
-              class="w-full h-full object-cover transition-[filter] duration-500 grayscale group-hover:grayscale-0"
+              :data-project-id="project.id"
+              class="absolute inset-0 w-full h-full object-cover transition duration-500 grayscale group-hover:grayscale-0"
+              :class="loadedImages.has(project.id) ? 'opacity-100' : 'opacity-0'"
+              @load="markImageLoaded(project.id)"
+              @error="markImageLoaded(project.id)"
             />
             <div
               v-else
@@ -94,6 +108,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import type { Project } from "~/types/project";
 
 const { locale } = useI18n();
@@ -114,6 +129,28 @@ withDefaults(
     loading: false,
   }
 );
+
+/* Per-image loading state — a placeholder shows until each card image
+   has decoded, then the image fades in. No layout shift: the placeholder
+   and the image share the same fixed card box. */
+const listEl = ref<HTMLElement | null>(null);
+const loadedImages = ref(new Set<number>());
+
+function markImageLoaded(id: number) {
+  loadedImages.value.add(id);
+}
+
+onMounted(() => {
+  // Catch images that were cached / decoded before the listener attached.
+  listEl.value
+    ?.querySelectorAll<HTMLImageElement>("img[data-project-id]")
+    .forEach((img) => {
+      if (img.complete && img.naturalWidth > 0) {
+        const id = Number(img.dataset.projectId);
+        if (!Number.isNaN(id)) markImageLoaded(id);
+      }
+    });
+});
 </script>
 
 <style scoped>

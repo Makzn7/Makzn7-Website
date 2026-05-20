@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
-
 const { locale } = useI18n();
 const origin = useRequestURL().origin;
 
@@ -27,37 +25,15 @@ useHead(() => ({
 }));
 
 /*
-  Cinematic page transition: a dark veil covers the screen while routes
-  swap, so the site background never flashes between pages. The page
-  swap itself runs behind the opaque veil (mode: "out-in").
+  Cinematic page transition + page-loading state. A single dark veil
+  covers the screen while a route loads its data and swaps, so the site
+  background never flashes; a spinner appears if the load is slow.
 */
-const veilActive = ref(false);
-
-const wait = (ms: number) =>
-  new Promise<void>((resolve) => setTimeout(resolve, ms));
-
-const pageTransition = {
-  name: "page",
-  mode: "out-in" as const,
-  css: false,
-  async onLeave(_el: Element, done: () => void) {
-    if (prefersReducedMotion()) return done();
-    veilActive.value = true;
-    await wait(230); // veil fade-in (200ms) + margin
-    done();
-  },
-  async onEnter(_el: Element, done: () => void) {
-    if (prefersReducedMotion()) return done();
-    await wait(60); // let the incoming page settle behind the veil
-    veilActive.value = false;
-    await wait(320); // veil fade-out (300ms) + margin
-    done();
-  },
-};
+const { veilActive, pageTransition } = useRouteTransition();
 </script>
 
 <template>
-  <NuxtLoadingIndicator color="#54ea62" :height="3" />
+  <NuxtLoadingIndicator color="#54ea62" :height="3" :throttle="0" />
   <NuxtLayout>
     <NuxtPage :transition="pageTransition" />
   </NuxtLayout>

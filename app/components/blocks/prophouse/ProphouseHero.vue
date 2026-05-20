@@ -27,6 +27,7 @@
         <div class="top-part px-[2.5rem] lg:px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
             <PageContent
+              v-if="prophousePage"
               :margin-top="3"
               :mobile-margin-top="2"
               :px="0"
@@ -46,10 +47,12 @@
         <div class="center-part border-white-op50">
           <div ref="wallRef" class="sync-content">
             <PageContent
+              v-if="prophousePage"
               :margin-top="0"
               :mobile-margin-top="0"
               :pageDetails="prophousePage"
             />
+            <PageContentLoader v-else-if="!error" />
           </div>
           <img
             ref="previewImgRef"
@@ -61,6 +64,7 @@
         <div class="bottom-part">
           <div ref="floorRef" class="sync-content px-[2.5rem] lg:px-[5.5rem]">
             <PageContent
+              v-if="prophousePage"
               :margin-top="5"
               :mobile-margin-top="3"
               :px="0"
@@ -91,8 +95,9 @@ import LeftSideContent from "~/components/ui/LeftSideContent.vue";
 import RightSideContent from "~/components/ui/RightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
 import PageContent from "./PageContent.vue";
+import PageContentLoader from "~/components/ui/PageContentLoader.vue";
 
-const { data: prophousePage } = usePage("prophouse");
+const { data: prophousePage, error } = usePage("prophouse");
 
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
 
