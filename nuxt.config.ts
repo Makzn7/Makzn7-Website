@@ -55,14 +55,14 @@ export default defineNuxtConfig({
           rel: "preload",
           as: "font",
           type: "font/otf",
-          href: "/fonts/en/UxumGrotesque-Regular.otf",
+          href: "/fonts/en/FunnelDisplay-Regular.ttf",
           crossorigin: "",
         },
         {
           rel: "preload",
           as: "font",
           type: "font/otf",
-          href: "/fonts/ar/ZaridSerif-Regular.otf",
+          href: "/fonts/ar/Jali Arabic Regular.ttf",
           crossorigin: "",
         },
         {

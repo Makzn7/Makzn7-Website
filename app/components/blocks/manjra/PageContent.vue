@@ -19,7 +19,7 @@
             <img
               src="/logos/svg/logo_black.svg"
               alt="Makzn7"
-              class="w-[70px] lg:w-[100px]"
+              class="dark:invert w-[70px] lg:w-[100px]"
             />
           </NuxtLink>
           <img

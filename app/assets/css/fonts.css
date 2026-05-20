@@ -1,60 +1,3 @@
-/* @font-face {
-  font-family: "Uxum Grotesque";
-  src: url("/fonts/en/TRIAL_UxumGrotesque-UltraLight.otf") format("opentype");
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Uxum Grotesque";
-  src: url("/fonts/en/TRIAL_UxumGrotesque-Light.otf") format("opentype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Uxum Grotesque";
-  src: url("/fonts/en/UxumGrotesque-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Uxum Grotesque";
-  src: url("/fonts/en/UxumGrotesque-Medium.otf") format("opentype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Uxum Grotesque";
-  src: url("/fonts/en/TRIAL_UxumGrotesque-Bold.otf") format("opentype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Uxum Grotesque";
-  src: url("/fonts/en/TRIAL_UxumGrotesque-Ultra.otf") format("opentype");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "29LT Zarid Serif";
-  src: url("/fonts/ar/ZaridSerif-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "29LT Zarid Serif";
-  src: url("/fonts/ar/ZaridSerif-Semibold.otf") format("opentype");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-} */
 @font-face {
   font-family: "DotGothic16";
   src: url("/fonts/pixel/DotGothic16-Regular.ttf") format("truetype");
@@ -64,7 +7,7 @@
 }
 
 /* Roboto */
-@font-face {
+/* @font-face {
   font-family: "Roboto";
   src: url("/fonts/en/Roboto-Thin.ttf") format("truetype");
   font-weight: 100;
@@ -189,7 +132,7 @@
   font-weight: 900;
   font-style: italic;
   font-display: swap;
-}
+} */
 /* FunnelDisplay */
 @font-face {
   font-family: "Funnel Display";
@@ -229,6 +172,56 @@
 @font-face {
   font-family: "Funnel Display";
   src: url("/fonts/en/FunnelDisplay-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+/* Jali Arabic */
+@font-face {
+  font-family: "Jali Arabic";
+  src: url("/fonts/ar/Jali Arabic ExtraLight.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Jali Arabic";
+  src: url("/fonts/ar/Jali Arabic Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Jali Arabic";
+  src: url("/fonts/ar/Jali Arabic Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Jali Arabic";
+  src: url("/fonts/ar/Jali Arabic Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Jali Arabic";
+  src: url("/fonts/ar/Jali Arabic SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Jali Arabic";
+  src: url("/fonts/ar/Jali Arabic Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Jali Arabic";
+  src: url("/fonts/ar/Jali Arabic ExtraBold.ttf") format("truetype");
   font-weight: 800;
   font-style: normal;
   font-display: swap;
