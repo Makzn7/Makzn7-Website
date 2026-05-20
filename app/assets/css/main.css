@@ -295,3 +295,17 @@ html.has-scroll-smooth {
 
 @media (max-width: 1280px) {
 }
+
+/* ══════════════════════════════════════════════
+   REDUCED MOTION — honor the OS accessibility setting
+   (The page-transition veil is handled in app.vue.)
+══════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in,
+  .fade-in-left,
+  .fade-in-right {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}

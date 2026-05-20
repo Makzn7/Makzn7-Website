@@ -39,6 +39,24 @@
   "meta": {
     "description": "Makzn7 – production design & prop house."
   },
+  "seo": {
+    "homeTitle": "Makzn7 — Film Design & Prop House",
+    "homeDescription": "Makzn 7 is a comprehensive film design services company founded in 2020. It functions as a hub for facilities such as a film design house, a prop house, a wardrobe studio, and a construction workshop.",
+    "aboutTitle": "About — Makzn7",
+    "aboutDescription": "Learn about Makzn7: our story, our team, and the comprehensive film design services we bring to screen — from concept and research to design, construction and location prep.",
+    "projectsTitle": "Projects — Makzn7",
+    "projectsDescription": "Explore selected work by Makzn7 across film design, props, wardrobe and set construction.",
+    "contactTitle": "Contact — Makzn7",
+    "contactDescription": "Get in touch with Makzn7 for film design, prop house, wardrobe and construction inquiries.",
+    "manjraTitle": "Manjra — Makzn7",
+    "manjraDescription": "Manjra is Makzn7's construction workshop, building sets, decor and structures for film and screen.",
+    "mansjTitle": "Mansj — Makzn7",
+    "mansjDescription": "Mansj is Makzn7's wardrobe studio, designing and producing costumes and wardrobe for film and screen.",
+    "prophouseTitle": "PropHouse — Makzn7",
+    "prophouseDescription": "PropHouse is Makzn7's prop house, sourcing and supplying properties for film and screen productions.",
+    "privacyTitle": "Privacy Policy — Makzn7",
+    "privacyDescription": "Privacy Policy for the Makzn7 website."
+  },
   "errors": {},
   "validation": {
     "name": {

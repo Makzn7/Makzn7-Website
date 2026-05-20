@@ -24,6 +24,8 @@ export function useGsapReveal(options: RevealOptions = {}) {
   let ctx: gsap.Context | null = null;
 
   onMounted(() => {
+    if (prefersReducedMotion()) return;
+
     const isRTL = locale.value === "ar";
     const toggleActions = "play none none reverse";
 

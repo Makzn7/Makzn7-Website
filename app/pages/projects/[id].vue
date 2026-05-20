@@ -33,19 +33,23 @@ const { data: project, pending: pendingProject } = useProject(id);
 // TODO: Fetch project data from an API or use a store instead of hardcoded data
 
 const pageTitle = computed(() => {
-  if (!project.value) return "Makzn7";
+  if (!project.value) return t("seo.projectsTitle");
   const name =
     locale.value === "ar" ? project.value.name_ar : project.value.name_en;
-  return `Makzn7 - ${name}`;
+  return project.value.seoTitle || `${name} — Makzn7`;
 });
 
-useHead({
+const pageDescription = computed(
+  () =>
+    project.value?.seoDescription ||
+    project.value?.summary ||
+    t("seo.projectsDescription"),
+);
+
+useSeo({
   title: () => pageTitle.value,
-  meta: [
-    {
-      name: "description",
-      content: () => t("meta.description"),
-    },
-  ],
+  description: () => pageDescription.value,
+  image: () => project.value?.ogImage,
+  type: "article",
 });
 </script>

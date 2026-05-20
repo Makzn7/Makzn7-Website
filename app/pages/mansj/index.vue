@@ -7,15 +7,13 @@ const { scrollContainer, lockPageScroll, unlockPageScroll } =
 useGsapReveal();
 
 const { t } = useI18n();
+const { data: pageData } = usePage("mansj");
 
-useHead({
-  title: "Mansaj - About",
-  meta: [
-    {
-      name: "description",
-      content: () => t("meta.description"),
-    },
-  ],
+useSeo({
+  title: () => pageData.value?.seoTitle || t("seo.mansjTitle"),
+  description: () =>
+    pageData.value?.seoDescription || t("seo.mansjDescription"),
+  image: () => pageData.value?.ogImage,
 });
 </script>
 

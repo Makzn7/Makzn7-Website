@@ -15,6 +15,7 @@ export function useScrollAnimation(
 
   onMounted(() => {
     if (typeof window === "undefined" || !window.IntersectionObserver) return;
+    if (prefersReducedMotion()) return;
 
     const container = containerRef?.value ?? document;
     const els = container.querySelectorAll(

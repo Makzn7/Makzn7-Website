@@ -8,14 +8,9 @@ useGsapReveal();
 
 const { t } = useI18n();
 
-useHead({
-  title: "Makzn7 - About",
-  meta: [
-    {
-      name: "description",
-      content: () => t("meta.description"),
-    },
-  ],
+useSeo({
+  title: () => t("seo.aboutTitle"),
+  description: () => t("seo.aboutDescription"),
 });
 </script>
 

@@ -8,6 +8,12 @@ const props = defineProps<{
 const statusCode = computed(() => props.error.statusCode ?? 500);
 const isNotFound = computed(() => statusCode.value === 404);
 
+useSeoMeta({
+  title: () =>
+    isNotFound.value ? "Page Not Found — Makzn7" : "Error — Makzn7",
+  robots: "noindex, nofollow",
+});
+
 function handleError() {
   clearError({ redirect: "/" });
 }

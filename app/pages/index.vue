@@ -17,14 +17,9 @@ const { scrollContainer, lockPageScroll, unlockPageScroll } =
 
 const { t } = useI18n();
 
-useHead({
-  title: "Makzn7",
-  meta: [
-    {
-      name: "description",
-      content: () => t("meta.description"),
-    },
-  ],
+useSeo({
+  title: () => t("seo.homeTitle"),
+  description: () => t("seo.homeDescription"),
 });
 
 onMounted(async () => {
@@ -54,34 +49,36 @@ onMounted(async () => {
 </script>
 
 <template>
-  <!-- صفحة التحميل -->
-  <div
-    v-if="showSplash"
-    ref="splashRef"
-    class="splash-screen"
-    :class="{ 'splash-fade-out': splashAnimating }"
-  >
-    <img
-      ref="splashLogoRef"
-      src="/logos/svg/logo_black.svg"
-      alt="Makzn7"
-      class="splash-logo dark:invert"
-      :class="{ 'splash-animate': splashAnimating }"
-    />
-  </div>
-
-  <div ref="scrollContainer" class="bg-brand-bg" data-scroll-container>
-    <section class="sticky top-0 z-[1]" id="hero-section">
-      <HomeHero
-        @lock-page-scroll="lockPageScroll"
-        @unlock-page-scroll="unlockPageScroll"
-        :homeData="homeData"
+  <div>
+    <!-- صفحة التحميل -->
+    <div
+      v-if="showSplash"
+      ref="splashRef"
+      class="splash-screen"
+      :class="{ 'splash-fade-out': splashAnimating }"
+    >
+      <img
+        ref="splashLogoRef"
+        src="/logos/svg/logo_black.svg"
+        alt="Makzn7"
+        class="splash-logo dark:invert"
+        :class="{ 'splash-animate': splashAnimating }"
       />
-    </section>
-    <section class="relative z-[2]" id="content-section" data-scroll-section>
-      <HomeAbout :aboutData="aboutData" />
-      <ContactSection border-classes="border-primary" />
-    </section>
+    </div>
+
+    <div ref="scrollContainer" class="bg-brand-bg" data-scroll-container>
+      <section class="sticky top-0 z-[1]" id="hero-section">
+        <HomeHero
+          @lock-page-scroll="lockPageScroll"
+          @unlock-page-scroll="unlockPageScroll"
+          :homeData="homeData"
+        />
+      </section>
+      <section class="relative z-[2]" id="content-section" data-scroll-section>
+        <HomeAbout :aboutData="aboutData" />
+        <ContactSection border-classes="border-primary" />
+      </section>
+    </div>
   </div>
 </template>
 
@@ -154,6 +151,19 @@ onMounted(async () => {
   100% {
     opacity: 0;
     pointer-events: none;
+  }
+}
+
+/* Reduced motion: show the logo statically, skip the morph + fade */
+@media (prefers-reduced-motion: reduce) {
+  .splash-logo,
+  .splash-logo.splash-animate {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .splash-screen.splash-fade-out {
+    animation: none;
   }
 }
 </style>

@@ -163,3 +163,45 @@ html[dir="rtl"] .center-box .center-part {
   transition: opacity 0.5s ease-in-out;
   z-index: 2;
 }
+
+/* ══════════════════════════════════════════════
+   CENTER-PART ENTRANCE — subtle staggered reveal
+   Plays once when a Hero mounts. Scoped to the
+   center-part (wall) only: the top-part (ceiling)
+   and bottom-part (floor) are intentionally left
+   untouched. Transform/opacity only — no layout
+   shift, and it does not affect scroll height.
+══════════════════════════════════════════════ */
+@keyframes heroCenterReveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.center-part .page-content > * {
+  animation: heroCenterReveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.1s;
+}
+.center-part .page-content > *:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.center-part .page-content > *:nth-child(3) {
+  animation-delay: 0.26s;
+}
+.center-part .page-content > *:nth-child(4) {
+  animation-delay: 0.34s;
+}
+.center-part .page-content > *:nth-child(n + 5) {
+  animation-delay: 0.42s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .center-part .page-content > * {
+    animation: none;
+  }
+}

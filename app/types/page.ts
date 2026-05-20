@@ -15,4 +15,7 @@ export type Page = {
   teams?: Person[] | null;
   type: "makzn7" | "mansj" | "manjra" | "prophouse";
   buttonImage?: string | null;
+  seoTitle?: string;
+  seoDescription?: string;
+  ogImage?: string;
 };
