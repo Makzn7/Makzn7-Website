@@ -32,7 +32,7 @@
           :aria-describedby="
             fieldErrors[field.key] ? `err-${field.key}` : undefined
           "
-          class="w-full bg-transparent border-none outline-none text-white font-light placeholder:text-white/45 py-3 resize-none text-[clamp(14px,1.4vw,20px)]"
+          class="w-full bg-transparent border-none outline-none text-white font-light placeholder:text-white/45 py-3 resize-none text-[clamp(14px,1.4vw,20px)] rtl:placeholder:text-right ltr:placeholder:text-left"
           :class="{
             'font-en': field.key === 'phone' || field.key === 'email',
           }"
@@ -195,7 +195,10 @@ function validateClient(): boolean {
       error = t(`contact.errors.${field.key}.max`, { max: field.maxlength });
     } else if (field.key === "email" && !/^\S+@\S+\.\S+$/.test(value)) {
       error = t("contact.errors.email.invalid");
-    } else if (field.key === "phone" && !new RegExp(`^${PHONE_PATTERN}$`).test(value)) {
+    } else if (
+      field.key === "phone" &&
+      !new RegExp(`^${PHONE_PATTERN}$`).test(value)
+    ) {
       error = t("contact.errors.phone.invalid");
     }
 

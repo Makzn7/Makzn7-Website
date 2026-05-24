@@ -76,9 +76,9 @@
     "email": "البريد الإلكتروني",
     "name": "الاسم",
     "message": "الرسالة",
-    "leftText1": "لنعمل",
-    "leftText2": "معًا",
-    "leftText3": "",
+    "leftText1": "خلينا",
+    "leftText2": "نشتغل",
+    "leftText3": "مع بعض",
     "submit": "إرسال",
     "success": "تم إرسال رسالتك بنجاح!",
     "duplicate": "تم استلام رسالتك مسبقًا.",
@@ -116,9 +116,23 @@
     "aboutTitle": "عن مخزن ٧",
     "contactTitle": "تواصل"
   },
-  "team": {
-    "title": "فريقنا"
+  "about": {
+    "awardsTitle": "الإنجـــازات"
   },
+  "mansj": {
+    "showProjects": "تصفح مشاريع منسج"
+  },
+  "manjra": {
+    "showProjects": "تصفح مشاريع منجرة"
+  },
+  "prophouse": {
+    "showProjects": "تصفح مشاريع بربهاوس",
+    "visitWebsite": "زيارة موقع بربهاوس"
+  },
+  "team": {
+    "title": "الفريق"
+  },
+
   "filters": {
     "year": "السنة",
     "department": "القسم",

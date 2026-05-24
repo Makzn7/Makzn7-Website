@@ -1,7 +1,7 @@
 <template>
   <section>
     <SectionTitle
-      :title="$t('about.teamTitle')"
+      :title="$t('team.title')"
       :marginS="marginS"
       :titleS="titleS"
       class="border-white-op50 border-b-[0.3px] border-t-[0.3px] lg:border-t-0"
@@ -69,7 +69,7 @@
                   Math.round(nameS * 0.35)
                 )}px, ${(nameS / 20).toFixed(1)}vw, ${nameS}px);`"
               >
-                {{ team.name_en }}
+                {{ locale === "ar" ? team.name_ar : team.name_en }}
               </h3>
               <p
                 class="font-light"
@@ -80,7 +80,7 @@
                   1
                 )}vw, ${Math.round(nameS * 0.35)}px);`"
               >
-                {{ team.title_en }}
+                {{ locale === "ar" ? team.title_ar : team.title_en }}
               </p>
             </div>
           </div>
@@ -104,6 +104,8 @@ const props = defineProps({
   py: { type: Number, default: 4 },
   marginB: { type: Number, default: 2 },
 });
+
+const { locale } = useI18n();
 
 const getInitials = (name: string): string[] => {
   return name

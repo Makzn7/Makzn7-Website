@@ -103,20 +103,20 @@
                 alt="View Projects"
                 class="w-full h-auto filter grayscale block"
               />
-            </NuxtLink>
-            <div
-              class="absolute inset-0 hidden group-hover:flex items-start justify-end px-8 py-4 bg-[#9AE480]/50"
-            >
-              <span
-                class="text-[#0F2943] font-bold"
-                :style="`font-size: clamp(${Math.max(
-                  16,
-                  Math.round(51 * 0.35)
-                )}px, ${(51 / 20).toFixed(1)}vw, ${51}px);`"
+              <div
+                class="absolute inset-0 hidden group-hover:flex items-start justify-end px-8 py-4 bg-[#9AE480]/50"
               >
-                {{ $t("mansj.showProjects") }}
-              </span>
-            </div>
+                <span
+                  class="text-[#0F2943] font-bold"
+                  :style="`font-size: clamp(${Math.max(
+                    16,
+                    Math.round(51 * 0.35)
+                  )}px, ${(51 / 20).toFixed(1)}vw, ${51}px);`"
+                >
+                  {{ $t("mansj.showProjects") }}
+                </span>
+              </div>
+            </NuxtLink>
           </div>
         </div>
       </section>

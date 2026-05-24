@@ -103,20 +103,20 @@
                 alt="View Projects"
                 class="w-full h-auto filter grayscale block"
               />
-            </NuxtLink>
-            <div
-              class="absolute inset-0 hidden group-hover:flex items-start justify-end px-8 py-4 bg-[#E1FE53]/50"
-            >
-              <span
-                class="text-[#292B2C] font-bold"
-                :style="`font-size: clamp(${Math.max(
-                  16,
-                  Math.round(51 * 0.35)
-                )}px, ${(51 / 20).toFixed(1)}vw, ${51}px);`"
+              <div
+                class="absolute inset-0 hidden group-hover:flex items-start justify-end px-8 py-4 bg-[#E1FE53]/50"
               >
-                {{ $t("prophouse.showProjects") }}
-              </span>
-            </div>
+                <span
+                  class="text-[#292B2C] font-bold"
+                  :style="`font-size: clamp(${Math.max(
+                    16,
+                    Math.round(51 * 0.35)
+                  )}px, ${(51 / 20).toFixed(1)}vw, ${51}px);`"
+                >
+                  {{ $t("prophouse.showProjects") }}
+                </span>
+              </div>
+            </NuxtLink>
           </div>
         </div>
       </section>

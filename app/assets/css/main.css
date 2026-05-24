@@ -175,9 +175,9 @@ html.has-scroll-smooth {
 }
 .team-line::after {
   content: "";
-  @apply absolute w-[0.3px] h-[var(--team-line-height)] bg-white ltr:left-[8.7rem] rtl:right-[8.7rem];
+  @apply absolute w-[0.3px] h-[var(--team-line-height)] bg-white ltr:left-[8.7rem] rtl:right-[8.7rem] ltr:rotate-[-55deg] rtl:rotate-[55deg];
   top: calc(var(--team-line-height) - 72px);
-  transform: rotate(-55deg);
+  /* transform: rotate(-55deg); */
 }
 
 .page-team-line {
@@ -190,10 +190,10 @@ html.has-scroll-smooth {
   --team-space: 18rem;
   --team-line-height: 300px;
   content: "";
-  @apply absolute w-[0.3px] h-[var(--team-line-height)] ltr:left-[7.7rem] rtl:right-[7.7rem];
+  @apply absolute w-[0.3px] h-[var(--team-line-height)] ltr:left-[7.7rem] rtl:right-[7.7rem] ltr:rotate-[-55deg] rtl:rotate-[55deg];
   background-color: var(--border-op-color, rgba(255, 255, 255, 0.5));
   top: calc(var(--team-line-height) - 64px);
-  transform: rotate(-55deg);
+  /* transform: rotate(-55deg); */
 }
 
 .hero-logo {

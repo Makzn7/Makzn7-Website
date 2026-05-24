@@ -132,7 +132,7 @@ const {
 
 const filters = computed<FilterItem[]>(() => [
   ...(filtersData.value?.years ?? []).map((y) => ({
-    type: "years",
+    type: "year",
     id: y.id,
     slug: y.slug,
     name_ar: y.name_ar,

@@ -36,7 +36,9 @@
           class="contact-form-section w-full lg:border-s-[0.3px] border-y-[0.3px] border-white-op50 border-brand-text px-6 py-6 lg:px-8 lg:py-16"
           :style="`margin-inline-start: ${marginS}px; width: calc(100% - ${marginS}px);`"
         >
-          <div class="w-full grid grid-cols-1 lg:grid-cols-2 items-center">
+          <div
+            class="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-1 items-center"
+          >
             <!-- Text + Icon -->
             <div
               class="contact-left-side flex flex-col leading-[1.1]"
@@ -45,12 +47,16 @@
                 Math.round(141 * 0.35)
               )}px, ${(141 / 20).toFixed(1)}vw, ${141}px);`"
             >
-              <div class="grid grid-cols-2 items-end justify-start">
-                <div class="text-left flex flex-col">
+              <div
+                class="grid grid-cols-2 rtl:grid-cols-4 rtl:lg:grid-cols-3 rtl:gap-4 items-end justify-start"
+              >
+                <div
+                  class="rtl:order-2 rtl:col-span-2 ltr:text-left rtl:text-left rtl:lg:text-right flex flex-col"
+                >
                   <h2>{{ $t("contact.leftText1") }}</h2>
                   <h2>{{ $t("contact.leftText2") }}</h2>
                 </div>
-                <div>
+                <div class="rtl:order-1 rtl:col-span-2 rtl:lg:col-span-1">
                   <img
                     src="/icons/svg/green/10-1.svg"
                     class="mb-4 hand-image"
@@ -58,8 +64,12 @@
                   />
                 </div>
               </div>
-              <div>
-                <h2>{{ $t("contact.leftText3") }}</h2>
+              <div class="rtl:grid rtl:lg:grid-cols-6">
+                <div></div>
+                <h2 class="rtl:text-end rtl:lg:col-span-4">
+                  {{ $t("contact.leftText3") }}
+                </h2>
+                <div></div>
               </div>
             </div>
             <!-- Form -->
@@ -96,9 +106,9 @@
         >
           <div class="w-full grid grid-cols-1 lg:grid-cols-2">
             <!-- Info -->
-            <div class="flex lg:flex-col gap-4 lg:gap-8">
+            <div class="flex lg:flex-col justify-between gap-4 lg:gap-8">
               <h3
-                class="font-normal lg:font-bold tracking-[0px] mb-4 lg:max-w-96"
+                class="font-normal lg:font-bold rtl:font-light tracking-[0px] mb-4 lg:max-w-96"
                 :style="`font-size: clamp(${Math.max(
                   14,
                   Math.round(35 * 0.35)
@@ -131,18 +141,37 @@
                   ({{ settings?.phone }})
                 </a>
               </div>
-            </div>
-            <!-- Image & Button -->
-            <div class="flex flex-col justify-between">
-              <img
-                src="/images/pages/contact/new_map.jpg"
-                alt="Location Image"
-                class="w-full h-auto object-cover mb-8 mt-4"
-              />
+              <!-- Location -->
               <a
                 href="https://maps.app.goo.gl/rCWy5uqtztQDgnoe6"
                 target="_blank"
-                class="white-link flex items-center justify-center lg:justify-end gap-1 lg:gap-2 uppercase tracking-tighter"
+                class="hidden white-link lg:flex items-center justify-start gap-1 lg:gap-2 uppercase tracking-tighter"
+                :style="`font-size: clamp(${Math.max(
+                  16,
+                  Math.round(50 * 0.35)
+                )}px, ${(50 / 20).toFixed(1)}vw, ${50}px);`"
+              >
+                <span>
+                  {{ $t("contact.goToLocation") }}
+                </span>
+                <span
+                  class="font-pixel mb-[5px] lg:mb-[10px] inline-block text-primary"
+                  >-></span
+                >
+              </a>
+            </div>
+            <!-- Image & Button -->
+            <div class="flex flex-col">
+              <img
+                src="/images/pages/contact/new_map.jpg"
+                alt="Location Image"
+                class="w-full h-auto object-cover rounded-sm mb-6 lg:mb-0 mt-4 lg:mt-0"
+              />
+              <!-- Location -->
+              <a
+                href="https://maps.app.goo.gl/rCWy5uqtztQDgnoe6"
+                target="_blank"
+                class="flex white-link lg:hidden items-center justify-center gap-1 lg:gap-2 uppercase tracking-tighter"
                 :style="`font-size: clamp(${Math.max(
                   16,
                   Math.round(50 * 0.35)
