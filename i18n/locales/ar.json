@@ -143,7 +143,9 @@
     "title": "تصفية المشاريع",
     "clear": "مسح",
     "done": "تم",
-    "close": "إغلاق"
+    "close": "إغلاق",
+    "scopes": "الفئة",
+    "departments": "الأقسام"
   },
   "projects": {
     "empty": "لا توجد مشاريع"

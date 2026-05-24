@@ -7,13 +7,12 @@ const { scrollContainer, lockPageScroll, unlockPageScroll } =
 useGsapReveal();
 
 const { t } = useI18n();
-const { data: pageData } = usePage("mansj");
+const { data: pageData, error } = usePage("mansj");
 
-useSeo({
-  title: () => pageData.value?.seoTitle || t("seo.mansjTitle"),
-  description: () =>
-    pageData.value?.seoDescription || t("seo.mansjDescription"),
-  image: () => pageData.value?.ogImage,
+usePageSeo({
+  page: () => pageData.value,
+  title: () => t("seo.mansjTitle"),
+  description: () => t("seo.mansjDescription"),
 });
 </script>
 
@@ -28,6 +27,8 @@ useSeo({
       <MansjHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"
+        :data="pageData"
+        :error="error"
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>

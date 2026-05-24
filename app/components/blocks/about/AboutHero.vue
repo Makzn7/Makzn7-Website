@@ -96,10 +96,18 @@ import CustomCursor from "~/components/ui/CustomCursor.vue";
 import PageContent from "./PageContent.vue";
 import PageContentLoader from "~/components/ui/PageContentLoader.vue";
 
-const { data: aboutData, error } = useAbout();
-
-const makzn7Page = computed(() => aboutData.value?.data);
-const awards = computed(() => aboutData.value?.awards || []);
+const props = defineProps({
+  data: {
+    type: Object,
+    required: false,
+  },
+  error: {
+    type: Object,
+    required: false,
+  },
+});
+const makzn7Page = computed(() => props.data?.data);
+const awards = computed(() => props.data?.awards || []);
 
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
 

@@ -1,4 +1,5 @@
 import type { Department } from "./department";
+import type { PageSeo } from "./page";
 import type { ProjectType } from "./projectType";
 import type { Scope } from "./scope";
 
@@ -25,7 +26,10 @@ export type Project = {
 
   teamIds: number[];
 
+  /** Legacy flat fields — kept for backward compatibility with older API responses. */
   seoTitle?: string;
   seoDescription?: string;
   ogImage?: string;
+  /** Structured per-project SEO override returned by the new backend. */
+  seo?: PageSeo | null;
 };

@@ -9,11 +9,10 @@ useGsapReveal();
 const { t } = useI18n();
 const { data: pageData } = usePage("prophouse");
 
-useSeo({
-  title: () => pageData.value?.seoTitle || t("seo.prophouseTitle"),
-  description: () =>
-    pageData.value?.seoDescription || t("seo.prophouseDescription"),
-  image: () => pageData.value?.ogImage,
+usePageSeo({
+  page: () => pageData.value,
+  title: () => t("seo.prophouseTitle"),
+  description: () => t("seo.prophouseDescription"),
 });
 </script>
 
@@ -32,6 +31,7 @@ useSeo({
       <ProphouseHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"
+        :data="pageData"
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>

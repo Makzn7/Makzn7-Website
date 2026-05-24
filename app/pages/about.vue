@@ -6,9 +6,12 @@ const { scrollContainer, lockPageScroll, unlockPageScroll } =
   usePageScrollShell();
 useGsapReveal();
 
+const { data: pageData, error } = useAbout();
+
 const { t } = useI18n();
 
-useSeo({
+usePageSeo({
+  page: () => pageData.value?.data || null,
   title: () => t("seo.aboutTitle"),
   description: () => t("seo.aboutDescription"),
 });
@@ -20,6 +23,8 @@ useSeo({
       <AboutHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"
+        :data="pageData"
+        :error="error"
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>

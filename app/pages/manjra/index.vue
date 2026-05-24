@@ -9,11 +9,10 @@ useGsapReveal();
 const { t } = useI18n();
 const { data: pageData } = usePage("manjra");
 
-useSeo({
-  title: () => pageData.value?.seoTitle || t("seo.manjraTitle"),
-  description: () =>
-    pageData.value?.seoDescription || t("seo.manjraDescription"),
-  image: () => pageData.value?.ogImage,
+usePageSeo({
+  page: () => pageData.value,
+  title: () => t("seo.manjraTitle"),
+  description: () => t("seo.manjraDescription"),
 });
 </script>
 
@@ -34,6 +33,7 @@ useSeo({
       <ManjraHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"
+        :data="pageData"
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>

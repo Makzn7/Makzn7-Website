@@ -25,7 +25,7 @@
         <div class="top-part px-[2.5rem] lg:px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
             <PageContent
-              v-if="mansjPage"
+              v-if="data"
               :margin-top="3"
               :mobile-margin-top="2"
               :px="0"
@@ -35,7 +35,7 @@
               :desc-size="28.5"
               :py="6"
               :marginB="2.5"
-              :pageDetails="mansjPage"
+              :pageDetails="data"
               :clampRight="true"
             />
           </div>
@@ -45,10 +45,10 @@
         <div class="center-part border-white-op50">
           <div ref="wallRef" class="sync-content">
             <PageContent
-              v-if="mansjPage"
+              v-if="data"
               :margin-top="0"
               :mobile-margin-top="0"
-              :pageDetails="mansjPage"
+              :pageDetails="data"
             />
             <PageContentLoader v-else-if="!error" />
           </div>
@@ -62,7 +62,7 @@
         <div class="bottom-part">
           <div ref="floorRef" class="sync-content px-[2.5rem] lg:px-[5.5rem]">
             <PageContent
-              v-if="mansjPage"
+              v-if="data"
               :margin-top="5"
               :mobile-margin-top="3"
               :px="0"
@@ -72,7 +72,7 @@
               :desc-size="28.5"
               :py="6"
               :marginB="2.5"
-              :pageDetails="mansjPage"
+              :pageDetails="data"
               :clampRight="true"
             />
           </div>
@@ -95,7 +95,16 @@ import CustomCursor from "~/components/ui/CustomCursor.vue";
 import PageContent from "./PageContent.vue";
 import PageContentLoader from "~/components/ui/PageContentLoader.vue";
 
-const { data: mansjPage, error } = usePage("mansj");
+defineProps({
+  data: {
+    type: Object,
+    default: null,
+  },
+  error: {
+    type: Object,
+    default: null,
+  },
+});
 
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
 

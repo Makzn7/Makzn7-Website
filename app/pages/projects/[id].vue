@@ -14,8 +14,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { Project } from "~/types/project";
-import { projects } from "~/mocks/projects";
 import ContactSection from "~/components/ui/ContactSection.vue";
 import ProjectDetailsHero from "~/components/blocks/projects/details/ProjectDetailsHero.vue";
 
@@ -30,26 +28,24 @@ const route = useRoute();
 const id = route.params.id as string;
 
 const { data: project, pending: pendingProject } = useProject(id);
-// TODO: Fetch project data from an API or use a store instead of hardcoded data
 
-const pageTitle = computed(() => {
+// Used only when neither the project's own SEO nor global settings SEO
+// supply one. Falls back to a friendly "<project name> — Makzn7" form
+// so direct loads always have a sensible title even before the API resolves.
+const fallbackTitle = computed(() => {
   if (!project.value) return t("seo.projectsTitle");
   const name =
     locale.value === "ar" ? project.value.name_ar : project.value.name_en;
-  return project.value.seoTitle || `${name} — Makzn7`;
+  return `${name} — Makzn7`;
 });
 
-const pageDescription = computed(
-  () =>
-    project.value?.seoDescription ||
-    project.value?.summary ||
-    t("seo.projectsDescription"),
+const fallbackDescription = computed(
+  () => project.value?.summary || t("seo.projectsDescription")
 );
 
-useSeo({
-  title: () => pageTitle.value,
-  description: () => pageDescription.value,
-  image: () => project.value?.ogImage,
-  type: "article",
+useEntitySeo({
+  entity: () => project.value,
+  title: () => fallbackTitle.value,
+  description: () => fallbackDescription.value,
 });
 </script>
