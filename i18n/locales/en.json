@@ -149,6 +149,7 @@
     "close": "Close"
   },
   "projects": {
-    "empty": "No projects found"
+    "empty": "No projects found",
+    "loadingMore": "LOADING MORE"
   }
 }

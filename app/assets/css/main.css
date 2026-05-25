@@ -270,7 +270,7 @@ html.has-scroll-smooth {
 
 /* Tablet */
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   :root {
     --railW: 2.75rem;
     --railH: 1.75rem;

@@ -3,12 +3,12 @@
     class="projects-list relative lg:border-s-[0.3px] border-white-op50 border-brand-text"
     :style="`margin-inline-start: ${marginS}px; width: calc(100% - ${marginS}px);`"
   >
-    <!-- Loading skeleton -->
+    <!-- Initial loading skeleton -->
     <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-      <div
-        v-for="i in 6"
-        :key="i"
-        class="h-[250px] animate-pulse bg-white/5 border-e-[0.3px] border-b-[0.3px] border-white/10"
+      <ProjectCardSkeleton
+        v-for="i in skeletonCount"
+        :key="`initial-${i}`"
+        class="border-e-[0.3px] border-b-[0.3px] border-white/10"
       />
     </div>
 
@@ -35,31 +35,14 @@
       >
         <NuxtLink :to="`/projects/${project.slug}`" class="block w-full h-full">
           <div class="relative w-full h-full overflow-hidden">
-            <!-- Per-image loading placeholder -->
-            <div
-              v-if="project.heroMedia?.src && !loadedImages.has(project.id)"
-              class="absolute inset-0 bg-white/5 animate-pulse"
-              aria-hidden="true"
-            />
-            <img
-              v-if="project.heroMedia?.src"
-              :src="project.heroMedia.src"
+            <ProjectImage
+              :src="project.heroMedia?.src"
               :alt="locale === 'ar' ? project.name_ar : project.name_en"
-              loading="lazy"
-              :data-project-id="project.id"
-              class="absolute inset-0 w-full h-full object-cover transition duration-500 grayscale group-hover:grayscale-0"
-              :class="loadedImages.has(project.id) ? 'opacity-100' : 'opacity-0'"
-              @load="markImageLoaded(project.id)"
-              @error="markImageLoaded(project.id)"
+              :fallback-label="
+                locale === 'ar' ? project.name_ar : project.name_en
+              "
+              class="project-card__image"
             />
-            <div
-              v-else
-              class="w-full h-full bg-brand-text/10 flex items-center justify-center"
-            >
-              <span class="text-brand-text/30 text-[10px] tracking-wider">
-                {{ locale === "ar" ? project.name_ar : project.name_en }}
-              </span>
-            </div>
 
             <!-- Desktop: dim overlay that fades on hover (existing behaviour) -->
             <div
@@ -103,23 +86,67 @@
           </div>
         </NuxtLink>
       </div>
+
+      <!-- Bottom load-more skeletons, only while a next page is in flight. -->
+      <template v-if="loadingMore">
+        <ProjectCardSkeleton
+          v-for="i in loadMoreSkeletonCount"
+          :key="`more-${i}`"
+          class="border-e-[0.3px] border-b-[0.3px] border-white/10"
+        />
+      </template>
+    </div>
+
+    <!--
+      Inline status row — always rendered after the grid while there's
+      another page to fetch. It doubles as both the IntersectionObserver
+      sentinel and a visible "loading more" hint so the user has a clear
+      cue that a fetch is in flight (the bottom-of-grid skeletons can be
+      off-screen if the next page is requested well before the user
+      reaches the very bottom).
+    -->
+    <div
+      v-if="hasMore && !loading"
+      ref="sentinelEl"
+      class="projects-list__status"
+      :aria-busy="loadingMore"
+    >
+      <Transition name="projects-list-status">
+        <div
+          v-if="loadingMore"
+          class="projects-list__status-inner"
+          role="status"
+        >
+          <span class="projects-list__status-dot" aria-hidden="true" />
+          <span class="projects-list__status-dot" aria-hidden="true" />
+          <span class="projects-list__status-dot" aria-hidden="true" />
+          <span class="projects-list__status-label">
+            {{ $t("projects.loadingMore", "LOADING MORE") }}
+          </span>
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import type { Project } from "~/types/project";
+import ProjectImage from "~/components/ui/ProjectImage.vue";
+import ProjectCardSkeleton from "~/components/ui/ProjectCardSkeleton.vue";
 
 const { locale } = useI18n();
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     projects?: Project[];
     marginS?: number;
     py?: number;
     projectSize?: number;
     loading?: boolean;
+    loadingMore?: boolean;
+    hasMore?: boolean;
+    isPrimary?: boolean;
   }>(),
   {
     projects: () => [],
@@ -127,29 +154,94 @@ withDefaults(
     py: 4,
     projectSize: 38,
     loading: false,
+    loadingMore: false,
+    hasMore: false,
+    isPrimary: false,
   }
 );
 
-/* Per-image loading state — a placeholder shows until each card image
-   has decoded, then the image fades in. No layout shift: the placeholder
-   and the image share the same fixed card box. */
-const listEl = ref<HTMLElement | null>(null);
-const loadedImages = ref(new Set<number>());
+const emit = defineEmits<{
+  "load-more": [];
+}>();
 
-function markImageLoaded(id: number) {
-  loadedImages.value.add(id);
+const listEl = ref<HTMLElement | null>(null);
+const sentinelEl = ref<HTMLElement | null>(null);
+
+const skeletonCount = 6;
+const loadMoreSkeletonCount = computed(() => {
+  // Match a typical "next page" footprint visually — 3 across on desktop.
+  const remaining = 6;
+  return remaining;
+});
+
+// ── Infinite-loading trigger ──────────────────────────────────
+// The hero scrolls its own content via CSS transforms rather than
+// native scrolling, and IntersectionObserver doesn't reliably react
+// to transform changes on ancestors. So we poll the sentinel's
+// viewport rect on a RAF loop — cheap, deterministic, and the only
+// thing that consistently fires in this 3D-transform hero. Only the
+// primary list (the visible "wall") owns the loop; the parent guards
+// against duplicate / concurrent requests.
+const TRIGGER_AHEAD_PX = 4000;
+let rafId: number | null = null;
+let lastTriggerAt = 0;
+const TRIGGER_COOLDOWN_MS = 250;
+
+function checkSentinel() {
+  rafId = null;
+  if (!props.isPrimary || !props.hasMore) return;
+  const el = sentinelEl.value;
+  if (!el) {
+    scheduleCheck();
+    return;
+  }
+  if (props.loading || props.loadingMore) {
+    scheduleCheck();
+    return;
+  }
+  const rect = el.getBoundingClientRect();
+  const vh = window.innerHeight || 0;
+  // Fire well before the sentinel actually enters the viewport so the
+  // next page is already on the wire while the user is still scrolling.
+  const triggerLine = vh + TRIGGER_AHEAD_PX;
+  if (rect.top < triggerLine && rect.bottom > -TRIGGER_AHEAD_PX) {
+    const now = performance.now();
+    if (now - lastTriggerAt > TRIGGER_COOLDOWN_MS) {
+      lastTriggerAt = now;
+      emit("load-more");
+    }
+  }
+  scheduleCheck();
+}
+
+function scheduleCheck() {
+  if (!props.isPrimary || !props.hasMore) return;
+  if (rafId !== null) return;
+  rafId = requestAnimationFrame(checkSentinel);
+}
+
+function stopCheck() {
+  if (rafId !== null) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
 }
 
 onMounted(() => {
-  // Catch images that were cached / decoded before the listener attached.
-  listEl.value
-    ?.querySelectorAll<HTMLImageElement>("img[data-project-id]")
-    .forEach((img) => {
-      if (img.complete && img.naturalWidth > 0) {
-        const id = Number(img.dataset.projectId);
-        if (!Number.isNaN(id)) markImageLoaded(id);
-      }
-    });
+  scheduleCheck();
+});
+
+watch(
+  [() => props.hasMore, () => props.isPrimary],
+  () => {
+    if (props.isPrimary && props.hasMore) {
+      scheduleCheck();
+    }
+  }
+);
+
+onBeforeUnmount(() => {
+  stopCheck();
 });
 </script>
 
@@ -170,12 +262,91 @@ onMounted(() => {
 /* Cards on mobile aren't grayscaled — keeps the title readable and the
    imagery vibrant on a small screen where there's no hover to reveal it. */
 @media (max-width: 1023px) {
-  .project-card img {
+  .project-card :deep(img) {
     filter: none !important;
   }
 }
 
-@media (max-width: 747px) {
+/* Preserve existing hover grayscale behaviour on the image element. */
+.project-card :deep(.project-image__img) {
+  filter: grayscale(1);
+  transition: opacity 600ms ease, filter 500ms ease;
+}
+.project-card:hover :deep(.project-image__img) {
+  filter: grayscale(0);
+}
+
+.projects-list__status {
+  position: relative;
+  width: 100%;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.projects-list__status-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border: 0.3px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.projects-list__status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--main-color, #54ea62);
+  opacity: 0.35;
+  animation: projects-list-status-dot 1.2s ease-in-out infinite;
+}
+.projects-list__status-dot:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.projects-list__status-dot:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+.projects-list__status-label {
+  margin-inline-start: 4px;
+}
+
+@keyframes projects-list-status-dot {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+.projects-list-status-enter-active,
+.projects-list-status-leave-active {
+  transition: opacity 240ms ease, transform 240ms ease;
+}
+.projects-list-status-enter-from,
+.projects-list-status-leave-to {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects-list__status-dot {
+    animation: none;
+  }
+}
+
+@media (max-width: 1024px) {
   .projects-list {
     margin-inline-start: 0 !important;
     width: 100% !important;

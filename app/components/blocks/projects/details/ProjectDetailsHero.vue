@@ -116,7 +116,7 @@ const { onWheel } = useHeroScroll(
   object-fit: cover;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .project-logo-image {
     width: 60px;
   }

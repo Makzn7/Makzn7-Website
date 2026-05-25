@@ -40,6 +40,8 @@
               :filters-pending="filtersPending"
               :filters-error="!!filtersError"
               :projects-pending="projectsPending"
+              :projects-loading-more="projectsLoadingMore"
+              :projects-has-more="projectsHasMore"
               @toggle-filter="toggleFilter"
             />
           </div>
@@ -57,7 +59,11 @@
               :filters-pending="filtersPending"
               :filters-error="!!filtersError"
               :projects-pending="projectsPending"
+              :projects-loading-more="projectsLoadingMore"
+              :projects-has-more="projectsHasMore"
+              :is-primary="true"
               @toggle-filter="toggleFilter"
+              @load-more="onLoadMore"
             />
           </div>
           <img
@@ -83,6 +89,8 @@
               :filters-pending="filtersPending"
               :filters-error="!!filtersError"
               :projects-pending="projectsPending"
+              :projects-loading-more="projectsLoadingMore"
+              :projects-has-more="projectsHasMore"
               :py="6"
               :marginB="2.5"
               @toggle-filter="toggleFilter"
@@ -175,11 +183,18 @@ const apiFilters = computed<ProjectFilters>(() => {
   return result;
 });
 
-// ── Projects from API ─────────────────────────────────────────
-const { data: projectsData, pending: projectsPending } =
-  useProjects(apiFilters);
+// ── Projects from API (infinite pagination) ───────────────────
+const {
+  projects,
+  pending: projectsPending,
+  loadingMore: projectsLoadingMore,
+  hasMore: projectsHasMore,
+  loadMore: loadMoreProjects,
+} = useInfiniteProjects(apiFilters);
 
-const projects = computed(() => projectsData.value?.data ?? []);
+function onLoadMore() {
+  loadMoreProjects();
+}
 
 // ── Filter Logic ──────────────────────────────────────────────
 const toggleFilter = (filter: FilterItem) => {

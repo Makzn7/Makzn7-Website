@@ -42,10 +42,14 @@
           :py="py"
           :projects="projects"
           :loading="projectsPending"
+          :loading-more="projectsLoadingMore"
+          :has-more="projectsHasMore"
+          :is-primary="isPrimary"
+          @load-more="$emit('load-more')"
         />
       </section>
     </div>
-    <div class="content-item h-[2rem] md:h-[3rem] lg:h-[4rem] 2xl:h-[5rem]" />
+    <div class="content-item h-[3rem] md:h-[4rem] lg:h-[5rem] 2xl:h-[6rem]" />
   </div>
 </template>
 
@@ -79,6 +83,9 @@ withDefaults(
     filtersPending?: boolean;
     filtersError?: boolean;
     projectsPending?: boolean;
+    projectsLoadingMore?: boolean;
+    projectsHasMore?: boolean;
+    isPrimary?: boolean;
   }>(),
   {
     marginTop: 4,
@@ -96,11 +103,15 @@ withDefaults(
     filtersPending: false,
     filtersError: false,
     projectsPending: false,
+    projectsLoadingMore: false,
+    projectsHasMore: false,
+    isPrimary: false,
   }
 );
 
 defineEmits<{
   "toggle-filter": [filter: Filter];
+  "load-more": [];
 }>();
 </script>
 
@@ -109,7 +120,7 @@ defineEmits<{
   margin-top: var(--mt, 4rem);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .page-content {
     margin-top: var(--mt-mobile, var(--mt, 4rem));
   }

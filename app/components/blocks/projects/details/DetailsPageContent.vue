@@ -310,7 +310,7 @@ function getDepartmentIcon(dept: Department): string {
   width: 35px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .slider-section {
     max-height: 85vh;
   }

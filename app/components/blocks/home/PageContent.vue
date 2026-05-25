@@ -267,7 +267,7 @@ function onEnter(e: MouseEvent) {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .image-3d-container {
     height: clamp(22rem, 96vw, 32rem);
     margin-inline: -0.5rem;

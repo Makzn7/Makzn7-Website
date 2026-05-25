@@ -168,7 +168,7 @@ const props = withDefaults(
   margin-top: var(--mt, 4rem);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1024px) {
   .page-content {
     margin-top: var(--mt-mobile, var(--mt, 4rem));
   }

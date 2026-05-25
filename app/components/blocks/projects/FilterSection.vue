@@ -378,7 +378,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .filter-section {
     padding-inline-start: 0 !important;
   }

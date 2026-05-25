@@ -240,7 +240,7 @@ const { locale } = useI18n();
   object-fit: cover;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .page-content {
     margin-top: var(--mt-mobile, var(--mt, 4rem));
   }

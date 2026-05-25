@@ -21,7 +21,7 @@ const props = defineProps({
 });
 </script>
 <style scoped>
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .section-title {
     margin-inline-start: 0 !important;
   }

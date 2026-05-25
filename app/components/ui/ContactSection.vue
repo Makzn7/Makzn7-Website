@@ -266,7 +266,7 @@ function toggleLocale() {
   stroke-linejoin: round;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .social-icon {
     width: 30px;
     height: 30px;
