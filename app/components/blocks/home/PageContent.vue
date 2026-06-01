@@ -178,7 +178,7 @@ if (props.withAnimations) {
    Try interactionMode = 'hover' to test the alternative motion. */
 const modelInteractionMode = ref<"drag" | "hover">("drag");
 const modelInitialRotationY = ref(0.45);
-const modelInitialRotationX = ref(0);
+const modelInitialRotationX = ref(-0.45);
 const modelShowHint = ref(true);
 const modelAutoHint = ref(true);
 
