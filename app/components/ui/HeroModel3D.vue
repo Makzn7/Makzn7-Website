@@ -27,11 +27,41 @@
         >3D</span
       >
     </div>
+
+    <!-- Interaction hint -->
+    <Transition name="fade">
+      <div
+        v-if="showHintBadge && !loading && !loadError"
+        class="hero-model-hint"
+        :class="{ 'is-hover-mode': interactionMode === 'hover' }"
+        aria-hidden="true"
+      >
+        <svg
+          class="hero-model-hint-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M3 12a9 9 0 0 1 15.5-6.3" />
+          <path d="M21 4v5h-5" />
+          <path d="M21 12a9 9 0 0 1-15.5 6.3" />
+          <path d="M3 20v-5h5" />
+        </svg>
+        <span class="hero-model-hint-text">{{
+          interactionMode === "hover"
+            ? $t("hints.hoverToRotate")
+            : $t("hints.dragToRotate")
+        }}</span>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import gsap from "gsap";
 
 const props = defineProps({
@@ -45,6 +75,21 @@ const props = defineProps({
   modelScale: { type: Number, default: 2.2 },
   modelImageType: { type: String, default: "string" },
   modelModeColor: { type: String, default: "#ffffff" },
+  /** Interaction mode: 'drag' (click & drag) or 'hover' (mouse-driven rotation) */
+  interactionMode: {
+    type: String as () => "drag" | "hover",
+    default: "drag",
+  },
+  /** Starting Y rotation in radians — tilt the model so users see it can rotate */
+  initialRotationY: { type: Number, default: 0 },
+  /** Starting X rotation in radians */
+  initialRotationX: { type: Number, default: 0 },
+  /** Show the small interaction hint badge */
+  showHint: { type: Boolean, default: true },
+  /** Play a one-time gentle sway after the model loads to signal interactivity */
+  autoHintAnimation: { type: Boolean, default: true },
+  /** Hover-mode rotation strength multiplier (radians at edge) */
+  hoverRotationStrength: { type: Number, default: 0.9 },
 });
 
 /* ── refs ── */
@@ -53,6 +98,9 @@ const canvasRef = ref<HTMLCanvasElement | null>(null);
 const loading = ref(false);
 const loadError = ref(false);
 const dragging = ref(false);
+const hasInteracted = ref(false);
+
+const showHintBadge = computed(() => props.showHint && !hasInteracted.value);
 
 /* ── Three.js state ── */
 let renderer: any = null;
@@ -78,6 +126,7 @@ let dragStartX = 0;
 let dragStartY = 0;
 let dragStartRotationX = 0;
 let dragStartRotationY = 0;
+let autoHintTween: any = null;
 
 const DRAG_ROTATE_SPEED = 0.01;
 const DRAG_TILT_SPEED = 0.005;
@@ -193,6 +242,10 @@ async function init() {
   rotationGroup.add(tiltGroup);
   scene.add(rotationGroup);
 
+  /* Apply initial rotation so the model starts at a discoverable angle */
+  rotationGroup.rotation.y = props.initialRotationY;
+  rotationGroup.rotation.x = props.initialRotationX;
+
   resizeObserver = new ResizeObserver(() => {
     if (resizeRafId !== null) return;
     resizeRafId = requestAnimationFrame(() => {
@@ -240,7 +293,10 @@ async function init() {
           ease: "elastic.out(1, 0.6)",
           delay: 0.2,
           onUpdate: requestRender,
-          onComplete: requestRender,
+          onComplete: () => {
+            requestRender();
+            playAutoHintSway();
+          },
         });
       },
       undefined,
@@ -257,6 +313,47 @@ async function init() {
   }
 
   requestRender();
+}
+
+function playAutoHintSway() {
+  if (!props.autoHintAnimation || !rotationGroup || hasInteracted.value) return;
+
+  const baseY = props.initialRotationY;
+  const amplitude = 0.32;
+
+  autoHintTween = gsap
+    .timeline({
+      onUpdate: requestRender,
+      onComplete: requestRender,
+    })
+    .to(rotationGroup.rotation, {
+      y: baseY + amplitude,
+      duration: 0.9,
+      ease: "sine.inOut",
+    })
+    .to(rotationGroup.rotation, {
+      y: baseY - amplitude,
+      duration: 1.4,
+      ease: "sine.inOut",
+    })
+    .to(rotationGroup.rotation, {
+      y: baseY,
+      duration: 0.9,
+      ease: "sine.inOut",
+    });
+}
+
+function stopAutoHint() {
+  if (autoHintTween) {
+    autoHintTween.kill();
+    autoHintTween = null;
+  }
+}
+
+function markInteracted() {
+  if (hasInteracted.value) return;
+  hasInteracted.value = true;
+  stopAutoHint();
 }
 
 function requestRender() {
@@ -287,7 +384,7 @@ function onMouseMove(e: MouseEvent) {
 }
 
 function applyMouseMove(e: MouseEvent) {
-  if (!tiltGroup || dragging.value || loading.value || !isVisible) return;
+  if (dragging.value || loading.value || !isVisible) return;
 
   const container = containerRef.value;
   if (!container) return;
@@ -296,6 +393,27 @@ function applyMouseMove(e: MouseEvent) {
   /* Normalise: -1 (left/top) → +1 (right/bottom) */
   const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
   const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+
+  if (props.interactionMode === "hover") {
+    if (!rotationGroup) return;
+    markInteracted();
+    gsap.to(rotationGroup.rotation, {
+      y: props.initialRotationY + nx * props.hoverRotationStrength,
+      x: clamp(
+        props.initialRotationX + ny * props.hoverRotationStrength * 0.45,
+        -DRAG_TILT_LIMIT,
+        DRAG_TILT_LIMIT
+      ),
+      duration: 0.7,
+      ease: "power2.out",
+      overwrite: "auto",
+      onUpdate: requestRender,
+      onComplete: requestRender,
+    });
+    return;
+  }
+
+  if (!tiltGroup) return;
 
   /*
     Hover from RIGHT (nx > 0) → rotateY negative  (right side goes back)
@@ -313,9 +431,25 @@ function applyMouseMove(e: MouseEvent) {
 }
 
 function onMouseLeave() {
-  if (!tiltGroup || dragging.value) return;
+  if (dragging.value) return;
   pendingMouseEvent = null;
 
+  if (props.interactionMode === "hover") {
+    if (!rotationGroup) return;
+    /* Spring back to initial angle */
+    gsap.to(rotationGroup.rotation, {
+      y: props.initialRotationY,
+      x: props.initialRotationX,
+      duration: 1.2,
+      ease: "elastic.out(1, 0.5)",
+      overwrite: "auto",
+      onUpdate: requestRender,
+      onComplete: requestRender,
+    });
+    return;
+  }
+
+  if (!tiltGroup) return;
   /* Spring back to neutral */
   gsap.to(tiltGroup.rotation, {
     y: 0,
@@ -334,6 +468,7 @@ function onPointerDown(e: PointerEvent) {
   const container = containerRef.value;
   if (!container) return;
 
+  markInteracted();
   dragging.value = true;
   dragPointerId = e.pointerId;
   dragStartX = e.clientX;
@@ -446,6 +581,7 @@ onUnmounted(() => {
   if (resizeRafId) cancelAnimationFrame(resizeRafId);
   resizeObserver?.disconnect();
   intersectionObserver?.disconnect();
+  stopAutoHint();
   if (tiltGroup) gsap.killTweensOf(tiltGroup.rotation);
   if (rotationGroup) gsap.killTweensOf(rotationGroup.rotation);
   if (modelRoot) {
@@ -564,5 +700,86 @@ function disposeObject(object: any) {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* Interaction hint badge */
+.hero-model-hint {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  /* border-radius: 999px; */
+  background-color: color-mix(in srgb, var(--color-bg) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-text) 22%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--color-text);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0.9;
+  animation: hint-pulse 2.4s ease-in-out infinite;
+  white-space: nowrap;
+}
+
+.hero-model-hint.is-hover-mode {
+  animation-name: hint-pulse-soft;
+}
+
+.hero-model-hint-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  animation: hint-spin 3.6s linear infinite;
+}
+
+.is-hover-mode .hero-model-hint-icon {
+  animation: hint-rock 2.2s ease-in-out infinite;
+}
+
+.hero-model-hint-text {
+  white-space: nowrap;
+  line-height: 1;
+}
+
+@keyframes hint-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hint-rock {
+  0%,
+  100% {
+    transform: rotate(-22deg);
+  }
+  50% {
+    transform: rotate(22deg);
+  }
+}
+
+@keyframes hint-pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes hint-pulse-soft {
+  0%,
+  100% {
+    opacity: 0.75;
+  }
+  50% {
+    opacity: 0.95;
+  }
 }
 </style>

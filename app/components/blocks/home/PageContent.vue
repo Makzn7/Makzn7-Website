@@ -62,6 +62,11 @@
               :modelPath="modelPath"
               :modelImageType="modelType"
               :modelModeColor="modelModeColor"
+              :interactionMode="modelInteractionMode"
+              :initialRotationY="modelInitialRotationY"
+              :initialRotationX="modelInitialRotationX"
+              :showHint="modelShowHint"
+              :autoHintAnimation="modelAutoHint"
             />
           </ClientOnly>
         </div>
@@ -168,6 +173,14 @@ const modelFrameRef = ref<HTMLElement | null>(null);
 if (props.withAnimations) {
   useScrollAnimation(contentRef);
 }
+
+/* Internal testing: swap between drag/hover interaction and starting angle.
+   Try interactionMode = 'hover' to test the alternative motion. */
+const modelInteractionMode = ref<"drag" | "hover">("drag");
+const modelInitialRotationY = ref(0.45);
+const modelInitialRotationX = ref(0);
+const modelShowHint = ref(true);
+const modelAutoHint = ref(true);
 
 /* ── Responsive model frame + scale ── */
 const modelFrame = ref({ width: 1024, height: 700 });

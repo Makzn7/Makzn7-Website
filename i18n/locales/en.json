@@ -36,6 +36,10 @@
     "headerMessageLine1": "We Transform Scripts",
     "headerMessageLine2": "Into Reality"
   },
+  "hints": {
+    "dragToRotate": "Drag to rotate",
+    "hoverToRotate": "Hover to rotate"
+  },
   "meta": {
     "description": "Makzn7 – production design & prop house."
   },
