@@ -123,7 +123,7 @@
 
             <!-- Social Media Icons (Vertical Stack) -->
             <div
-              class="col-span-5 lg:col-span-3 grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-12 items-center"
+              class="col-span-7 lg:col-span-3 grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-12 items-center"
             >
               <!-- Years -->
               <div class="flex flex-col justify-start items-start gap-2">
@@ -148,7 +148,7 @@
               </div>
               <!-- Social Media -->
               <div
-                class="lg:col-start-3 w-full flex flex-row gap-1 lg:gap-6 justify-between lg:justify-start items-start"
+                class="col-span-1 lg:col-span-2 w-full flex flex-row gap-1 lg:gap-6 justify-between lg:justify-end items-start"
               >
                 <!-- Social Media Icons (Vertical Stack) -->
                 <!-- Instagram -->
