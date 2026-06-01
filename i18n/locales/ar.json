@@ -29,7 +29,7 @@
     "submit": "إرسال",
     "tryAgain": "حاول مرة أخرى",
     "discoverMore": "أكتشف أكثر",
-    "lang": "English",
+    "lang": "EN",
     "privacyPolicy": "سياسة الخصوصية"
   },
   "messages": {
@@ -149,6 +149,7 @@
   },
   "projects": {
     "empty": "لا توجد مشاريع",
-    "loadingMore": "جاري تحميل المزيد"
+    "loadingMore": "جاري تحميل المزيد",
+    "loading": "جاري التحميل"
   }
 }

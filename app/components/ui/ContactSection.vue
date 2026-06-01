@@ -39,11 +39,13 @@
 
           <!-- Mobile -->
           <div
-            class="grid grid-cols-5 lg:grid-cols-3 gap-16 lg:gap-16 fade-in-left"
+            class="grid grid-cols-7 lg:grid-cols-3 gap-4 lg:gap-16 fade-in-left"
             style="animation-delay: 0.15s"
           >
             <!-- Options -->
-            <div class="flex flex-col justify-between gap-6">
+            <div
+              class="col-span-2 lg:col-span-1 w-full flex flex-col justify-between gap-6"
+            >
               <div
                 class="flex flex-col w-full gap-2 justify-start items-start"
                 :style="`font-size: clamp(${Math.max(
@@ -54,6 +56,7 @@
                 <button
                   v-if="showTheme"
                   id="toggle-theme-mode"
+                  class="flex justify-start items-center gap-2 min-w-[25px]"
                   @click="toggleTheme"
                 >
                   <img
@@ -62,7 +65,7 @@
                   />
                 </button>
                 <button
-                  class="flex justify-start items-center gap-2"
+                  class="flex justify-start items-center gap-2 min-w-[25px]"
                   id="toggle-lang"
                   @click="toggleLocale"
                   :class="locale === 'ar' ? 'font-en' : 'font-ar'"
@@ -72,7 +75,7 @@
                     class="w-[25px] lg:w-[35px]"
                   />
                   <span
-                    class="text-[14px] sm:text-[18px] md:text-[22px] lg:text-[26px] xl:text-[28px] 2xl:text-[31px] leading-[1.2] ltr:mb-[10px]"
+                    class="text-[14px] sm:text-[18px] md:text-[22px] lg:text-[26px] xl:text-[28px] 2xl:text-[31px] leading-[1.2] ltr:mb-[8px] ltr:lg:mb-[17px]"
                     >{{ $t("buttons.lang") }}</span
                   >
                 </button>
@@ -80,7 +83,7 @@
             </div>
             <!-- Contact Information List -->
             <div
-              class="col-span-4 lg:col-span-2 grid grid-cols-2 gap-8 font-extralight"
+              class="col-span-5 lg:col-span-2 grid grid-cols-2 gap-4 font-extralight"
               :style="`font-size: clamp(${Math.max(
                 14,
                 Math.round(37 * 0.35)
@@ -98,7 +101,7 @@
                   </a>
                   <a
                     :href="`tel:${settings?.phone}`"
-                    class="white-link-sm font-en rtl:text-right"
+                    class="white-link-sm font-en rtl:text-right text-nowrap"
                     dir="ltr"
                   >
                     ({{ settings?.phone }})

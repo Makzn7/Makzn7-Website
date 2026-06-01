@@ -93,6 +93,7 @@ type FieldDef = {
   type?: string;
   inputmode?: "email" | "tel";
   pattern?: string;
+  required?: boolean;
   rows?: number;
   minlength?: number;
   maxlength?: number;
@@ -115,13 +116,21 @@ type ValidationErrorBody = {
 const PHONE_PATTERN = "[\\+\\d\\s\\-\\(\\)]+";
 
 const fields: FieldDef[] = [
-  { key: "name", tag: "input", type: "text", minlength: 2, maxlength: 120 },
+  {
+    key: "name",
+    tag: "input",
+    type: "text",
+    minlength: 2,
+    maxlength: 120,
+    required: true,
+  },
   {
     key: "email",
     tag: "input",
     type: "email",
     inputmode: "email",
     maxlength: 180,
+    required: true,
   },
   {
     key: "phone",
@@ -131,8 +140,16 @@ const fields: FieldDef[] = [
     pattern: PHONE_PATTERN,
     minlength: 6,
     maxlength: 32,
+    required: true,
   },
-  { key: "message", tag: "textarea", rows: 7, minlength: 10, maxlength: 5000 },
+  {
+    key: "message",
+    tag: "textarea",
+    rows: 7,
+    minlength: 10,
+    maxlength: 5000,
+    required: true,
+  },
 ];
 
 const { t, locale } = useI18n();
@@ -187,16 +204,29 @@ function validateClient(): boolean {
     const value = form[field.key].trim();
     let error = "";
 
-    if (!value) {
+    if (!value && field.required) {
       error = t(`contact.errors.${field.key}.required`);
-    } else if (field.minlength && value.length < field.minlength) {
+    } else if (
+      field.minlength &&
+      field.required &&
+      value.length < field.minlength
+    ) {
       error = t(`contact.errors.${field.key}.min`, { min: field.minlength });
-    } else if (field.maxlength && value.length > field.maxlength) {
+    } else if (
+      field.maxlength &&
+      field.required &&
+      value.length > field.maxlength
+    ) {
       error = t(`contact.errors.${field.key}.max`, { max: field.maxlength });
-    } else if (field.key === "email" && !/^\S+@\S+\.\S+$/.test(value)) {
+    } else if (
+      field.key === "email" &&
+      field.required &&
+      !/^\S+@\S+\.\S+$/.test(value)
+    ) {
       error = t("contact.errors.email.invalid");
     } else if (
       field.key === "phone" &&
+      field.required &&
       !new RegExp(`^${PHONE_PATTERN}$`).test(value)
     ) {
       error = t("contact.errors.phone.invalid");

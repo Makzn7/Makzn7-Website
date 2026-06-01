@@ -1,10 +1,14 @@
 <template>
   <div
     class="projects-list relative lg:border-s-[0.3px] border-white-op50 border-brand-text"
+    :class="{ 'is-refetching': loading && projects.length > 0 }"
     :style="`margin-inline-start: ${marginS}px; width: calc(100% - ${marginS}px);`"
   >
-    <!-- Initial loading skeleton -->
-    <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <!-- Initial loading skeleton — only when there's no data yet -->
+    <div
+      v-if="loading && !projects.length"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+    >
       <ProjectCardSkeleton
         v-for="i in skeletonCount"
         :key="`initial-${i}`"
@@ -126,6 +130,29 @@
         </div>
       </Transition>
     </div>
+
+    <!--
+      Refetch overlay — shown when filters change while a previous result
+      is still on screen. Keeps the existing grid visible (subtly dimmed)
+      and shows the same dot-loader vocabulary as "LOADING MORE".
+    -->
+    <Transition name="projects-list-status">
+      <div
+        v-if="loading && projects.length > 0"
+        class="projects-list__refetch"
+        role="status"
+        :aria-busy="loading"
+      >
+        <div class="projects-list__status-inner">
+          <span class="projects-list__status-dot" aria-hidden="true" />
+          <span class="projects-list__status-dot" aria-hidden="true" />
+          <span class="projects-list__status-dot" aria-hidden="true" />
+          <span class="projects-list__status-label">
+            {{ $t("projects.loading", "LOADING") }}
+          </span>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -187,6 +214,12 @@ let rafId: number | null = null;
 let lastTriggerAt = 0;
 const TRIGGER_COOLDOWN_MS = 250;
 
+// Don't pre-fetch the next page on the very first render — direct loads
+// with filters would otherwise fire `page=1` and `page=2` back-to-back
+// before the user has expressed any intent to scroll. Activated by the
+// first scroll/wheel/touch the user actually performs.
+const userInteracted = ref(false);
+
 function checkSentinel() {
   rafId = null;
   if (!props.isPrimary || !props.hasMore) return;
@@ -196,6 +229,10 @@ function checkSentinel() {
     return;
   }
   if (props.loading || props.loadingMore) {
+    scheduleCheck();
+    return;
+  }
+  if (!userInteracted.value) {
     scheduleCheck();
     return;
   }
@@ -227,7 +264,18 @@ function stopCheck() {
   }
 }
 
+function markInteracted() {
+  userInteracted.value = true;
+}
+
 onMounted(() => {
+  // Any of these signals user intent to scroll; once seen, the sentinel
+  // is free to prefetch ahead on subsequent ticks.
+  const opts: AddEventListenerOptions = { once: true, passive: true };
+  window.addEventListener("scroll", markInteracted, opts);
+  window.addEventListener("wheel", markInteracted, opts);
+  window.addEventListener("touchmove", markInteracted, opts);
+  window.addEventListener("keydown", markInteracted, opts);
   scheduleCheck();
 });
 
@@ -354,5 +402,26 @@ onBeforeUnmount(() => {
   .project-card {
     height: 220px;
   }
+}
+
+/* Refetch overlay — dims the existing grid (kept visible underneath)
+   so a filter change reads as "loading new results" without flashing
+   a full skeleton replacement. */
+.projects-list.is-refetching :deep(.grid) {
+  opacity: 0.55;
+  transition: opacity 200ms ease;
+  pointer-events: none;
+}
+
+.projects-list__refetch {
+  position: sticky;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 4;
+  margin-top: -56px;
 }
 </style>

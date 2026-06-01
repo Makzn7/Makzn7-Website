@@ -5,134 +5,6 @@
   font-style: normal;
   font-display: swap;
 }
-
-/* Roboto */
-/* @font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-Thin.ttf") format("truetype");
-  font-weight: 100;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-ThinItalic.ttf") format("truetype");
-  font-weight: 100;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-ExtraLight.ttf") format("truetype");
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-ExtraLightItalic.ttf") format("truetype");
-  font-weight: 200;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-Light.ttf") format("truetype");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-LightItalic.ttf") format("truetype");
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-Italic.ttf") format("truetype");
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-Medium.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-MediumItalic.ttf") format("truetype");
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-SemiBold.ttf") format("truetype");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-SemiBoldItalic.ttf") format("truetype");
-  font-weight: 600;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-BoldItalic.ttf") format("truetype");
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-ExtraBold.ttf") format("truetype");
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-ExtraBoldItalic.ttf") format("truetype");
-  font-weight: 800;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-Black.ttf") format("truetype");
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Roboto";
-  src: url("/fonts/en/Roboto-BlackItalic.ttf") format("truetype");
-  font-weight: 900;
-  font-style: italic;
-  font-display: swap;
-} */
 /* FunnelDisplay */
 @font-face {
   font-family: "Funnel Display";
@@ -179,49 +51,49 @@
 /* Jali Arabic */
 @font-face {
   font-family: "Jali Arabic";
-  src: url("/fonts/ar/Jali Arabic ExtraLight.ttf") format("truetype");
+  src: url("/fonts/ar/Jali-Arabic-ExtraLight.ttf") format("truetype");
   font-weight: 200;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Jali Arabic";
-  src: url("/fonts/ar/Jali Arabic Light.ttf") format("truetype");
+  src: url("/fonts/ar/Jali-Arabic-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Jali Arabic";
-  src: url("/fonts/ar/Jali Arabic Regular.ttf") format("truetype");
+  src: url("/fonts/ar/Jali-Arabic-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Jali Arabic";
-  src: url("/fonts/ar/Jali Arabic Medium.ttf") format("truetype");
+  src: url("/fonts/ar/Jali-Arabic-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Jali Arabic";
-  src: url("/fonts/ar/Jali Arabic SemiBold.ttf") format("truetype");
+  src: url("/fonts/ar/Jali-Arabic-SemiBold.ttf") format("truetype");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Jali Arabic";
-  src: url("/fonts/ar/Jali Arabic Bold.ttf") format("truetype");
+  src: url("/fonts/ar/Jali-Arabic-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "Jali Arabic";
-  src: url("/fonts/ar/Jali Arabic ExtraBold.ttf") format("truetype");
+  src: url("/fonts/ar/Jali-Arabic-ExtraBold.ttf") format("truetype");
   font-weight: 800;
   font-style: normal;
   font-display: swap;

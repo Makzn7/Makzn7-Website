@@ -150,6 +150,7 @@
   },
   "projects": {
     "empty": "No projects found",
-    "loadingMore": "LOADING MORE"
+    "loadingMore": "LOADING MORE",
+    "loading": "LOADING"
   }
 }

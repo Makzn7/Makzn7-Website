@@ -72,27 +72,34 @@ export function useInfiniteProjects(
 
   const nuxtApp = useNuxtApp();
 
+  // Per-filters cache slot — without this, getCachedData returns the
+  // first-loaded payload for every filter combination and useAsyncData
+  // skips the new fetch entirely.
+  const asyncKey = computed(() => `projects-infinite-${filtersKey.value}`);
+
   const {
     data,
     pending: rawPending,
     error,
     refresh,
   } = useAsyncData<ProjectsResponse>(
-    "projects-infinite",
+    asyncKey,
     () => raw<ProjectsResponse>("/projects", { query: filtersWithPage.value }),
     {
-      watch: [filtersKey],
       // Reuse the SSR payload on first client render so the v-if branch
-      // doesn't flip between SSR and CSR. Without this the handler runs
-      // again on hydration, `data` is briefly null, and Vue warns about
-      // node mismatches.
+      // doesn't flip between SSR and CSR. Subsequent filter changes get a
+      // new key, so this only short-circuits the very first hydration.
       getCachedData(key) {
         return nuxtApp.payload.data[key] ?? nuxtApp.static.data[key];
       },
     },
   );
 
-  const pending = computed(() => rawPending.value && !data.value);
+  // Reflect any in-flight fetch — `rawPending` flips back to true when the
+  // reactive asyncData key changes (e.g. filter switch), even though the
+  // previous payload is still in `data`. Gating on `!data` would hide the
+  // loader on every filter change after the first one.
+  const pending = computed(() => rawPending.value);
 
   // Client-only buffer of additional pages.
   const extraPages = ref<Project[][]>([]);

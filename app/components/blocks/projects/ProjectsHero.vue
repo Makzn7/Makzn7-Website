@@ -108,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, watch } from "vue";
 import type { ProjectFilters } from "~/composables/useProjects";
 import LeftSideContent from "~/components/ui/LeftSideContent.vue";
 import RightSideContent from "~/components/ui/RightSideContent.vue";
@@ -170,7 +170,42 @@ const filters = computed<FilterItem[]>(() => [
 ]);
 
 // ── Active Filters ────────────────────────────────────────────
-const activeFilters = ref<FilterItem[]>([]);
+const FILTER_QUERY_KEYS = ["department", "type", "scope", "year"] as const;
+let syncingFromUrl = false;
+
+function readFiltersFromQuery(q: Record<string, unknown>): FilterItem[] {
+  const lookup = new Map(
+    filters.value.map((f) => [`${f.type}:${f.slug}`, f] as const)
+  );
+  const next: FilterItem[] = [];
+  for (const key of FILTER_QUERY_KEYS) {
+    const raw = q[key];
+    const slug = Array.isArray(raw) ? raw[0] : raw;
+    if (typeof slug !== "string" || !slug) continue;
+    // Prefer the full filter item from the loaded filters list so the
+    // chip renders with the correct localized name; fall back to a stub
+    // (still drives the API correctly via slug).
+    const hit = lookup.get(`${key}:${slug}`);
+    next.push(
+      hit ?? {
+        type: key,
+        slug,
+        id: 0,
+        name_ar: slug,
+        name_en: slug,
+      }
+    );
+  }
+  return next;
+}
+
+// Seed active filters from URL BEFORE useInfiniteProjects is created so
+// the asyncData key starts at the correct value — otherwise the hook
+// fires once with empty filters and a second time after the initial
+// sync runs (visible as two network requests on direct URL loads).
+const activeFilters = ref<FilterItem[]>(
+  readFiltersFromQuery(route.query as Record<string, unknown>)
+);
 
 const apiFilters = computed<ProjectFilters>(() => {
   const result: ProjectFilters = {};
@@ -178,7 +213,8 @@ const apiFilters = computed<ProjectFilters>(() => {
     if (f.type === "department") result.department = f.slug;
     if (f.type === "type") result.type = f.slug;
     if (f.type === "scope") result.scope = f.slug;
-    if (f.type === "years") result.years = f.slug;
+    // Filter list emits type `"year"`; the backend query param is `years`.
+    if (f.type === "year") result.years = f.slug;
   }
   return result;
 });
@@ -215,30 +251,51 @@ const toggleFilter = (filter: FilterItem) => {
     activeFilters.value.push(filter);
   }
 
-  updateUrl();
+  if (!syncingFromUrl) updateUrl();
 };
 
 const updateUrl = async () => {
-  const query: Record<string, string> = {};
+  const query: Record<string, string> = { ...route.query } as Record<string, string>;
+  // Reset filter keys then re-apply current selection — preserves any
+  // non-filter query params (e.g. utm_*).
+  for (const key of FILTER_QUERY_KEYS) delete query[key];
   for (const f of activeFilters.value) {
-    query[f.type] = f.slug;
+    if ((FILTER_QUERY_KEYS as readonly string[]).includes(f.type)) {
+      query[f.type] = f.slug;
+    }
   }
   await router.replace({ path: route.path, query });
 };
 
-// ── Init active filters from URL on mount ─────────────────────
-onMounted(() => {
-  const params = new URLSearchParams(window.location.search);
-  for (const [key, value] of params.entries()) {
-    if (["department", "type", "scope", "years"].includes(key)) {
-      activeFilters.value.push({
-        type: key,
-        slug: value,
-        id: 0,
-        name_ar: value,
-        name_en: value,
-      });
-    }
+function applyFiltersFromQuery() {
+  const next = readFiltersFromQuery(route.query as Record<string, unknown>);
+  const sameLength = next.length === activeFilters.value.length;
+  const sameSet =
+    sameLength &&
+    next.every((f) =>
+      activeFilters.value.some(
+        (a) => a.type === f.type && a.slug === f.slug
+      )
+    );
+  if (sameSet) return;
+  syncingFromUrl = true;
+  activeFilters.value = next;
+  Promise.resolve().then(() => {
+    syncingFromUrl = false;
+  });
+}
+
+// Back/forward navigation and external query changes.
+watch(
+  () => route.query,
+  () => applyFiltersFromQuery()
+);
+
+// Re-resolve stub filter items once the filters list loads so chips
+// render their localized names.
+watch(filters, () => {
+  if (activeFilters.value.some((f) => f.id === 0)) {
+    applyFiltersFromQuery();
   }
 });
 

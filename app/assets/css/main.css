@@ -15,6 +15,12 @@
   --offset: 0;
   --gap: 8.75rem;
   --persp: 200px;
+  /* Extra space between the screen edge and the side-rail content.
+     Override per-page or per-breakpoint to push LeftSideContent /
+     RightSideContent inward — Tailwind padding/margin on the inner
+     div is bounded by the rail's fixed width and won't visually move
+     anything on small screens. */
+  --side-rail-inset: 0px;
 
   /* Semantic color tokens */
   --color-bg: #ffffff;
@@ -272,7 +278,7 @@ html.has-scroll-smooth {
 
 @media (max-width: 1024px) {
   :root {
-    --railW: 2.75rem;
+    --railW: 2rem;
     --railH: 1.75rem;
     --offset: 0;
     --gap: 4.75rem;

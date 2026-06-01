@@ -64,8 +64,9 @@
                 )}px, ${(25 / 20).toFixed(1)}vw, ${25}px)`"
                 >{{ $t("filters.type") }}:</span
               >
-              <span
-                class="font-normal uppercase"
+              <NuxtLink
+                :to="`/projects?type=${project.types?.[0]?.slug}`"
+                class="font-normal uppercase white-link-sm"
                 :style="`font-size: clamp(${Math.max(
                   14,
                   Math.round(props.typeSize * 0.35)
@@ -74,7 +75,7 @@
                 }px)`"
               >
                 {{ projectType }}
-              </span>
+              </NuxtLink>
             </div>
             <!-- Year -->
             <div
@@ -89,8 +90,9 @@
                 )}px, ${(25 / 20).toFixed(1)}vw, ${25}px)`"
                 >{{ $t("filters.year") }}:</span
               >
-              <span
-                class="font-normal uppercase"
+              <NuxtLink
+                :to="`/projects?year=${project.year}`"
+                class="font-normal uppercase white-link-sm"
                 :style="`font-size: clamp(${Math.max(
                   14,
                   Math.round(props.yearSize * 0.35)
@@ -99,7 +101,7 @@
                 }px)`"
               >
                 {{ project.year }}
-              </span>
+              </NuxtLink>
             </div>
           </div>
         </div>
@@ -127,12 +129,17 @@
                   :key="dept.id"
                   class="ltr:pr-3 rtl:pl-3"
                 >
-                  <img
-                    :src="dept.hero_image"
-                    :alt="dept.name_en"
-                    class="dept-icon"
-                    :style="`width: ${props.iconSize}px; height: ${props.iconSize}px;`"
-                  />
+                  <NuxtLink
+                    :to="`/projects?department=${dept.slug}`"
+                    class="white-link-sm"
+                  >
+                    <img
+                      :src="dept.hero_image"
+                      :alt="dept.name_en"
+                      class="dept-icon"
+                      :style="`width: ${props.iconSize}px; height: ${props.iconSize}px;`"
+                    />
+                  </NuxtLink>
                 </div>
               </div>
             </div>
@@ -158,15 +165,18 @@
                   class="flex flex-wrap items-center"
                   :key="index"
                 >
-                  <span
-                    class="font-light uppercase"
+                  <NuxtLink
+                    :to="`/projects?scope=${scope.slug}`"
+                    class="font-light uppercase white-link-sm"
                     :style="`font-size: clamp(${Math.max(
                       14,
                       Math.round(props.scopeSize * 0.35)
                     )}px, ${(props.scopeSize / 20).toFixed(1)}vw, ${
                       props.scopeSize
                     }px)`"
-                    >{{ locale === "ar" ? scope.name_ar : scope.name_en }}</span
+                    >{{
+                      locale === "ar" ? scope.name_ar : scope.name_en
+                    }}</NuxtLink
                   >
                   <img
                     v-if="index < project.scopes.length - 1"
@@ -310,6 +320,15 @@ function getDepartmentIcon(dept: Department): string {
   width: 35px;
 }
 
+.details-link {
+  transition: all 0.3s ease;
+}
+.details-link:hover {
+  transform: scale(1.1);
+  color: var(--main-color);
+  letter-spacing: 1px;
+}
+
 @media (max-width: 1024px) {
   .slider-section {
     max-height: 85vh;
@@ -320,6 +339,10 @@ function getDepartmentIcon(dept: Department): string {
   .divider-image {
     height: 20px;
     width: 20px;
+  }
+  .dept-icon {
+    width: 30px !important;
+    height: 30px !important;
   }
 }
 </style>

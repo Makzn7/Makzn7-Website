@@ -47,16 +47,12 @@
                 Math.round(141 * 0.35)
               )}px, ${(141 / 20).toFixed(1)}vw, ${141}px);`"
             >
-              <div
-                class="grid grid-cols-2 rtl:grid-cols-4 rtl:lg:grid-cols-3 rtl:gap-4 items-end justify-start"
-              >
-                <div
-                  class="rtl:order-2 rtl:col-span-2 ltr:text-left rtl:text-left rtl:lg:text-right flex flex-col"
-                >
+              <div class="grid grid-cols-2 gap-4 items-end justify-start">
+                <div class="flex flex-col">
                   <h2>{{ $t("contact.leftText1") }}</h2>
                   <h2>{{ $t("contact.leftText2") }}</h2>
                 </div>
-                <div class="rtl:order-1 rtl:col-span-2 rtl:lg:col-span-1">
+                <div>
                   <img
                     src="/icons/svg/green/10-1.svg"
                     class="mb-4 hand-image"
@@ -64,13 +60,9 @@
                   />
                 </div>
               </div>
-              <div class="rtl:grid rtl:lg:grid-cols-6">
-                <div></div>
-                <h2 class="rtl:text-end rtl:lg:col-span-4">
-                  {{ $t("contact.leftText3") }}
-                </h2>
-                <div></div>
-              </div>
+              <h2 class="">
+                {{ $t("contact.leftText3") }}
+              </h2>
             </div>
             <!-- Form -->
             <div class="contact-form mt-4 lg:mt-0">

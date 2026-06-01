@@ -19,9 +19,27 @@
   pointer-events: auto;
 }
 
-/* ── Left / Right rails ── */
+/* ── Left / Right rails ──
+   The rail width is the larger of (a) the configured rail floor and
+   (b) the intrinsic width of its content + padding. Locking width to
+   a fixed `var(--railW)` (1.75rem on mobile) was capping the rotated
+   nav text (writing-mode: vertical-rl) — the glyph stem is ~font-size
+   wide (≈16px), padding ate the rest, and anything extra spilled out.
+   With `min-width: floor; width: max-content`, padding on the inner
+   div now actually pushes content inward instead of being swallowed
+   by the cap, and the text never overflows the rail.
+   `--side-rail-inset` (default 0) bumps that floor — set it to add a
+   margin from the screen edge on top of the natural content fit:
+     :root { --side-rail-inset: 1rem; }            // global
+     <div class="left-box" style="--side-rail-inset: 1.25rem"> // per el
+     @media (max-width: 640px) { :root { --side-rail-inset: .5rem; } }
+   The decorative corner lines anchor to the rail's right (left-box)
+   or left (right-box) edge so they move with whatever width the rail
+   ends up at. */
 .left-box {
-  width: var(--railW);
+  min-width: calc(var(--railW) + var(--side-rail-inset, 0px));
+  width: max-content;
+  max-width: 50%;
   position: absolute;
   bottom: 0;
   top: 0;
@@ -35,7 +53,7 @@ html[dir="rtl"] .left-box {
   content: "";
   position: absolute;
   top: var(--railH);
-  left: var(--railW);
+  left: calc(var(--railW) + var(--side-rail-inset, 0px));
   height: 0.3px;
   width: 114px;
   background-color: var(--color-primary);
@@ -46,7 +64,7 @@ html[dir="rtl"] .left-box {
   content: "";
   position: absolute;
   bottom: var(--railH);
-  left: var(--railW);
+  left: calc(var(--railW) + var(--side-rail-inset, 0px));
   height: 0.3px;
   width: 114px;
   background-color: var(--color-primary);
@@ -54,7 +72,7 @@ html[dir="rtl"] .left-box {
   transform: rotate(145deg);
 }
 .right-box {
-  width: var(--railW);
+  width: calc(var(--railW) + var(--side-rail-inset, 0px));
   position: absolute;
   bottom: 0;
   top: 0;
@@ -64,7 +82,7 @@ html[dir="rtl"] .left-box {
   content: "";
   position: absolute;
   top: var(--railH);
-  right: var(--railW);
+  right: calc(var(--railW) + var(--side-rail-inset, 0px));
   height: 0.3px;
   width: 114px;
   background-color: var(--color-primary);
@@ -75,7 +93,7 @@ html[dir="rtl"] .left-box {
   content: "";
   position: absolute;
   bottom: var(--railH);
-  right: var(--railW);
+  right: calc(var(--railW) + var(--side-rail-inset, 0px));
   height: 0.3px;
   width: 114px;
   background-color: var(--color-primary);
