@@ -1,21 +1,19 @@
 <!-- RightSideContent -->
 <template>
-  <div
-    class="nav-content flex flex-col flex-wrap justify-between ltr:items-end rtl:items-start h-full py-20 px-2"
-  >
+  <div class="nav-content nav-rail-content nav-rail-content--right">
     <NuxtLink
       to="/mansj"
-      class="home-nav-link nav-hover [writing-mode:vertical-rl] cursor-none"
+      class="home-nav-link nav-hover nav-rail-content__link nav-rail-content__link--right cursor-none"
       >{{ $t("nav.mansj") }}</NuxtLink
     >
     <NuxtLink
       to="/manjra"
-      class="home-nav-link nav-hover [writing-mode:vertical-rl] cursor-none"
+      class="home-nav-link nav-hover nav-rail-content__link nav-rail-content__link--right cursor-none"
       >{{ $t("nav.manjra") }}</NuxtLink
     >
     <NuxtLink
       to="/prophouse"
-      class="home-nav-link nav-hover [writing-mode:vertical-rl] cursor-none"
+      class="home-nav-link nav-hover nav-rail-content__link nav-rail-content__link--right cursor-none"
       >{{ $t("nav.prophouse") }}</NuxtLink
     >
   </div>

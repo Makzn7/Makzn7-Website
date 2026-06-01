@@ -72,7 +72,9 @@ html[dir="rtl"] .left-box {
   transform: rotate(145deg);
 }
 .right-box {
-  width: calc(var(--railW) + var(--side-rail-inset, 0px));
+  min-width: calc(var(--railW) + var(--side-rail-inset, 0px));
+  width: max-content;
+  max-width: 50%;
   position: absolute;
   bottom: 0;
   top: 0;
@@ -99,6 +101,75 @@ html[dir="rtl"] .left-box {
   background-color: var(--color-primary);
   transform-origin: right top;
   transform: rotate(-145deg);
+}
+
+/* ══════════════════════════════════════════════
+   NAV-RAIL CONTENT — shared layout for the four
+   side-content components:
+     LeftSideContent, RightSideContent,
+     HomeHeroLeftSideContent, HomeHeroRightSideContent
+   Spacing knobs (override at any level — :root, the
+   rail wrapper, the component, a per-page media query):
+     --nav-rail-pad-y   (default 5rem) vertical padding
+     --nav-rail-pad-x   (default 0.5rem) horizontal padding
+     --nav-rail-gap     (default 0) extra gap between links;
+                        the column already distributes via
+                        space-between, so the gap stacks on
+                        top — useful for tight clusters.
+   align-items is keyed off `dir` so content always sits
+   on the inner edge (toward the page center) regardless
+   of LTR/RTL. writing-mode is also direction-aware so
+   Arabic glyphs aren't rendered upside-down by sideways-lr
+   (which is poorly supported and reads incorrectly for RTL
+   scripts).
+══════════════════════════════════════════════ */
+.nav-rail-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  height: 100%;
+  padding-block: var(--nav-rail-pad-y, 5rem);
+  gap: var(--nav-rail-gap, 0);
+}
+
+/* Left rail — content sits on the rail's INNER edge
+   (toward the page center). That edge is the right side
+   of the box in both LTR and RTL because .left-box is
+   pinned to the left of the viewport in both directions. */
+.nav-rail-content--left {
+  align-items: center;
+}
+html[dir="rtl"] .nav-rail-content--left {
+  align-items: center;
+}
+
+/* Right rail — mirror: inner edge is the left side of
+   the box in both directions. */
+.nav-rail-content--right {
+  align-items: center;
+}
+html[dir="rtl"] .nav-rail-content--right {
+  align-items: center;
+}
+
+/* Vertical text. `sideways-lr` reads bottom-to-top — nice
+   for Latin nav, but Safari and Arabic glyph shaping both
+   struggle with it. So:
+     LTR  → sideways-lr (bottom-up) on the left rail,
+            vertical-rl (top-down) on the right rail.
+     RTL  → vertical-rl on both — the natural Arabic
+            vertical reading order, top-down. */
+.nav-rail-content__link--left {
+  writing-mode: sideways-lr;
+}
+html[dir="rtl"] .nav-rail-content__link--left {
+  writing-mode: vertical-rl;
+}
+
+.nav-rail-content__link--right {
+  writing-mode: vertical-rl;
 }
 
 /* ══════════════════════════════════════════════
@@ -222,4 +293,25 @@ html[dir="rtl"] .center-box .center-part {
   .center-part .page-content > * {
     animation: none;
   }
+}
+
+@media (max-width: 1024px) {
+  .left-box::before {
+    transform: rotate(-140deg);
+  }
+  .left-box::after {
+    transform: rotate(140deg);
+  }
+  .right-box::before {
+    transform: rotate(140deg);
+  }
+  .right-box::after {
+    transform: rotate(-140deg);
+  }
+  /* .nav-rail-content--left {
+    padding-left: 2rem;
+  }
+  .nav-rail-content--right {
+    padding-left: 2rem;
+  } */
 }
