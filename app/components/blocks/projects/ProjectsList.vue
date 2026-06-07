@@ -37,7 +37,7 @@
         :key="project.id ?? index"
         class="project-card group cursor-pointer"
       >
-        <NuxtLink :to="`/projects/${project.slug}`" class="block w-full h-full">
+        <NuxtLinkLocale :to="`/projects/${project.slug}`" class="block w-full h-full">
           <div class="relative w-full h-full overflow-hidden">
             <ProjectImage
               :src="project.heroMedia?.src"
@@ -88,7 +88,7 @@
               </span>
             </div>
           </div>
-        </NuxtLink>
+        </NuxtLinkLocale>
       </div>
 
       <!-- Bottom load-more skeletons, only while a next page is in flight. -->

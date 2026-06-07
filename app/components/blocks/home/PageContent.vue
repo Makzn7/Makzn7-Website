@@ -99,7 +99,7 @@
           @mouseenter="showHover && onEnter($event)"
           @mouseleave="showHover && $emit('hover-leave')"
         >
-          <NuxtLink :to="`/projects/${project.slug}`">
+          <NuxtLinkLocale :to="`/projects/${project.slug}`">
             <h3
               class="leading-[1.05] lg:font-light lg:max-w-[80%] hover:font-bold"
               :style="`font-size: clamp(${Math.max(
@@ -109,7 +109,7 @@
             >
               {{ locale === "ar" ? project.name_ar : project.name_en }}
             </h3>
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
       </div>
     </div>
@@ -179,6 +179,8 @@ if (props.withAnimations) {
 const modelInteractionMode = ref<"drag" | "hover">("drag");
 const modelInitialRotationY = ref(0.45);
 const modelInitialRotationX = ref(-0.45);
+// const modelInitialRotationY = ref(0);
+// const modelInitialRotationX = ref(0);
 const modelShowHint = ref(true);
 const modelAutoHint = ref(true);
 

@@ -33,7 +33,7 @@
             <!-- With photo -->
             <div
               v-if="team.photo"
-              class="team-photo-wrapper relative w-full aspect-square overflow-hidden transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:z-10"
+              class="team-photo-wrapper min-h-[180px] lg:min-h-[320px] relative w-full aspect-square overflow-hidden transition-transform duration-500 ease-in-out group-hover:scale-110 group-hover:z-10"
             >
               <img
                 :src="team.photo"
@@ -42,14 +42,15 @@
                 class="w-full h-full object-cover grayscale"
               />
               <div
-                class="absolute inset-0 bg-black/40 transition-colors duration-500 ease-in-out group-hover:bg-[#54ea62]/30"
+                class="absolute inset-0 bg-black/40 transition-colors duration-500 ease-in-out group-hover:bg-[#54ea62]/25"
+                style="mix-blend-mode: hard-light"
               />
             </div>
 
             <!-- Without photo -->
             <div
               v-else
-              class="team-initials-wrapper group flex flex-col items-center justify-center w-full aspect-square"
+              class="team-initials-wrapper min-h-[180px] lg:min-h-[320px] group flex flex-col items-center justify-center w-full aspect-square"
             >
               <span
                 v-for="(letter, i) in getInitials(team.name_en)"

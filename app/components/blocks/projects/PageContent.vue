@@ -14,14 +14,14 @@
         <div
           class="flex logo-image p-4 w-full lg:hidden justify-center items-center"
         >
-          <NuxtLink to="/">
+          <NuxtLinkLocale to="/">
             <img
               src="/logos/svg/logo_black.svg"
               width="100"
               alt="Makzn7"
               class="dark:invert"
             />
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
         <div
           class="hidden lg:block border-e-[0.3px] border-white-op50 h-full"

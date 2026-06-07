@@ -17,15 +17,11 @@ export default defineNuxtConfig({
     langDir: "locales/",
     defaultLocale: "en",
     strategy: "prefix_except_default",
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: "i18n_redirected",
-      cookieSecure: false,
-      cookieCrossOrigin: false,
-      redirectOn: "all",
-      alwaysRedirect: true,
-      fallbackLocale: "en",
-    },
+    // Browser-language auto-detection is disabled so the first visit is
+    // always English. The chosen locale is persisted/restored via the
+    // i18n-persist client plugin (cookie), and otherwise carried in the URL
+    // prefix through locale-aware <NuxtLinkLocale> links.
+    detectBrowserLanguage: false,
     locales: [
       {
         code: "en",

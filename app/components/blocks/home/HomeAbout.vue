@@ -41,7 +41,7 @@
             "
           ></div>
           <!-- discoverMore — appears earlier (delay 0.1s) -->
-          <NuxtLink
+          <NuxtLinkLocale
             to="/about"
             class="white-link flex items-center gap-3 lg:gap-6 uppercase text-white leading-[1.2] tracking-tighter ms-auto fade-in-right"
             :style="`animation-delay: 0.1s; font-size: clamp(${Math.max(
@@ -56,7 +56,7 @@
               class="font-pixel mb-[8px] lg:mb-[16px] inline-block text-primary"
               >-></span
             >
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
       </div>
     </div>

@@ -13,7 +13,7 @@
       <div
         v-for="(award, i) in awards"
         :key="i"
-        class="relative flex justify-center items-center gap-4 mb-6 pb-6 border-b-[0.3px] border-white-op50 last:border-0 px-6 lg:ps-12 lg:pe-44"
+        class="relative flex flex-col lg:flex-row justify-center items-center gap-4 mb-6 pb-6 border-b-[0.3px] border-white-op50 last:border-0 px-6 lg:ps-12 lg:pe-44"
       >
         <div class="w-full">
           <h2
@@ -42,7 +42,7 @@
             :src="award.image_3d"
             :alt="award.title_en"
             loading="lazy"
-            class="w-[5.5rem] lg:w-28 h-auto"
+            class="w-[4.5rem] lg:w-28 h-auto"
           />
         </div>
       </div>

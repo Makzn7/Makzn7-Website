@@ -3,20 +3,20 @@
     <div
       class="absolute flex justify-between items-center logo-image py-2 lg:py-0 px-4 lg:h-[6rem]"
     >
-      <NuxtLink to="/projects" class="group hover:text-primary">
+      <NuxtLinkLocale to="/projects" class="group hover:text-primary">
         <img
           src="/icons/svg/white/12.svg"
           class="back-image ltr:rotate-180 fill-current transition-colors group-hover:text-primary"
           alt="back to projects"
         />
-      </NuxtLink>
-      <NuxtLink to="/">
+      </NuxtLinkLocale>
+      <NuxtLinkLocale to="/">
         <img
           src="/logos/svg/logo_black.svg"
           alt="Makzn7"
           class="dark:invert project-logo-image"
         />
-      </NuxtLink>
+      </NuxtLinkLocale>
     </div>
     <div class="top-section w-full h-full cursor-none">
       <div class="left-box z-10 after:opacity-50 before:opacity-50">

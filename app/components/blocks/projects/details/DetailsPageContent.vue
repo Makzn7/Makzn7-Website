@@ -64,7 +64,7 @@
                 )}px, ${(25 / 20).toFixed(1)}vw, ${25}px)`"
                 >{{ $t("filters.type") }}:</span
               >
-              <NuxtLink
+              <NuxtLinkLocale
                 :to="`/projects?type=${project.types?.[0]?.slug}`"
                 class="font-normal uppercase white-link-sm"
                 :style="`font-size: clamp(${Math.max(
@@ -75,7 +75,7 @@
                 }px)`"
               >
                 {{ projectType }}
-              </NuxtLink>
+              </NuxtLinkLocale>
             </div>
             <!-- Year -->
             <div
@@ -90,7 +90,7 @@
                 )}px, ${(25 / 20).toFixed(1)}vw, ${25}px)`"
                 >{{ $t("filters.year") }}:</span
               >
-              <NuxtLink
+              <NuxtLinkLocale
                 :to="`/projects?year=${project.year}`"
                 class="font-normal uppercase white-link-sm"
                 :style="`font-size: clamp(${Math.max(
@@ -101,7 +101,7 @@
                 }px)`"
               >
                 {{ project.year }}
-              </NuxtLink>
+              </NuxtLinkLocale>
             </div>
           </div>
         </div>
@@ -129,7 +129,7 @@
                   :key="dept.id"
                   class="ltr:pr-3 rtl:pl-3"
                 >
-                  <NuxtLink
+                  <NuxtLinkLocale
                     :to="`/projects?department=${dept.slug}`"
                     class="white-link-sm"
                   >
@@ -139,7 +139,7 @@
                       class="dept-icon"
                       :style="`width: ${props.iconSize}px; height: ${props.iconSize}px;`"
                     />
-                  </NuxtLink>
+                  </NuxtLinkLocale>
                 </div>
               </div>
             </div>
@@ -165,7 +165,7 @@
                   class="flex flex-wrap items-center"
                   :key="index"
                 >
-                  <NuxtLink
+                  <NuxtLinkLocale
                     :to="`/projects?scope=${scope.slug}`"
                     class="font-light uppercase white-link-sm"
                     :style="`font-size: clamp(${Math.max(
@@ -176,7 +176,7 @@
                     }px)`"
                     >{{
                       locale === "ar" ? scope.name_ar : scope.name_en
-                    }}</NuxtLink
+                    }}</NuxtLinkLocale
                   >
                   <img
                     v-if="index < project.scopes.length - 1"

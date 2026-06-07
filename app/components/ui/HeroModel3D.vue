@@ -228,13 +228,41 @@ async function init() {
   camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 200);
   camera.position.z = 4;
 
-  /* ── Lights ── */
-  const ambient = new THREE.AmbientLight("#ffffff", 1);
+  /* ── Lights ──
+     Pure EXTERNAL directional lighting aimed at the model — the model's own
+     material/colour is left exactly as authored (no env map, no material edits).
+     Strong, BROAD white light: a pair from the RIGHT (high + low) and a pair
+     from ABOVE (right + left) so the whole WIDTH of the element is lit evenly,
+     plus a soft GREY fill from below. */
+  const ambient = new THREE.AmbientLight("#ffffff", 0.9);
   scene.add(ambient);
 
-  const key = new THREE.DirectionalLight("#ffffff", 0.35);
-  key.position.set(4, 6, 5);
-  scene.add(key);
+  /* RIGHT — two bright white lights (upper + lower) spread across the width. */
+  const rightUpper = new THREE.DirectionalLight("#ffffff", 3.6);
+  rightUpper.position.set(7, 4, 6);
+  scene.add(rightUpper);
+
+  const rightLower = new THREE.DirectionalLight("#ffffff", 3.0);
+  rightLower.position.set(7, -2, 6);
+  scene.add(rightLower);
+
+  /* TOP — two bright white lights (right + left) so the top is lit full-width. */
+  const topRight = new THREE.DirectionalLight("#ffffff", 3.4);
+  topRight.position.set(3, 8, 6);
+  scene.add(topRight);
+
+  const topLeft = new THREE.DirectionalLight("#ffffff", 3.0);
+  topLeft.position.set(-3, 8, 6);
+  scene.add(topLeft);
+
+  /* BOTTOM fill — soft GREY from below, gentle so it only lifts the underside. */
+  const bottomFill = new THREE.DirectionalLight("#9a9a9a", 0.6);
+  bottomFill.position.set(0, -8, 3);
+  scene.add(bottomFill);
+
+  /* Dev helpers (disabled): visualise the light directions while tuning.
+     scene.add(new THREE.DirectionalLightHelper(rightLight, 1));
+     scene.add(new THREE.DirectionalLightHelper(topLight, 1)); */
 
   /* ── Rotation group — drag 360, tilt group — mouse hover ── */
   rotationGroup = new THREE.Group();
@@ -264,6 +292,9 @@ async function init() {
         if (!isMounted) return;
         const model = gltf.scene;
         modelRoot = model;
+
+        /* Material is left EXACTLY as authored — no transmission/colour/roughness
+           changes. Lighting is purely the external directional rig in init(). */
 
         /* Center + normalise scale */
         const box = new THREE.Box3().setFromObject(model);

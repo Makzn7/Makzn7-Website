@@ -1,20 +1,20 @@
 <!-- RightSideContent -->
 <template>
   <div class="nav-content nav-rail-content nav-rail-content--right">
-    <NuxtLink
+    <NuxtLinkLocale
       to="/mansj"
       class="home-nav-link nav-hover nav-rail-content__link nav-rail-content__link--right cursor-none"
-      >{{ $t("nav.mansj") }}</NuxtLink
+      >{{ $t("nav.mansj") }}</NuxtLinkLocale
     >
-    <NuxtLink
+    <NuxtLinkLocale
       to="/manjra"
       class="home-nav-link nav-hover nav-rail-content__link nav-rail-content__link--right cursor-none"
-      >{{ $t("nav.manjra") }}</NuxtLink
+      >{{ $t("nav.manjra") }}</NuxtLinkLocale
     >
-    <NuxtLink
+    <NuxtLinkLocale
       to="/prophouse"
       class="home-nav-link nav-hover nav-rail-content__link nav-rail-content__link--right cursor-none"
-      >{{ $t("nav.prophouse") }}</NuxtLink
+      >{{ $t("nav.prophouse") }}</NuxtLinkLocale
     >
   </div>
 </template>

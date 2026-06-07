@@ -15,13 +15,13 @@
         class="w-full border-b-[0.3px] border-white-op50 border-brand-text h-[60px] lg:h-[90px] px-6 lg:px-0"
       >
         <div class="flex lg:hidden justify-between items-center h-full">
-          <NuxtLink to="/">
+          <NuxtLinkLocale to="/">
             <img
               src="/logos/svg/logo_black.svg"
               alt="Makzn7"
               class="dark:invert w-[70px] lg:w-[100px]"
             />
-          </NuxtLink>
+          </NuxtLinkLocale>
           <img
             src="/logos/departments/Manjra-Org.svg"
             alt="Manjra"
@@ -110,28 +110,13 @@
           class="section-body border-t-[0.3px] lg:border-s-[0.3px] border-white-op50 border-brand-text pt-6 pb-12 lg:pt-12 lg:pb-16"
           :style="`margin-inline-start: ${marginS}px;`"
         >
-          <div class="relative group">
-            <NuxtLink to="/projects?department=manjra">
-              <img
-                :src="pageDetails?.buttonImage"
-                alt="View Projects"
-                class="w-full h-auto filter grayscale block"
-              />
-              <div
-                class="absolute inset-0 hidden group-hover:flex items-start justify-end px-8 py-4 bg-[#E1FE53]/50"
-              >
-                <span
-                  class="text-[#292B2C] font-bold"
-                  :style="`font-size: clamp(${Math.max(
-                    16,
-                    Math.round(51 * 0.35)
-                  )}px, ${(51 / 20).toFixed(1)}vw, ${51}px);`"
-                >
-                  {{ $t("manjra.showProjects") }}
-                </span>
-              </div>
-            </NuxtLink>
-          </div>
+          <PageButton
+            link="/projects?department=manjra"
+            :imageSrc="pageDetails?.buttonImage"
+            :title="$t('manjra.showProjects')"
+            bgColor="#E1FE53"
+            textColor="#292B2C"
+          ></PageButton>
         </div>
       </section>
     </div>
@@ -145,6 +130,7 @@
 <script setup lang="ts">
 import ManjraTeam from "./ManjraTeam.vue";
 import SectionTitle from "../../ui/SectionTitle.vue";
+import PageButton from "../../ui/PageButton.vue";
 import type { Page } from "~/types/page";
 
 const { locale } = useI18n();

@@ -3,8 +3,10 @@
     <ClientOnly>
       <Swiper
         :modules="modules"
-        :slides-per-view="1"
-        :space-between="0"
+        :slides-per-view="hasMultiple ? 1.25 : 1"
+        :space-between="hasMultiple ? 2 : 0"
+        :breakpoints="sliderBreakpoints"
+        :centered-slides="false"
         :loop="false"
         :speed="550"
         :allow-touch-move="true"
@@ -205,7 +207,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, nextTick, ref } from "vue";
+import { onMounted, onUnmounted, nextTick, ref, computed } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, Pagination, Autoplay, Keyboard } from "swiper/modules";
 import type { Swiper as SwiperClass } from "swiper/types";
@@ -234,6 +236,24 @@ const emit = defineEmits<{
 
 const modules = [Navigation, Pagination, Autoplay];
 const lightboxModules = [Navigation, Keyboard];
+
+/* When there's more than one item, peek the next slide (~25%) so users can
+   tell the media is scrollable. A single item stays full-bleed. Swiper clamps
+   the end translate, so the last slide shows fully with no empty preview
+   (loop is disabled). */
+const hasMultiple = computed(() => props.items.length > 1);
+const sliderBreakpoints = computed(() => ({
+  // Mobile: smaller peek so the active slide stays comfortably readable.
+  0: {
+    slidesPerView: hasMultiple.value ? 1.18 : 1,
+    spaceBetween: hasMultiple.value ? 10 : 0,
+  },
+  // Desktop: current slide + ~25% of the next slide.
+  768: {
+    slidesPerView: hasMultiple.value ? 1.25 : 1,
+    spaceBetween: hasMultiple.value ? 16 : 0,
+  },
+}));
 
 const sliderRef = ref<HTMLElement | null>(null);
 const prevBtn = ref<HTMLElement | null>(null);

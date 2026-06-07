@@ -15,14 +15,14 @@
         <div
           class="flex logo-image p-4 w-full lg:hidden justify-center items-center"
         >
-          <NuxtLink to="/">
+          <NuxtLinkLocale to="/">
             <img
               src="/logos/svg/logo_black.svg"
               width="100"
               alt="Makzn7"
               class="dark:invert"
             />
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
         <div
           class="lg:border-e-[0.3px] border-white-op50 h-full"
@@ -155,7 +155,7 @@
             <!-- Image & Button -->
             <div class="flex flex-col">
               <img
-                src="/images/pages/contact/new_map.jpg"
+                src="/images/pages/contact/map2.jpg"
                 alt="Location Image"
                 class="w-full h-auto object-cover rounded-sm mb-6 lg:mb-0 mt-4 lg:mt-0"
               />

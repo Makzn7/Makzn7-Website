@@ -123,10 +123,11 @@
     "heroDescription": "A comprehensive film design services company founded in 2020. It functions as a hub for facilities such as a film design house, a prop house, a wardrobe studio, and a construction workshop."
   },
   "about": {
-    "awardsTitle": "Awards"
+    "awardsTitle": "Awards",
+    "showProjects": "Browse Makzn7’s Projects"
   },
   "mansj": {
-    "showProjects": "Browse Mansj's Projects"
+    "showProjects": "Browse Mansj’s Projects"
   },
   "manjra": {
     "showProjects": "Browse Manjra’s Projects"

@@ -6,19 +6,14 @@
     :style="`background-color: ${bgColor};`"
   >
     <div class="flex">
-      <!-- <div
-        class="border-e-[0.3px]"
-        :class="borderClasses"
-        style="width: calc(var(--railW) + 3.5px)"
-      ></div> -->
       <div
         class="w-full mx-auto grid grid-cols-1 gap-12 py-6 lg:py-16 px-6 lg:px-28"
       >
         <!-- Title -->
-        <div class="flex flex-col justify-between items-start space-y-12">
+        <div class="flex justify-between items-center">
           <!-- Title -->
           <h2
-            class="font-light leading-none fade-in tracking-[-2.06px]"
+            class="font-light leading-none fade-in tracking-[-2.06px] text-nowrap"
             :style="`animation-delay: 0s; font-size: clamp(${Math.max(
               16,
               Math.round(103 * 0.35)
@@ -26,6 +21,41 @@
           >
             {{ $t("home.contactTitle") }}
           </h2>
+          <!-- Options -->
+          <div
+            class="w-full flex gap-4 justify-end items-center"
+            :style="`font-size: clamp(${Math.max(
+              14,
+              Math.round(18 * 0.35)
+            )}px, ${(18 / 20).toFixed(1)}vw, ${18}px);`"
+          >
+            <button
+              class="flex justify-start items-start gap-2 min-w-[20px]"
+              id="toggle-lang"
+              @click="toggleLocale"
+              :class="locale === 'ar' ? 'font-en' : 'font-ar'"
+            >
+              <img
+                src="/icons/general/Artboard2.svg"
+                class="w-[20px] lg:w-[30px]"
+              />
+              <span
+                class="text-[14px] sm:text-[16px] md:text-[20px] lg:text-[24px] leading-[1] lg:leading-[0.7]"
+                >{{ $t("buttons.lang") }}</span
+              >
+            </button>
+            <button
+              v-if="showTheme"
+              id="toggle-theme-mode"
+              class="flex justify-start items-center gap-2 min-w-[20px]"
+              @click="toggleTheme"
+            >
+              <img
+                src="/icons/general/Artboard1.svg"
+                class="w-[20px] lg:w-[30px]"
+              />
+            </button>
+          </div>
         </div>
 
         <!-- Loading skeleton -->
@@ -35,62 +65,157 @@
         />
 
         <div v-else>
+          <!-- Desktop -->
+          <div class="hidden lg:grid lg:grid-cols-3 gap-4 fade-in-left">
+            <!-- Contact Info + Social Media -->
+            <div class="flex flex-col gap-4 items-start justify-start">
+              <div class="flex flex-col justify-between gap-8">
+                <div class="flex flex-col">
+                  <a
+                    :href="`mailto:${settings?.email}`"
+                    class="white-link-sm font-en rtl:text-right font-extralight"
+                    :style="`font-size: clamp(${Math.max(
+                      14,
+                      Math.round(37 * 0.35)
+                    )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
+                    dir="ltr"
+                  >
+                    {{ settings?.email }}
+                  </a>
+                  <a
+                    :href="`tel:${settings?.phone}`"
+                    class="white-link-sm font-en rtl:text-right font-extralight text-nowrap"
+                    :style="`font-size: clamp(${Math.max(
+                      14,
+                      Math.round(37 * 0.35)
+                    )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
+                    dir="ltr"
+                  >
+                    ({{ settings?.phone }})
+                  </a>
+                </div>
+              </div>
+              <!-- Social Media -->
+              <div class="w-full flex gap-4 justify-start items-start">
+                <!-- Instagram -->
+                <a
+                  :href="settings?.social_links?.instagram"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-icon group transition-all duration-500 ease-in-out"
+                  aria-label="Instagram"
+                >
+                  <img
+                    src="/icons/general/instagram.svg"
+                    class="w-100 p-1"
+                    alt=""
+                  />
+                  <!-- <font-awesome-icon
+                    icon="fa-brands fa-instagram"
+                    style="width: 100%; height: 100%"
+                  /> -->
+                </a>
+                <!-- LinkedIn -->
+                <a
+                  :href="settings?.social_links?.linkedin"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-icon group transition-all duration-500 ease-in-out"
+                  aria-label="LinkedIn"
+                >
+                  <font-awesome-icon
+                    icon="fa-brands fa-linkedin-in"
+                    style="width: 100%; height: 100%"
+                  />
+                </a>
+                <!-- Vimeo -->
+                <a
+                  :href="settings?.social_links?.vimeo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-icon group transition-all duration-500 ease-in-out"
+                  aria-label="Vimeo"
+                >
+                  <font-awesome-icon
+                    icon="fa-brands fa-vimeo-v"
+                    style="width: 100%; height: 100%"
+                  />
+                </a>
+
+                <!-- YouTube -->
+                <a
+                  :href="settings?.social_links?.youtube"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-icon group transition-all duration-500 ease-in-out"
+                  aria-label="YouTube"
+                >
+                  <font-awesome-icon
+                    icon="fa-brands fa-youtube"
+                    style="width: 100%; height: 100%"
+                  />
+                </a>
+              </div>
+            </div>
+            <!-- Address -->
+            <div>
+              <p
+                class="text-white font-extralight"
+                :style="`font-size: clamp(${Math.max(
+                  14,
+                  Math.round(37 * 0.35)
+                )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
+              >
+                {{
+                  locale === "ar" ? settings?.address_ar : settings?.address_en
+                }}
+              </p>
+            </div>
+            <!-- Privacy Policy + Year -->
+            <div class="flex flex-col gap-1 justify-start items-end">
+              <!-- Privacy Policy -->
+              <div>
+                <NuxtLinkLocale
+                  to="/privacy-policy"
+                  class="white-link-sm uppercase text-white font-extralight"
+                  :style="`font-size: clamp(${Math.max(
+                    14,
+                    Math.round(37 * 0.35)
+                  )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
+                  >{{ $t("buttons.privacyPolicy") }}</NuxtLinkLocale
+                >
+              </div>
+              <!-- Year -->
+              <div>
+                <p
+                  class="text-white font-extralight leading-[1]"
+                  :style="`font-size: clamp(${Math.max(
+                    14,
+                    Math.round(37 * 0.35)
+                  )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
+                >
+                  {{ new Date().getFullYear() }}
+                </p>
+              </div>
+            </div>
+          </div>
           <!-- Desktop Options + Contact Info + Social Media -->
 
           <!-- Mobile -->
           <div
-            class="grid grid-cols-7 lg:grid-cols-3 gap-4 lg:gap-16 fade-in-left"
+            class="grid grid-cols-5 lg:grid-cols-3 gap-8 items-end fade-in-left lg:hidden"
             style="animation-delay: 0.15s"
           >
-            <!-- Options -->
-            <div
-              class="col-span-2 lg:col-span-1 w-full flex flex-col justify-between gap-6"
-            >
-              <div
-                class="flex flex-col w-full gap-2 justify-start items-start"
-                :style="`font-size: clamp(${Math.max(
-                  14,
-                  Math.round(31 * 0.35)
-                )}px, ${(31 / 20).toFixed(1)}vw, ${31}px);`"
-              >
-                <button
-                  v-if="showTheme"
-                  id="toggle-theme-mode"
-                  class="flex justify-start items-center gap-2 min-w-[25px]"
-                  @click="toggleTheme"
-                >
-                  <img
-                    src="/icons/general/Artboard1.svg"
-                    class="w-[25px] lg:w-[35px]"
-                  />
-                </button>
-                <button
-                  class="flex justify-start items-center gap-2 min-w-[25px]"
-                  id="toggle-lang"
-                  @click="toggleLocale"
-                  :class="locale === 'ar' ? 'font-en' : 'font-ar'"
-                >
-                  <img
-                    src="/icons/general/Artboard2.svg"
-                    class="w-[25px] lg:w-[35px]"
-                  />
-                  <span
-                    class="text-[14px] sm:text-[18px] md:text-[22px] lg:text-[26px] xl:text-[28px] 2xl:text-[31px] leading-[1.2] ltr:mb-[8px] ltr:lg:mb-[17px]"
-                    >{{ $t("buttons.lang") }}</span
-                  >
-                </button>
-              </div>
-            </div>
             <!-- Contact Information List -->
             <div
-              class="col-span-5 lg:col-span-2 grid grid-cols-2 gap-4 font-extralight"
+              class="col-span-3 flex flex-col gap-4 font-extralight"
               :style="`font-size: clamp(${Math.max(
                 14,
                 Math.round(37 * 0.35)
               )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
             >
               <!-- Email & Phone and VAT -->
-              <div flex flex-col justify-between gap-8>
+              <div class="flex flex-col justify-between gap-8">
                 <div class="flex flex-col">
                   <a
                     :href="`mailto:${settings?.email}`"
@@ -108,7 +233,6 @@
                   </a>
                 </div>
               </div>
-
               <!-- Address -->
               <div class="space-y-1">
                 <p class="text-white">
@@ -120,35 +244,32 @@
                 </p>
               </div>
             </div>
-
+            <!-- Years -->
+            <div class="col-span-2 flex flex-col justify-end items-end gap-2">
+              <p
+                class="text-white font-light leading-[1.2] w-full"
+                :style="`font-size: clamp(${Math.max(
+                  14,
+                  Math.round(49 * 0.35)
+                )}px, ${(49 / 20).toFixed(1)}vw, ${49}px);`"
+              >
+                {{ new Date().getFullYear() }}
+              </p>
+              <NuxtLinkLocale
+                to="/privacy-policy"
+                class="white-link uppercase text-white leading-[1.2] w-full"
+                :style="`font-size: clamp(${Math.max(
+                  14,
+                  Math.round(42 * 0.35)
+                )}px, ${(42 / 20).toFixed(1)}vw, ${42}px);`"
+                >{{ $t("buttons.privacyPolicy") }}</NuxtLinkLocale
+              >
+            </div>
             <!-- Social Media Icons (Vertical Stack) -->
-            <div
-              class="col-span-7 lg:col-span-3 grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-12 items-center"
-            >
-              <!-- Years -->
-              <div class="flex flex-col justify-start items-start gap-2">
-                <p
-                  class="text-white font-light leading-[1.2]"
-                  :style="`font-size: clamp(${Math.max(
-                    14,
-                    Math.round(49 * 0.35)
-                  )}px, ${(49 / 20).toFixed(1)}vw, ${49}px);`"
-                >
-                  {{ new Date().getFullYear() }}
-                </p>
-                <NuxtLink
-                  to="/privacy-policy"
-                  class="white-link uppercase text-white leading-[1.2]"
-                  :style="`font-size: clamp(${Math.max(
-                    14,
-                    Math.round(42 * 0.35)
-                  )}px, ${(42 / 20).toFixed(1)}vw, ${42}px);`"
-                  >{{ $t("buttons.privacyPolicy") }}</NuxtLink
-                >
-              </div>
+            <div class="col-span-5 grid grid-cols-2 gap-4 items-center">
               <!-- Social Media -->
               <div
-                class="col-span-1 lg:col-span-2 w-full flex flex-row gap-1 lg:gap-6 justify-between lg:justify-end items-start"
+                class="col-span-1 w-full flex flex-row gap-1 justify-between items-start"
               >
                 <!-- Social Media Icons (Vertical Stack) -->
                 <!-- Instagram -->
@@ -254,8 +375,8 @@ function toggleLocale() {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 38px;
+  height: 38px;
   cursor: pointer;
   color: #ffffff;
 }
