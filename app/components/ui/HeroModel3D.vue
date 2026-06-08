@@ -237,22 +237,23 @@ async function init() {
   const ambient = new THREE.AmbientLight("#ffffff", 0.9);
   scene.add(ambient);
 
-  /* RIGHT — two bright white lights (upper + lower) spread across the width. */
-  const rightUpper = new THREE.DirectionalLight("#ffffff", 3.6);
-  rightUpper.position.set(7, 4, 6);
+  /* Angle the whole rig toward the TOP-RIGHT — strong white light coming from
+     the right side and from above. */
+  const rightUpper = new THREE.DirectionalLight("#ffffff", 6.5);
+  rightUpper.position.set(9, 6, 5);
   scene.add(rightUpper);
 
-  const rightLower = new THREE.DirectionalLight("#ffffff", 3.0);
-  rightLower.position.set(7, -2, 6);
+  const rightLower = new THREE.DirectionalLight("#ffffff", 5.5);
+  rightLower.position.set(9, 1, 5);
   scene.add(rightLower);
 
-  /* TOP — two bright white lights (right + left) so the top is lit full-width. */
-  const topRight = new THREE.DirectionalLight("#ffffff", 3.4);
-  topRight.position.set(3, 8, 6);
+  /* TOP — biased to the right so the light reads as top-right. */
+  const topRight = new THREE.DirectionalLight("#ffffff", 6.0);
+  topRight.position.set(5, 10, 5);
   scene.add(topRight);
 
-  const topLeft = new THREE.DirectionalLight("#ffffff", 3.0);
-  topLeft.position.set(-3, 8, 6);
+  const topLeft = new THREE.DirectionalLight("#ffffff", 4.0);
+  topLeft.position.set(-1, 9, 5);
   scene.add(topLeft);
 
   /* BOTTOM fill — soft GREY from below, gentle so it only lifts the underside. */

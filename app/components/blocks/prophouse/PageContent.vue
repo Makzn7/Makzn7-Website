@@ -92,21 +92,56 @@
         :marginB="marginB"
       />
       <section id="button-section">
+        <SectionTitle
+          :title="$t('prophouse.website')"
+          :marginS="marginS"
+          :titleS="titleS"
+          class="border-white-op50"
+        />
         <div
           class="section-body border-t-[0.3px] lg:border-s-[0.3px] border-white-op50 border-brand-text pt-6 pb-12 lg:pt-12 lg:pb-16"
           :style="`margin-inline-start: ${marginS}px;`"
         >
-          <PageButton
-            link="/projects?department=prophouse"
-            :imageSrc="pageDetails?.buttonImage"
-            :title="$t('prophouse.showProjects')"
-            bgColor="#E1FE53"
-          ></PageButton>
+          <div
+            v-html="hint"
+            class="px-6 pb-6 lg:pb-12 font-light tracking-[0px]"
+            :style="`font-size: clamp(${Math.max(
+              16,
+              Math.round(descSize * 0.35)
+            )}px, ${(descSize / 20).toFixed(1)}vw, ${descSize}px);`"
+          ></div>
+          <div class="relative group">
+            <a href="https://m7prophouse.com" target="_blank">
+              <img
+                :src="pageDetails?.buttonImage"
+                :alt="$t('prophouse.visitWebsite')"
+                class="w-full h-auto filter block"
+              />
+              <div
+                class="absolute inset-0 hidden group-hover:flex items-center justify-center px-8 py-4"
+                style="mix-blend-mode: multiply"
+                :style="`background-color: #E1FE53; opacity: 0.5;`"
+              ></div>
+              <div
+                class="absolute inset-0 hidden group-hover:flex items-center justify-center px-8 py-4 bg-transparent"
+              >
+                <span
+                  :class="`font-bold`"
+                  :style="`font-size: clamp(${Math.max(
+                    16,
+                    Math.round(100 * 0.35)
+                  )}px, ${(100 / 20).toFixed(1)}vw, ${100}px); color: #000000;`"
+                >
+                  {{ $t("prophouse.visitWebsite") }}
+                </span>
+              </div>
+            </a>
+          </div>
         </div>
       </section>
 
       <!-- Website Link -->
-      <section>
+      <!-- <section>
         <div
           class="section-body border-t-[0.3px] lg:border-s-[0.3px] border-white-op50 border-brand-text pt-6 pb-12 px-6 lg:pt-12 lg:pb-16 lg:px-12 flex justify-end items-center"
           :style="`margin-inline-start: ${marginS}px;`"
@@ -126,7 +161,7 @@
             >
           </a>
         </div>
-      </section>
+      </section> -->
     </div>
 
     <!-- spacer أسفل عشان الأرض ما تبقى فارغة في النهاية -->
@@ -171,6 +206,10 @@ const props = withDefaults(
     clampRight: false,
   }
 );
+
+const hintEn = `The M7 Prophouse website showcases a curated collection of props, furniture, décor, and historical pieces for film, television, and commercial productions. <span style='color: #E1FE53;'> The platform makes it easy to browse and rent production-ready assets,</span> helping storytellers and production teams bring authentic and visually compelling worlds to life.`;
+const hintAr = `يستعرض موقع M7 Prophouse مجموعة مختارة من الدعائم والأثاث والديكور والقطع التاريخية للإنتاجات السينمائية والتلفزيونية والتجارية. <span style='color: #E1FE53;'>تسهل المنصة تصفح واستئجار الأصول الجاهزة للإنتاج،</span> مما يساعد رواة القصص وفرق الإنتاج على إحياء عوالم أصيلة وجذابة بصريًا.`;
+const hint = computed(() => (locale.value === "ar" ? hintAr : hintEn));
 </script>
 <style scoped>
 .page-content {

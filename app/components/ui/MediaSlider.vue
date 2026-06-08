@@ -4,7 +4,7 @@
       <Swiper
         :modules="modules"
         :slides-per-view="hasMultiple ? 1.25 : 1"
-        :space-between="hasMultiple ? 2 : 0"
+        :space-between="hasMultiple ? 1 : 0"
         :breakpoints="sliderBreakpoints"
         :centered-slides="false"
         :loop="false"
