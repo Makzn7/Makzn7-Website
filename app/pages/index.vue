@@ -52,11 +52,32 @@ onMounted(async () => {
   // إزاحة الزاوية العليا اليسرى — المحطة الأولى قبل موضع شعار الصفحة
   if (splashLogo) {
     const cornerScale = 0.5;
-    const cornerMargin = window.innerWidth < 640 ? 16 : 32;
+    // المسافة من الزاوية تُحسب من نفس عرض/ارتفاع الـ rail (--railW / --railH)
+    // مع زيادة خفيفة حتى لا يستقر الشعار فوق الـ rail بالضبط
+    const rootStyles = getComputedStyle(document.documentElement);
+    const rootFontSize = parseFloat(rootStyles.fontSize) || 16;
+    const railToPx = (varName: string, fallback: number) => {
+      const raw = rootStyles.getPropertyValue(varName).trim();
+      const num = parseFloat(raw);
+      if (Number.isNaN(num)) return fallback;
+      return raw.endsWith("rem") ? num * rootFontSize : num;
+    };
+    const cornerExtra = 8;
+    const cornerMarginX = railToPx("--railW", 60) + cornerExtra;
+    const cornerMarginY = railToPx("--railH", 44) + cornerExtra;
     const splashW = splashLogo.offsetWidth;
     const splashH = splashLogo.offsetHeight || splashW * 0.35;
-    const cdx = -(window.innerWidth / 2 - (splashW * cornerScale) / 2 - cornerMargin);
-    const cdy = -(window.innerHeight / 2 - (splashH * cornerScale) / 2 - cornerMargin);
+    const cdx = -(
+      window.innerWidth / 2 -
+      (splashW * cornerScale) / 2 -
+      cornerMarginX
+    );
+    const cdy = -(
+      window.innerHeight / 2 -
+      (splashH * cornerScale) / 2 -
+      cornerMarginY
+    );
+    // تعيين إزاحة الزاوية كمتغيرات CSS لاستخدامها في keyframes
     splashLogo.style.setProperty("--cdx", `${cdx}px`);
     splashLogo.style.setProperty("--cdy", `${cdy}px`);
   }
@@ -145,7 +166,7 @@ onBeforeUnmount(() => {
 .splash-logo.splash-animate {
   position: relative;
   z-index: 1;
-  animation: splashLogoAnim 3.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: splashLogoAnim 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 @keyframes splashLogoAnim {
@@ -217,7 +238,7 @@ onBeforeUnmount(() => {
 }
 
 .splash-corner-glow.glow-animate {
-  animation: cornerGlowAnim 3.6s ease-in-out forwards;
+  animation: cornerGlowAnim 2.6s ease-in-out forwards;
 }
 
 @keyframes cornerGlowAnim {

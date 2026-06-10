@@ -3,7 +3,7 @@
     <ClientOnly>
       <Swiper
         :modules="modules"
-        :slides-per-view="hasMultiple ? 1.25 : 1"
+        :slides-per-view="hasMultiple ? 1.4 : 1"
         :space-between="hasMultiple ? 1 : 0"
         :breakpoints="sliderBreakpoints"
         :centered-slides="false"
@@ -245,12 +245,12 @@ const hasMultiple = computed(() => props.items.length > 1);
 const sliderBreakpoints = computed(() => ({
   // Mobile: smaller peek so the active slide stays comfortably readable.
   0: {
-    slidesPerView: hasMultiple.value ? 1.18 : 1,
+    slidesPerView: hasMultiple.value ? 1.25 : 1,
     spaceBetween: hasMultiple.value ? 2 : 0,
   },
   // Desktop: current slide + ~25% of the next slide.
   768: {
-    slidesPerView: hasMultiple.value ? 1.25 : 1,
+    slidesPerView: hasMultiple.value ? 1.4 : 1,
     spaceBetween: hasMultiple.value ? 2 : 0,
   },
 }));
