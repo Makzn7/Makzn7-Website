@@ -246,12 +246,12 @@ const sliderBreakpoints = computed(() => ({
   // Mobile: smaller peek so the active slide stays comfortably readable.
   0: {
     slidesPerView: hasMultiple.value ? 1.18 : 1,
-    spaceBetween: hasMultiple.value ? 10 : 0,
+    spaceBetween: hasMultiple.value ? 2 : 0,
   },
   // Desktop: current slide + ~25% of the next slide.
   768: {
     slidesPerView: hasMultiple.value ? 1.25 : 1,
-    spaceBetween: hasMultiple.value ? 16 : 0,
+    spaceBetween: hasMultiple.value ? 2 : 0,
   },
 }));
 
