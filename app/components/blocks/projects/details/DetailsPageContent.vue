@@ -66,7 +66,7 @@
               >
               <NuxtLinkLocale
                 :to="`/projects?type=${project.types?.[0]?.slug}`"
-                class="font-normal uppercase white-link-sm"
+                class="font-normal uppercase white-link-sm text-wrap text-center"
                 :style="`font-size: clamp(${Math.max(
                   14,
                   Math.round(props.typeSize * 0.35)
