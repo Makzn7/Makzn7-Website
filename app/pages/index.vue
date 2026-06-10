@@ -22,29 +22,59 @@ useSeo({
   description: () => t("seo.homeDescription"),
 });
 
+let splashTimer: ReturnType<typeof setTimeout> | null = null;
+let measureTimer: ReturnType<typeof setTimeout> | null = null;
+let headerLogo: HTMLElement | null = null;
+
+function applySplashTarget() {
+  const splashLogo = splashLogoRef.value;
+  if (!headerLogo || !splashLogo) return;
+  const tr = headerLogo.getBoundingClientRect();
+  const splashW = splashLogo.offsetWidth;
+  const dx = tr.left + tr.width / 2 - window.innerWidth / 2;
+  const dy = tr.top + tr.height / 2 - window.innerHeight / 2;
+  const sc = tr.width / splashW;
+  splashLogo.style.setProperty("--dx", `${dx}px`);
+  splashLogo.style.setProperty("--dy", `${dy}px`);
+  splashLogo.style.setProperty("--sc", `${sc}`);
+}
+
 onMounted(async () => {
   await nextTick();
-  const targetLogo = document.getElementById("logo");
+  headerLogo = document.getElementById("logo");
   const splashLogo = splashLogoRef.value;
-  if (targetLogo && splashLogo) {
-    const tr = targetLogo.getBoundingClientRect();
+  if (headerLogo) {
+    applySplashTarget();
+    // نخفي شعار الصفحة حتى لا يظهر شعاران أثناء الانتقال
+    headerLogo.style.visibility = "hidden";
+  }
+
+  // إزاحة الزاوية العليا اليسرى — المحطة الأولى قبل موضع شعار الصفحة
+  if (splashLogo) {
+    const cornerScale = 0.5;
+    const cornerMargin = window.innerWidth < 640 ? 16 : 32;
     const splashW = splashLogo.offsetWidth;
-    const splashCx = window.innerWidth / 2;
-    const splashCy = window.innerHeight / 2;
-    const targetCx = tr.left + tr.width / 2;
-    const targetCy = tr.top + tr.height / 2;
-    const dx = targetCx - splashCx;
-    const dy = targetCy - splashCy;
-    const sc = tr.width / splashW;
-    splashLogo.style.setProperty("--dx", `${dx}px`);
-    splashLogo.style.setProperty("--dy", `${dy}px`);
-    splashLogo.style.setProperty("--sc", `${sc}`);
+    const splashH = splashLogo.offsetHeight || splashW * 0.35;
+    const cdx = -(window.innerWidth / 2 - (splashW * cornerScale) / 2 - cornerMargin);
+    const cdy = -(window.innerHeight / 2 - (splashH * cornerScale) / 2 - cornerMargin);
+    splashLogo.style.setProperty("--cdx", `${cdx}px`);
+    splashLogo.style.setProperty("--cdy", `${cdy}px`);
   }
 
   splashAnimating.value = true;
-  setTimeout(() => {
+  // إعادة قياس موضع شعار الصفحة قبل الخطوة الثانية مباشرة بعد استقرار التخطيط
+  measureTimer = setTimeout(applySplashTarget, 2600);
+  // عند وصول شعار التحميل لموضع شعار الصفحة: تسليم سلس في نفس الإطار
+  splashTimer = setTimeout(() => {
+    if (headerLogo) headerLogo.style.visibility = "";
     showSplash.value = false;
-  }, 3200);
+  }, 3600);
+});
+
+onBeforeUnmount(() => {
+  if (splashTimer) clearTimeout(splashTimer);
+  if (measureTimer) clearTimeout(measureTimer);
+  if (headerLogo) headerLogo.style.visibility = "";
 });
 </script>
 
@@ -57,6 +87,12 @@ onMounted(async () => {
       class="splash-screen"
       :class="{ 'splash-fade-out': splashAnimating }"
     >
+      <div class="splash-bg" aria-hidden="true" />
+      <div
+        class="splash-corner-glow"
+        :class="{ 'glow-animate': splashAnimating }"
+        aria-hidden="true"
+      />
       <img
         ref="splashLogoRef"
         src="/logos/svg/logo_black.svg"
@@ -90,6 +126,12 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* خلفية التحميل كطبقة مستقلة حتى تتلاشى بالتوازي مع حركة الشعار */
+.splash-bg {
+  position: absolute;
+  inset: 0;
   background-color: var(--color-bg);
 }
 
@@ -101,7 +143,9 @@ onMounted(async () => {
 
 /* ══ أنيميشن الشعار ══ */
 .splash-logo.splash-animate {
-  animation: splashLogoAnim 2.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  position: relative;
+  z-index: 1;
+  animation: splashLogoAnim 3.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 @keyframes splashLogoAnim {
@@ -110,26 +154,36 @@ onMounted(async () => {
     opacity: 0;
     transform: translate(0, 0) scale(0.5);
   }
-  20% {
+  16% {
     opacity: 1;
     transform: translate(0, 0) scale(1);
   }
   /* نبضة - تكبير */
-  30% {
+  24% {
     opacity: 1;
     transform: translate(0, 0) scale(1.1);
   }
   /* نبضة - رجوع */
-  40% {
+  32% {
     opacity: 1;
     transform: translate(0, 0) scale(1);
   }
   /* ثبات لحظي */
-  50% {
+  40% {
     opacity: 1;
     transform: translate(0, 0) scale(1);
   }
-  /* يتحرك ويصغر تدريجياً */
+  /* الخطوة الأولى: ينزلق إلى أقصى الزاوية العليا اليسرى */
+  68% {
+    opacity: 1;
+    transform: translate(var(--cdx, -40vw), var(--cdy, -40vh)) scale(0.5);
+  }
+  /* وقفة قصيرة عند الزاوية مع توهج الدخان الأخضر */
+  82% {
+    opacity: 1;
+    transform: translate(var(--cdx, -40vw), var(--cdy, -40vh)) scale(0.5);
+  }
+  /* الخطوة الثانية: انتقال خفيف من الزاوية إلى موضع شعار الصفحة */
   100% {
     opacity: 1;
     transform: translate(var(--dx, -200px), var(--dy, -150px))
@@ -137,20 +191,65 @@ onMounted(async () => {
   }
 }
 
-/* ══ اختفاء الخلفية ══ */
-.splash-screen.splash-fade-out {
-  animation: splashBgFade 3.2s ease forwards;
+/* ══ توهج/دخان أخضر من الزاوية العليا اليسرى ══ */
+.splash-corner-glow {
+  position: absolute;
+  top: -45vmax;
+  left: -45vmax;
+  width: 90vmax;
+  height: 90vmax;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.4);
+  background: radial-gradient(
+      circle at center,
+      rgba(84, 234, 98, 0.28) 0%,
+      rgba(84, 234, 98, 0.14) 25%,
+      rgba(84, 234, 98, 0.05) 45%,
+      transparent 65%
+    ),
+    radial-gradient(
+      circle at center,
+      rgba(84, 234, 98, 0.18) 0%,
+      transparent 35%
+    );
+  will-change: opacity, transform;
+}
+
+.splash-corner-glow.glow-animate {
+  animation: cornerGlowAnim 3.6s ease-in-out forwards;
+}
+
+@keyframes cornerGlowAnim {
+  0%,
+  64% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  /* توهج قصير وخافت عند وصول الشعار للزاوية */
+  78% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+}
+
+/* ══ اختفاء الخلفية بالتوازي مع الخطوة الأولى نحو الزاوية ══ */
+.splash-screen.splash-fade-out .splash-bg {
+  animation: splashBgFade 3.6s ease forwards;
 }
 
 @keyframes splashBgFade {
   0%,
-  85% {
+  40% {
     opacity: 1;
-    pointer-events: all;
   }
+  68%,
   100% {
     opacity: 0;
-    pointer-events: none;
   }
 }
 
@@ -162,8 +261,13 @@ onMounted(async () => {
     transform: none;
     animation: none;
   }
-  .splash-screen.splash-fade-out {
+  .splash-screen.splash-fade-out .splash-bg {
     animation: none;
+  }
+  .splash-corner-glow,
+  .splash-corner-glow.glow-animate {
+    animation: none;
+    opacity: 0;
   }
 }
 </style>
