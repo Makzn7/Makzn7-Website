@@ -5,7 +5,7 @@
       "name": "makzn7-dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "autoPort": true
     }
   ]
 }

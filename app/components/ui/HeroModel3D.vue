@@ -201,6 +201,9 @@ async function init() {
   const { GLTFLoader } = await import(
     "three/examples/jsm/loaders/GLTFLoader.js"
   );
+  const { RectAreaLightUniformsLib } = await import(
+    "three/examples/jsm/lights/RectAreaLightUniformsLib.js"
+  );
 
   /* Guard: component may have unmounted during async imports */
   if (!isMounted) return;
@@ -229,41 +232,55 @@ async function init() {
   camera.position.z = 4;
 
   /* ── Lights ──
-     Pure EXTERNAL directional lighting aimed at the model — the model's own
-     material/colour is left exactly as authored (no env map, no material edits).
-     Strong, BROAD white light: a pair from the RIGHT (high + low) and a pair
-     from ABOVE (right + left) so the whole WIDTH of the element is lit evenly,
-     plus a soft GREY fill from below. */
-  const ambient = new THREE.AmbientLight("#ffffff", 0.9);
+     Same concept as the snow-white area-light glow from the TOP-RIGHT, but the
+     light source is now an ARC: several small soft panels fanned around the
+     top-right corner (from "above" sweeping to "right"), aimed at the centre.
+     Their overlapping pools bend the sheen into a CURVED gradient — brightest
+     at the corner, tapering smoothly along the arc and across the element —
+     instead of one straight rectangular bar. Material untouched. */
+  RectAreaLightUniformsLib.init();
+
+  /* Cool snowy white — softer than pure #ffffff. */
+  const SNOW = "#eef5fb";
+
+  const ambient = new THREE.AmbientLight("#ffffff", 0.75);
   scene.add(ambient);
 
-  /* Angle the whole rig toward the TOP-RIGHT — strong white light coming from
-     the right side and from above. */
-  const rightUpper = new THREE.DirectionalLight("#ffffff", 6.5);
-  rightUpper.position.set(9, 6, 5);
-  scene.add(rightUpper);
+  /* The model is normalised to span ~modelScale world units. */
+  const span = props.modelScale * 2.4;
+  const arcRadius = props.modelScale * 1.1;
+  const panel = span * 0.5;
 
-  const rightLower = new THREE.DirectionalLight("#ffffff", 5.5);
-  rightLower.position.set(9, 1, 5);
-  scene.add(rightLower);
+  /* Quarter-arc fan: 90° = straight above … 0° = screen right. Intensity
+     peaks at the 45° corner and eases toward both ends = curved gradient. */
+  const arcLights: Array<{ angle: number; intensity: number }> = [
+    { angle: 90, intensity: 3.5 },
+    { angle: 67.5, intensity: 5.5 },
+    { angle: 45, intensity: 7 },
+    { angle: 22.5, intensity: 5.5 },
+    { angle: 0, intensity: 3.5 },
+  ];
 
-  /* TOP — biased to the right so the light reads as top-right. */
-  const topRight = new THREE.DirectionalLight("#ffffff", 6.0);
-  topRight.position.set(5, 10, 5);
-  scene.add(topRight);
-
-  const topLeft = new THREE.DirectionalLight("#ffffff", 4.0);
-  topLeft.position.set(-1, 9, 5);
-  scene.add(topLeft);
+  for (const { angle, intensity } of arcLights) {
+    const rad = (angle * Math.PI) / 180;
+    const light = new THREE.RectAreaLight(SNOW, intensity, panel, panel);
+    light.position.set(
+      Math.cos(rad) * arcRadius,
+      Math.sin(rad) * arcRadius,
+      0.7
+    );
+    light.lookAt(0, 0, 0);
+    scene.add(light);
+  }
 
   /* BOTTOM fill — soft GREY from below, gentle so it only lifts the underside. */
   const bottomFill = new THREE.DirectionalLight("#9a9a9a", 0.6);
   bottomFill.position.set(0, -8, 3);
   scene.add(bottomFill);
 
-  /* Dev helpers (disabled): visualise the light directions while tuning.
-     scene.add(new THREE.DirectionalLightHelper(rightLight, 1));
-     scene.add(new THREE.DirectionalLightHelper(topLight, 1)); */
+  /* Dev helper (disabled): visualise the arc while tuning.
+     const { RectAreaLightHelper } = await import("three/examples/jsm/helpers/RectAreaLightHelper.js");
+     scene.traverse((o: any) => o.isRectAreaLight && scene.add(new RectAreaLightHelper(o))); */
 
   /* ── Rotation group — drag 360, tilt group — mouse hover ── */
   rotationGroup = new THREE.Group();
