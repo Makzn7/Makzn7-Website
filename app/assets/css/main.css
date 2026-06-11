@@ -104,14 +104,27 @@ html.font-ar {
   font-family: "Jali Arabic", system-ui, sans-serif;
 }
 
+/* وضع Locomotive القديم — لا يُطبَّق إلا إذا أُعيد تفعيل smooth scroll
+   (الكلاس تُضاف من Locomotive فقط). في الوضع native الحالي لا تظهر. */
 html.has-scroll-smooth {
   overflow: hidden;
 }
 
+/* التمرير native على مستوى الصفحة: window/body هو المتمرّر.
+   scroll-behavior: smooth يجعل قفزات الروابط/الأنكر سلسة ومريحة. */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 [data-scroll-container] {
   min-height: 100vh;
-  /* clip cuts horizontal overflow without creating a scroll-container,
-     so position:sticky on child sections keeps working correctly */
+  /* clip cuts horizontal overflow without creating a scroll-container */
   overflow-x: clip;
 }
 

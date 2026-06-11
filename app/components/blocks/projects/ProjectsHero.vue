@@ -22,7 +22,7 @@
       <!-- center-box: الـ 3D perspective container -->
       <div ref="centerBoxRef" class="center-box" @wheel="onWheel">
         <!-- ══ السقف (top-part) — rotateX(-90deg) ══ -->
-        <div class="top-part px-[2.5rem] lg:px-[5.5rem]">
+        <div class="top-part px-[2rem] lg:px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
             <PageContent
               :projects="projects"
@@ -74,7 +74,7 @@
 
         <!-- ══ الأرض (bottom-part) — rotateX(+90deg) ══ -->
         <div class="bottom-part">
-          <div ref="floorRef" class="sync-content px-[2.5rem] lg:px-[5.5rem]">
+          <div ref="floorRef" class="sync-content px-[2rem] lg:px-[5.5rem]">
             <PageContent
               :margin-top="5"
               :mobile-margin-top="4"
@@ -255,7 +255,10 @@ const toggleFilter = (filter: FilterItem) => {
 };
 
 const updateUrl = async () => {
-  const query: Record<string, string> = { ...route.query } as Record<string, string>;
+  const query: Record<string, string> = { ...route.query } as Record<
+    string,
+    string
+  >;
   // Reset filter keys then re-apply current selection — preserves any
   // non-filter query params (e.g. utm_*).
   for (const key of FILTER_QUERY_KEYS) delete query[key];
@@ -273,9 +276,7 @@ function applyFiltersFromQuery() {
   const sameSet =
     sameLength &&
     next.every((f) =>
-      activeFilters.value.some(
-        (a) => a.type === f.type && a.slug === f.slug
-      )
+      activeFilters.value.some((a) => a.type === f.type && a.slug === f.slug)
     );
   if (sameSet) return;
   syncingFromUrl = true;

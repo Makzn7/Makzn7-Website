@@ -15,7 +15,7 @@ useSeo({
 </script>
 <template>
   <div ref="scrollContainer" class="bg-brand-bg" data-scroll-container>
-    <section class="sticky top-0 z-[1]" id="hero-section">
+    <section class="relative z-[1]" id="hero-section">
       <ContactHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"

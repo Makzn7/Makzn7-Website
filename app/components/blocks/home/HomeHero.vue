@@ -9,7 +9,7 @@
       <!-- center-box: الـ 3D perspective container -->
       <div ref="centerBoxRef" class="center-box" @wheel="onWheel">
         <!-- ══ السقف (top-part) — rotateX(-90deg) ══ -->
-        <div class="top-part px-[2.5rem] lg:px-[4.5rem]">
+        <div class="top-part px-[2rem] lg:px-[4.5rem]">
           <div ref="ceilRef" class="sync-content">
             <PageContent
               :projects="featuredProjects"
@@ -53,7 +53,7 @@
 
         <!-- ══ الأرض (bottom-part) — rotateX(+90deg) ══ -->
         <div class="bottom-part">
-          <div ref="floorRef" class="sync-content px-[2.5rem] lg:px-[4.5rem]">
+          <div ref="floorRef" class="sync-content px-[2rem] lg:px-[4.5rem]">
             <PageContent
               :projects="featuredProjects"
               :with-animations="false"

@@ -27,7 +27,7 @@ usePageSeo({
     "
     data-scroll-container
   >
-    <section class="sticky top-0 z-[1]" id="hero-section">
+    <section class="relative z-[1]" id="hero-section">
       <ProphouseHero
         @lock-page-scroll="lockPageScroll"
         @unlock-page-scroll="unlockPageScroll"

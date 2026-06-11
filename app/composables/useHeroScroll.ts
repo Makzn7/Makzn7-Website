@@ -1,5 +1,24 @@
 import { onMounted, onUnmounted, nextTick, type Ref } from "vue";
 
+/*
+  ════════════════════════════════════════════════════════════════
+  NATIVE_PAGE_SCROLL = false
+  ════════════════════════════════════════════════════════════════
+  السلوك المعتمد (العلم = false): يتمرّر محتوى الهيرو (PageContent)
+  *داخل* الإطار أولًا حتى ينتهي، ثم يُسلّم التمرير للصفحة فتُكمل بقية
+  المحتوى تمريرًا native. يتحقق ذلك باختطاف wheel/touch/keys ومنع تمرير
+  الصفحة بـ preventDefault طالما هناك محتوى داخلي لم يُتمرّر؛ وعند بلوغ
+  حافة التمرير الداخلي يتوقف الاختطاف فتتمرّر الصفحة طبيعيًا.
+
+  التمرير العام native (Locomotive معطّل) والهيرو غير sticky، فبعد
+  انتهاء التمرير الداخلي يصعد الهيرو ويظهر باقي المحتوى أسفله طبيعيًا.
+
+  - false → تمرير داخلي للهيرو أولًا ثم تمرير الصفحة (الحالي).
+  - true  → إطار ثابت بلا تمرير داخلي (الصفحة تتمرّر فوقه فقط).
+  ════════════════════════════════════════════════════════════════
+*/
+const NATIVE_PAGE_SCROLL = false;
+
 interface HeroScrollRefs {
   centerBoxRef: Ref<HTMLElement | null>;
   wallRef: Ref<HTMLElement | null>;
@@ -114,6 +133,8 @@ export function useHeroScroll(
   }
 
   function syncPageScrollLock(shouldLock: boolean) {
+    // الوضع native: لا نقفل تمرير الصفحة إطلاقًا.
+    if (NATIVE_PAGE_SCROLL) return;
     if (pageScrollLocked === shouldLock) return;
     pageScrollLocked = shouldLock;
     emit(shouldLock ? "lock-page-scroll" : "unlock-page-scroll");
@@ -162,6 +183,8 @@ export function useHeroScroll(
   }
 
   function onWheel(e: WheelEvent) {
+    // الوضع native: لا نختطف العجلة، نترك الصفحة تتمرّر طبيعيًا.
+    if (NATIVE_PAGE_SCROLL) return;
     if (window.scrollY > 1) {
       syncPageScrollLock(false);
       return;
@@ -382,11 +405,16 @@ export function useHeroScroll(
     const wall = refs.wallRef.value;
     if (!box || !wall) return;
 
-    box.addEventListener("touchstart", onTouchStart, { passive: true });
-    box.addEventListener("touchmove", onTouchMove, { passive: false });
-    box.addEventListener("touchend", onTouchEnd, { passive: true });
-    box.addEventListener("touchcancel", onTouchEnd, { passive: true });
-    window.addEventListener("keydown", onKey);
+    // الوضع native: لا نربط مستمعات wheel/touch/keys المُختطِفة للتمرير.
+    // نكتفي بالقياس وتطبيق التحويلات الثابتة (resize/observers) حتى يبقى
+    // شكل الإطار ثلاثي الأبعاد صحيحًا، والصفحة تتمرّر طبيعيًا فوقه.
+    if (!NATIVE_PAGE_SCROLL) {
+      box.addEventListener("touchstart", onTouchStart, { passive: true });
+      box.addEventListener("touchmove", onTouchMove, { passive: false });
+      box.addEventListener("touchend", onTouchEnd, { passive: true });
+      box.addEventListener("touchcancel", onTouchEnd, { passive: true });
+      window.addEventListener("keydown", onKey);
+    }
     window.addEventListener("resize", scheduleMeasureScrollLimits, {
       passive: true,
     });

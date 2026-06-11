@@ -96,7 +96,7 @@
           :title="$t('prophouse.website')"
           :marginS="marginS"
           :titleS="titleS"
-          class="border-white-op50"
+          class="border-t-[0.3px] border-white-op50"
         />
         <div
           class="section-body border-t-[0.3px] lg:border-s-[0.3px] border-white-op50 border-brand-text pt-6 pb-12 lg:pt-12 lg:pb-16"

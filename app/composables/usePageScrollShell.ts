@@ -1,9 +1,25 @@
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { onMounted, onBeforeUnmount } from "vue";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type {
   LocomotiveScrollInstance,
   LocomotiveScrollConstructor,
 } from "~/types/scroll";
+
+/*
+  ════════════════════════════════════════════════════════════════
+  SCROLL MODE
+  ════════════════════════════════════════════════════════════════
+  `USE_SMOOTH_SCROLL = false` → التمرير native على مستوى window/body.
+  Locomotive لا يُنشأ إطلاقًا، فلا تُضاف الكلاس `has-scroll-smooth`
+  على <html> (التي تضع overflow:hidden)، وبالتالي يعود التمرير
+  الطبيعي للصفحة بالكامل. ScrollTrigger يعمل تلقائيًا على scroll
+  الـ window في هذا الوضع.
+
+  لإرجاع التجربة القديمة (smooth scroll عبر Locomotive) فقط بدّل العلم
+  إلى `true` — لا حاجة لأي تغيير آخر. المكتبة وكل الكود الأصلي محفوظان.
+  ════════════════════════════════════════════════════════════════
+*/
+const USE_SMOOTH_SCROLL = false;
 
 interface ScrollShellOptions {
   lerp?: number;
@@ -19,6 +35,13 @@ export function usePageScrollShell(options: ScrollShellOptions = {}) {
   let onRefresh: (() => void) | null = null;
 
   onMounted(async () => {
+    if (!USE_SMOOTH_SCROLL) {
+      // الوضع native: التمرير على window/body مباشرة. نُحدّث ScrollTrigger
+      // بعد أول رسم حتى يقيس ارتفاع المحتوى الحقيقي.
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+      return;
+    }
+
     const { $LocomotiveScroll } = useNuxtApp();
 
     if (scrollContainer.value) {
@@ -54,14 +77,19 @@ export function usePageScrollShell(options: ScrollShellOptions = {}) {
     scroll = null;
   });
 
+  /*
+    قفل/فتح تمرير الصفحة.
+    - وضع Locomotive: stop/start على الـ instance.
+    - الوضع native: لا نقفل body. useHeroScroll يمنع تمرير الصفحة عبر
+      preventDefault أثناء التمرير الداخلي للهيرو، فقفل body هنا يسبب
+      وميض/إزاحة الـ scrollbar بلا فائدة، لذا نتركه no-op.
+  */
   function lockPageScroll() {
-    if (!scroll) return;
-    scroll.stop();
+    if (USE_SMOOTH_SCROLL) scroll?.stop();
   }
 
   function unlockPageScroll() {
-    if (!scroll) return;
-    scroll.start();
+    if (USE_SMOOTH_SCROLL) scroll?.start();
   }
 
   return {

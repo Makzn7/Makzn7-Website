@@ -26,7 +26,7 @@
       <!-- center-box: الـ 3D perspective container -->
       <div ref="centerBoxRef" class="center-box" @wheel="onWheel">
         <!-- ══ السقف (top-part) — rotateX(-90deg) ══ -->
-        <div class="top-part px-[2.5rem] lg:px-[5.5rem]">
+        <div class="top-part px-[2rem] lg:px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
             <PageContent
               v-if="data"
@@ -64,11 +64,11 @@
 
         <!-- ══ الأرض (bottom-part) — rotateX(+90deg) ══ -->
         <div class="bottom-part">
-          <div ref="floorRef" class="sync-content px-[2.5rem] lg:px-[5.5rem]">
+          <div ref="floorRef" class="sync-content px-[2rem] lg:px-[5.5rem]">
             <PageContent
               v-if="data"
               :margin-top="5"
-              :mobile-margin-top="3"
+              :mobile-margin-top="2"
               :px="0"
               :margin-s="115"
               :image-w="70"
