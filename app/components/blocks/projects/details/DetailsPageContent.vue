@@ -285,7 +285,7 @@ function getDepartmentIcon(dept: Department): string {
 .slider-section {
   width: 100%;
   aspect-ratio: 16 / 9;
-  max-height: 70vh;
+  max-height: 72vh;
   overflow: hidden;
 }
 

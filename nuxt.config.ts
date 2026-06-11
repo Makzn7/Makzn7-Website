@@ -7,6 +7,9 @@ export default defineNuxtConfig({
 
   colorMode: {
     classSuffix: "",
+    // Site-wide default is light. The home page opens in dark for first-time
+    // visitors via the theme-route-default client plugin; once a visitor
+    // toggles the theme their choice is persisted and wins everywhere.
     preference: "light",
     fallback: "light",
     storageKey: "makzn7-color-mode",
@@ -55,6 +58,16 @@ export default defineNuxtConfig({
     pageTransition: false,
     layoutTransition: false,
     head: {
+      script: [
+        {
+          // Pre-paint theme: home opens dark for first-time visitors, every
+          // other page light. Skipped once the visitor has explicitly toggled
+          // the theme (flag set in ContactSection) so their stored choice wins.
+          innerHTML:
+            "(function(){try{var k='makzn7-color-mode';if(localStorage.getItem('makzn7-theme-user-set')==='1')return;var p=location.pathname,d=(p==='/'||p==='/ar'||p==='/ar/')?'dark':'light';localStorage.setItem(k,d);var e=document.documentElement;e.classList.remove('light','dark');e.classList.add(d);}catch(_){}})();",
+          tagPosition: "head",
+        },
+      ],
       link: [
         { rel: "icon", type: "image/x-icon", href: "/favicon/favicon.ico" },
         {

@@ -29,7 +29,7 @@
         <div class="top-part px-[2.5rem] lg:px-[5.5rem]">
           <div ref="ceilRef" class="sync-content">
             <DetailsPageContent
-              :margin-top="10"
+              :margin-top="9"
               :marginTopMobile="6"
               :project="project"
             />
@@ -40,7 +40,7 @@
         <div class="center-part border-white-op50">
           <div ref="wallRef" class="sync-content">
             <DetailsPageContent
-              :margin-top="7"
+              :margin-top="6"
               :marginTopMobile="4"
               :project="project"
             />
@@ -55,8 +55,8 @@
         <div class="bottom-part">
           <div ref="floorRef" class="sync-content px-[2.5rem] lg:px-[5.5rem]">
             <DetailsPageContent
-              :margin-top="12"
-              :marginTopMobile="7"
+              :margin-top="11"
+              :marginTopMobile="8"
               :project="project"
             />
           </div>

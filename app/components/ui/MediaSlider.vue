@@ -245,12 +245,12 @@ const hasMultiple = computed(() => props.items.length > 1);
 const sliderBreakpoints = computed(() => ({
   // Mobile: smaller peek so the active slide stays comfortably readable.
   0: {
-    slidesPerView: hasMultiple.value ? 1.25 : 1,
+    slidesPerView: hasMultiple.value ? 1.18 : 1,
     spaceBetween: hasMultiple.value ? 2 : 0,
   },
   // Desktop: current slide + ~25% of the next slide.
   768: {
-    slidesPerView: hasMultiple.value ? 1.4 : 1,
+    slidesPerView: hasMultiple.value ? 1.25 : 1,
     spaceBetween: hasMultiple.value ? 2 : 0,
   },
 }));
@@ -451,7 +451,7 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center center;
   pointer-events: none;
   -webkit-user-drag: none;
 }

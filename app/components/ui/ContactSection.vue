@@ -361,6 +361,10 @@ function scrollToTop() {
 
 function toggleTheme() {
   colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
+  // Mark the theme as an explicit user choice so the per-route default
+  // (dark home / light elsewhere) stops overriding it and this choice
+  // persists across every page from now on.
+  localStorage.setItem("makzn7-theme-user-set", "1");
   scrollToTop();
 }
 
