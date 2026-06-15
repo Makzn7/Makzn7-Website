@@ -67,11 +67,11 @@ onMounted(async () => {
     const cornerMarginY = railToPx("--railH", 44) + cornerExtra;
     const splashW = splashLogo.offsetWidth;
     const splashH = splashLogo.offsetHeight || splashW * 0.35;
-    const cdx = -(
-      window.innerWidth / 2 -
-      (splashW * cornerScale) / 2 -
-      cornerMarginX
-    );
+    // في RTL تُعكس الوجهة الأفقية فقط: من المركز إلى الزاوية العليا اليمنى
+    const isRtl = document.documentElement.dir === "rtl";
+    const cdx =
+      (isRtl ? 1 : -1) *
+      (window.innerWidth / 2 - (splashW * cornerScale) / 2 - cornerMarginX);
     const cdy = -(
       window.innerHeight / 2 -
       (splashH * cornerScale) / 2 -
@@ -133,7 +133,7 @@ onBeforeUnmount(() => {
       </section>
       <section class="relative z-[2]" id="content-section" data-scroll-section>
         <HomeAbout :aboutData="aboutData" />
-        <ContactSection border-classes="border-primary" />
+        <ContactSection border-classes="border-primary dark:border-brand-bg" />
       </section>
     </div>
   </div>
@@ -235,6 +235,12 @@ onBeforeUnmount(() => {
       transparent 35%
     );
   will-change: opacity, transform;
+}
+
+/* في RTL ينطلق التوهج/الدخان الأخضر من الزاوية العليا اليمنى بدل اليسرى */
+:global(html[dir="rtl"] .splash-corner-glow) {
+  left: auto;
+  right: -45vmax;
 }
 
 .splash-corner-glow.glow-animate {
