@@ -36,13 +36,14 @@
             "
           ></div>
         </div>
-        <div class="relative">
+        <div class="relative shrink-0">
           <img
             v-if="award.image_3d"
             :src="award.image_3d"
             :alt="award.title_en"
             loading="lazy"
-            class="w-[4.5rem] lg:w-28 h-auto"
+            class="object-contain"
+            :style="`width: ${imgBox}; height: ${imgBox};`"
           />
         </div>
       </div>
@@ -63,9 +64,18 @@ const props = defineProps({
   yearS: { type: Number, default: 80 },
   nameS: { type: Number, default: 50 },
   py: { type: Number, default: 4 },
+  // المقاس الموحد لصورة الجائزة (image_3d): صندوق مربّع ثابت لكل الجوائز
+  imgS: { type: Number, default: 200 },
   awards: {
     type: Array as () => Award[],
     default: () => [],
   },
+});
+
+// صندوق مربّع موحّد responsive لكل صور الجوائز حتى لا يتغيّر الحجم بين عنصر وآخر
+const imgBox = computed(() => {
+  const min = Math.max(48, Math.round(props.imgS * 0.7));
+  const vw = (props.imgS / 20).toFixed(1);
+  return `clamp(${min}px, ${vw}vw, ${props.imgS}px)`;
 });
 </script>
