@@ -94,11 +94,18 @@ export default defineNuxtConfig({
           href: "/fonts/en/FunnelDisplay-Regular.ttf",
           crossorigin: "",
         },
+        // {
+        //   rel: "preload",
+        //   as: "font",
+        //   type: "font/otf",
+        //   href: "/fonts/ar/Jali-Arabic-Regular.ttf",
+        //   crossorigin: "",
+        // },
         {
           rel: "preload",
           as: "font",
           type: "font/otf",
-          href: "/fonts/ar/Jali Arabic Regular.ttf",
+          href: "/fonts/ar/brando-arabic-regular.otf",
           crossorigin: "",
         },
         {

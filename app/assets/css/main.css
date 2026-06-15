@@ -101,7 +101,7 @@ html.font-en {
   font-family: "Funnel Display", sans-serif;
 }
 html.font-ar {
-  font-family: "Jali Arabic", system-ui, sans-serif;
+  font-family: "Brando Arabic", system-ui, sans-serif;
 }
 
 /* وضع Locomotive القديم — لا يُطبَّق إلا إذا أُعيد تفعيل smooth scroll
@@ -132,7 +132,7 @@ html {
   font-family: "DotGothic16", system-ui, sans-serif;
 }
 .font-ar {
-  font-family: "Jali Arabic", system-ui, sans-serif;
+  font-family: "Brando Arabic", system-ui, sans-serif;
 }
 .font-en {
   /* font-family: "Roboto", system-ui, sans-serif; */

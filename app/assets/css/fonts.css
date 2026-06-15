@@ -49,7 +49,7 @@
   font-display: swap;
 }
 /* Jali Arabic */
-@font-face {
+/* @font-face {
   font-family: "Jali Arabic";
   src: url("/fonts/ar/Jali-Arabic-ExtraLight.ttf") format("truetype");
   font-weight: 200;
@@ -94,6 +94,63 @@
 @font-face {
   font-family: "Jali Arabic";
   src: url("/fonts/ar/Jali-Arabic-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+} */
+/* brando-arabic */
+@font-face {
+  font-family: "Brando Arabic";
+  src: url("/fonts/ar/brando-arabic-hairline.otf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Brando Arabic";
+  src: url("/fonts/ar/brando-arabic-extralight.otf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Brando Arabic";
+  src: url("/fonts/ar/brando-arabic-light.otf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Brando Arabic";
+  src: url("/fonts/ar/brando-arabic-regular.otf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Brando Arabic";
+  src: url("/fonts/ar/brando-arabic-text.otf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Brando Arabic";
+  src: url("/fonts/ar/brando-arabic-semibold.otf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Brando Arabic";
+  src: url("/fonts/ar/brando-arabic-bold.otf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Brando Arabic";
+  src: url("/fonts/ar/brando-arabic-black.otf") format("truetype");
   font-weight: 800;
   font-style: normal;
   font-display: swap;
