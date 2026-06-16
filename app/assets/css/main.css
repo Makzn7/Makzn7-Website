@@ -176,8 +176,6 @@ html {
   transform-origin: center center;
   white-space: nowrap;
   text-wrap: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
 }
 .nav-hover:hover {
   transform: scale(1.15);
