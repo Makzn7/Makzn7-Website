@@ -13,11 +13,11 @@
         <div class="flex justify-between items-center">
           <!-- Title -->
           <h2
-            class="font-light leading-none fade-in tracking-[-2.06px] text-nowrap"
+            class="leading-none fade-in tracking-[-2.06px] text-nowrap"
             :style="`animation-delay: 0s; font-size: clamp(${Math.max(
-              16,
-              Math.round(103 * 0.35)
-            )}px, ${(103 / 20).toFixed(1)}vw, ${103}px);`"
+              24,
+              Math.round(57 * 0.35)
+            )}px, ${(57 / 20).toFixed(1)}vw, ${57}px);`"
           >
             {{ $t("home.contactTitle") }}
           </h2>
@@ -30,7 +30,7 @@
             )}px, ${(18 / 20).toFixed(1)}vw, ${18}px);`"
           >
             <button
-              class="flex justify-start items-start gap-2 min-w-[20px]"
+              class="flex justify-start items-start gap-1 min-w-[20px]"
               id="toggle-lang"
               @click="toggleLocale"
               :class="locale === 'ar' ? 'font-en' : 'font-ar'"
@@ -160,7 +160,7 @@
             <!-- Address -->
             <div>
               <p
-                class="text-white font-extralight"
+                class="text-white ltr:font-extralight rtl:font-light"
                 :style="`font-size: clamp(${Math.max(
                   14,
                   Math.round(37 * 0.35)
@@ -177,7 +177,7 @@
               <div>
                 <NuxtLinkLocale
                   to="/privacy-policy"
-                  class="white-link-sm uppercase text-white font-extralight"
+                  class="white-link-sm uppercase text-white ltr:font-extralight rtl:font-light"
                   :style="`font-size: clamp(${Math.max(
                     14,
                     Math.round(37 * 0.35)
@@ -188,7 +188,7 @@
               <!-- Year -->
               <div>
                 <p
-                  class="text-white font-extralight leading-[1]"
+                  class="text-white ltr:font-extralight rtl:font-light leading-[1]"
                   :style="`font-size: clamp(${Math.max(
                     14,
                     Math.round(37 * 0.35)
@@ -234,7 +234,7 @@
                 </div>
               </div>
               <!-- Address -->
-              <div class="space-y-1">
+              <div class="space-y-1 ltr:font-light rtl:font-normal">
                 <p class="text-white">
                   {{
                     locale === "ar"
@@ -247,11 +247,11 @@
             <!-- Years -->
             <div class="col-span-2 flex flex-col justify-end items-end gap-2">
               <p
-                class="text-white font-light leading-[1.2] w-full"
+                class="text-white ltr:font-light rtl:font-normal leading-[1.2] w-full"
                 :style="`font-size: clamp(${Math.max(
                   14,
-                  Math.round(49 * 0.35)
-                )}px, ${(49 / 20).toFixed(1)}vw, ${49}px);`"
+                  Math.round(37 * 0.35)
+                )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
               >
                 {{ new Date().getFullYear() }}
               </p>
@@ -260,8 +260,8 @@
                 class="white-link uppercase text-white leading-[1.2] w-full"
                 :style="`font-size: clamp(${Math.max(
                   14,
-                  Math.round(42 * 0.35)
-                )}px, ${(42 / 20).toFixed(1)}vw, ${42}px);`"
+                  Math.round(37 * 0.35)
+                )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
                 >{{ $t("buttons.privacyPolicy") }}</NuxtLinkLocale
               >
             </div>

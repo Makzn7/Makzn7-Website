@@ -100,7 +100,7 @@
             <!-- Info -->
             <div class="flex lg:flex-col justify-between gap-4 lg:gap-8">
               <h3
-                class="font-normal lg:font-bold rtl:font-light tracking-[0px] mb-4 lg:max-w-96"
+                class="font-normal lg:ltr:font-bold tracking-[0px] mb-4 lg:max-w-96"
                 :style="`font-size: clamp(${Math.max(
                   14,
                   Math.round(35 * 0.35)
@@ -155,7 +155,7 @@
             <!-- Image & Button -->
             <div class="flex flex-col">
               <img
-                src="/images/pages/contact/map2.jpg"
+                src="/images/pages/contact/map3.png"
                 alt="Location Image"
                 class="w-full h-auto object-cover rounded-sm mb-6 lg:mb-0 mt-4 lg:mt-0"
               />
