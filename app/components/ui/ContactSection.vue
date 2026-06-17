@@ -89,7 +89,8 @@
                       14,
                       Math.round(37 * 0.35)
                     )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
-                    dir="ltr"
+                    dir="auto"
+                    data-keep-digits
                   >
                     ({{ settings?.phone }})
                   </a>
@@ -227,7 +228,8 @@
                   <a
                     :href="`tel:${settings?.phone}`"
                     class="white-link-sm font-en rtl:text-right text-nowrap"
-                    dir="ltr"
+                    dir="auto"
+                    data-keep-digits
                   >
                     ({{ settings?.phone }})
                   </a>

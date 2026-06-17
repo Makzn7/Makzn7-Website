@@ -128,7 +128,8 @@
                 <a
                   :href="`tel:${settings?.phone}`"
                   class="white-link-sm font-en rtl:text-right"
-                  dir="ltr"
+                  dir="auto"
+                  data-keep-digits
                 >
                   ({{ settings?.phone }})
                 </a>
