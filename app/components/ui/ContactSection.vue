@@ -40,7 +40,7 @@
                 class="w-[20px] lg:w-[30px]"
               />
               <span
-                class="text-[14px] sm:text-[16px] md:text-[20px] lg:text-[24px] ltr:leading-[1] rtl:leading-[1.2] lg:ltr:leading-[0.7]"
+                class="text-[14px] sm:text-[16px] md:text-[20px] lg:text-[24px] ltr:leading-[1.2] rtl:leading-[1.2] ltr:lg:leading-[1]"
                 >{{ $t("buttons.lang") }}</span
               >
             </button>
