@@ -133,7 +133,10 @@ onBeforeUnmount(() => {
       </section>
       <section class="relative z-[2]" id="content-section" data-scroll-section>
         <HomeAbout :aboutData="aboutData" />
-        <ContactSection border-classes="border-primary dark:border-brand-bg" />
+        <ContactSection
+          border-classes="border-primary dark:border-brand-bg"
+          :showTheme="true"
+        />
       </section>
     </div>
   </div>

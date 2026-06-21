@@ -35,7 +35,7 @@ usePageSeo({
       />
     </section>
     <section class="relative z-[2]" id="content-section" data-scroll-section>
-      <ContactSection borderClasses="border-white-op50" />
+      <ContactSection borderClasses="border-white-op50" :showTheme="true" />
     </section>
   </div>
 </template>

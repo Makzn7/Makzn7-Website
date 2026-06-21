@@ -347,7 +347,7 @@ const { data: settings, pending } = useSettings();
 
 const props = defineProps({
   bgColor: { type: String, default: "#000000" },
-  showTheme: { type: Boolean, default: true },
+  showTheme: { type: Boolean, default: false },
   borderClasses: { type: String, default: "border-white" },
 });
 

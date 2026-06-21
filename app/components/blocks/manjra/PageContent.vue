@@ -25,12 +25,12 @@
           <img
             src="/logos/departments/Manjra-Org.svg"
             alt="Manjra"
-            class="block dark:hidden w-[50px] lg:w-[100px]"
+            class="block dark:hidden w-[70px] lg:w-[120px]"
           />
           <img
             src="/logos/departments/Manjra_Dark.svg"
             alt="Manjra"
-            class="hidden dark:block w-[50px] lg:w-[100px]"
+            class="hidden dark:block w-[70px] lg:w-[120px]"
           />
         </div>
         <div
@@ -47,12 +47,12 @@
           <img
             src="/logos/departments/Manjra-Org.svg"
             alt="Manjra"
-            class="block dark:hidden w-[50px] lg:w-[100px]"
+            class="block dark:hidden w-[70px] lg:w-[120px]"
           />
           <img
             src="/logos/departments/Manjra_Dark.svg"
             alt="Manjra"
-            class="hidden dark:block w-[50px] lg:w-[100px]"
+            class="hidden dark:block w-[70px] lg:w-[120px]"
           />
         </div>
       </div>

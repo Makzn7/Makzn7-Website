@@ -152,7 +152,7 @@ const props = withDefaults(
     showHover: false,
     marginTop: 4,
     px: 1,
-    descSize: 32,
+    descSize: 28,
     projectPX: 4,
     projectSize: 120,
     showLogo: true,
