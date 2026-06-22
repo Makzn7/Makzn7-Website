@@ -25,12 +25,12 @@
           <img
             src="/logos/departments/Manjra-Org.svg"
             alt="Manjra"
-            class="block dark:hidden w-[70px] lg:w-[120px]"
+            class="block dark:hidden w-[100px] lg:w-[150px]"
           />
           <img
             src="/logos/departments/Manjra_Dark.svg"
             alt="Manjra"
-            class="hidden dark:block w-[70px] lg:w-[120px]"
+            class="hidden dark:block w-[100px] lg:w-[150px]"
           />
         </div>
         <div
@@ -47,12 +47,12 @@
           <img
             src="/logos/departments/Manjra-Org.svg"
             alt="Manjra"
-            class="block dark:hidden w-[70px] lg:w-[120px]"
+            class="block dark:hidden w-[100px] lg:w-[160px]"
           />
           <img
             src="/logos/departments/Manjra_Dark.svg"
             alt="Manjra"
-            class="hidden dark:block w-[70px] lg:w-[120px]"
+            class="hidden dark:block w-[100px] lg:w-[160px]"
           />
         </div>
       </div>
@@ -115,7 +115,7 @@
             :imageSrc="pageDetails?.buttonImage"
             :title="$t('manjra.showProjects')"
             bgColor="#E1FE53"
-            textColor="#292B2C"
+            textColor="#000000"
           ></PageButton>
         </div>
       </section>

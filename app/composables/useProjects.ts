@@ -1,13 +1,35 @@
 import type { Project } from "~/types/project";
 
 export type ProjectFilters = {
-  department?: string;
-  type?: string;
-  scope?: string;
-  years?: string;
+  department?: string[];
+  type?: string[];
+  scope?: string[];
+  years?: string[];
   page?: number;
   perPage?: number;
 };
+
+/**
+ * Turn a ProjectFilters object into a query object the backend (Laravel)
+ * understands. Multi-value filters are sent as bracketed array keys
+ * (`department[]=a&department[]=b`) — ofetch/ufo serializes a plain array
+ * value as repeated keys *without* brackets (`department=a&department=b`),
+ * which PHP collapses to the last value only. Empty arrays are dropped so
+ * they don't appear in the URL or the cache key.
+ */
+export function buildProjectsQuery(
+  filters: ProjectFilters,
+): Record<string, string | number | string[]> {
+  const query: Record<string, string | number | string[]> = {};
+  for (const [key, value] of Object.entries(filters)) {
+    if (Array.isArray(value)) {
+      if (value.length) query[`${key}[]`] = value;
+    } else if (value !== undefined) {
+      query[key] = value;
+    }
+  }
+  return query;
+}
 
 export type ProjectsMeta = {
   page: number;
@@ -25,7 +47,10 @@ export function useProjects(filters?: MaybeRef<ProjectFilters>) {
   const { raw } = useApi();
   return useAsyncData<ProjectsResponse>(
     () => `projects-${JSON.stringify(unref(filters) ?? {})}`,
-    () => raw<ProjectsResponse>("/projects", { query: unref(filters) }),
+    () =>
+      raw<ProjectsResponse>("/projects", {
+        query: buildProjectsQuery(unref(filters) ?? {}),
+      }),
   );
 }
 
@@ -84,7 +109,10 @@ export function useInfiniteProjects(
     refresh,
   } = useAsyncData<ProjectsResponse>(
     asyncKey,
-    () => raw<ProjectsResponse>("/projects", { query: filtersWithPage.value }),
+    () =>
+      raw<ProjectsResponse>("/projects", {
+        query: buildProjectsQuery(filtersWithPage.value),
+      }),
     {
       // Reuse the SSR payload on first client render so the v-if branch
       // doesn't flip between SSR and CSR. Subsequent filter changes get a
@@ -160,11 +188,11 @@ export function useInfiniteProjects(
     loadingMore.value = true;
     try {
       const res = await raw<ProjectsResponse>("/projects", {
-        query: {
+        query: buildProjectsQuery({
           ...(unref(filters) ?? {}),
           page: targetPage,
           perPage,
-        },
+        }),
       });
       // Stale guard — filters changed mid-flight.
       if (myFetchId !== fetchId) return;

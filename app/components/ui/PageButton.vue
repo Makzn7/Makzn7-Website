@@ -8,8 +8,7 @@
       />
       <div
         class="absolute inset-0 hidden group-hover:flex items-center justify-center px-8 py-4"
-        style="mix-blend-mode: multiply"
-        :style="`background-color: ${bgColor};`"
+        :style="`background-color: ${bgColor}; opacity: 0.6;`"
       ></div>
       <div
         class="absolute inset-0 hidden group-hover:flex items-center justify-center px-8 py-4 bg-transparent"

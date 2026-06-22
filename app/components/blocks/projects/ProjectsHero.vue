@@ -180,21 +180,25 @@ function readFiltersFromQuery(q: Record<string, unknown>): FilterItem[] {
   const next: FilterItem[] = [];
   for (const key of FILTER_QUERY_KEYS) {
     const raw = q[key];
-    const slug = Array.isArray(raw) ? raw[0] : raw;
-    if (typeof slug !== "string" || !slug) continue;
-    // Prefer the full filter item from the loaded filters list so the
-    // chip renders with the correct localized name; fall back to a stub
-    // (still drives the API correctly via slug).
-    const hit = lookup.get(`${key}:${slug}`);
-    next.push(
-      hit ?? {
-        type: key,
-        slug,
-        id: 0,
-        name_ar: slug,
-        name_en: slug,
-      }
-    );
+    // Each filter type can now hold multiple values, so the query param may
+    // arrive as an array (?department=a&department=b) or a single string.
+    const slugs = Array.isArray(raw) ? raw : raw != null ? [raw] : [];
+    for (const slug of slugs) {
+      if (typeof slug !== "string" || !slug) continue;
+      // Prefer the full filter item from the loaded filters list so the
+      // chip renders with the correct localized name; fall back to a stub
+      // (still drives the API correctly via slug).
+      const hit = lookup.get(`${key}:${slug}`);
+      next.push(
+        hit ?? {
+          type: key,
+          slug,
+          id: 0,
+          name_ar: slug,
+          name_en: slug,
+        }
+      );
+    }
   }
   return next;
 }
@@ -209,12 +213,14 @@ const activeFilters = ref<FilterItem[]>(
 
 const apiFilters = computed<ProjectFilters>(() => {
   const result: ProjectFilters = {};
+  // Each filter type accumulates an array — the client can select multiple
+  // departments / types / scopes / years at once.
   for (const f of activeFilters.value) {
-    if (f.type === "department") result.department = f.slug;
-    if (f.type === "type") result.type = f.slug;
-    if (f.type === "scope") result.scope = f.slug;
+    if (f.type === "department") (result.department ??= []).push(f.slug);
+    if (f.type === "type") (result.type ??= []).push(f.slug);
+    if (f.type === "scope") (result.scope ??= []).push(f.slug);
     // Filter list emits type `"year"`; the backend query param is `years`.
-    if (f.type === "year") result.years = f.slug;
+    if (f.type === "year") (result.years ??= []).push(f.slug);
   }
   return result;
 });
@@ -234,19 +240,14 @@ function onLoadMore() {
 
 // ── Filter Logic ──────────────────────────────────────────────
 const toggleFilter = (filter: FilterItem) => {
-  const typeIndex = activeFilters.value.findIndex(
-    (f) => f.type === filter.type
-  );
+  // Multi-select: toggle this exact value on/off. Other values of the same
+  // type stay selected, so the client can pick several at once.
   const exactIndex = activeFilters.value.findIndex(
     (f) => f.type === filter.type && f.slug === filter.slug
   );
 
-  if (typeIndex !== -1) {
-    if (exactIndex !== -1) {
-      activeFilters.value.splice(exactIndex, 1);
-    } else {
-      activeFilters.value.splice(typeIndex, 1, filter);
-    }
+  if (exactIndex !== -1) {
+    activeFilters.value.splice(exactIndex, 1);
   } else {
     activeFilters.value.push(filter);
   }
@@ -255,16 +256,21 @@ const toggleFilter = (filter: FilterItem) => {
 };
 
 const updateUrl = async () => {
-  const query: Record<string, string> = { ...route.query } as Record<
+  const query: Record<string, string | string[]> = { ...route.query } as Record<
     string,
-    string
+    string | string[]
   >;
   // Reset filter keys then re-apply current selection — preserves any
   // non-filter query params (e.g. utm_*).
   for (const key of FILTER_QUERY_KEYS) delete query[key];
   for (const f of activeFilters.value) {
     if ((FILTER_QUERY_KEYS as readonly string[]).includes(f.type)) {
-      query[f.type] = f.slug;
+      // Multiple values per type → accumulate into an array so the URL
+      // reads ?department=a&department=b.
+      const existing = query[f.type];
+      if (Array.isArray(existing)) existing.push(f.slug);
+      else if (typeof existing === "string") query[f.type] = [existing, f.slug];
+      else query[f.type] = [f.slug];
     }
   }
   await router.replace({ path: route.path, query });

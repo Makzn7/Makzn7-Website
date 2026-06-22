@@ -101,7 +101,7 @@
             :imageSrc="pageDetails?.buttonImage"
             :title="$t('mansj.showProjects')"
             bgColor="#9AE480"
-            textColor="#0F2943"
+            textColor="#000000"
           ></PageButton>
         </div>
       </section>
