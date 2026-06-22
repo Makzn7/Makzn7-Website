@@ -162,6 +162,12 @@ export default defineNuxtConfig({
     pageTransition: false,
     layoutTransition: false,
     head: {
+      meta: [
+        {
+          name: "google-site-verification",
+          content: "5qQJjXr9rHccQ0c5Q-KZtdREG9gkY64bCAZFL_2qd1k",
+        },
+      ],
       script: [
         {
           // Pre-paint theme: home opens dark for first-time visitors, every
