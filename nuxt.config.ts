@@ -1,9 +1,112 @@
+const siteUrl = (
+  process.env.NUXT_PUBLIC_SITE_URL ||
+  process.env.SITE_URL ||
+  process.env.NUXT_SITE_URL
+)?.replace(/\/+$/, "");
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
 
-  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/i18n", "@nuxtjs/color-mode"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "@nuxtjs/i18n",
+    "@nuxtjs/color-mode",
+    "@nuxtjs/sitemap",
+  ],
+
+  site: {
+    url: siteUrl,
+  },
+
+  sitemap: {
+    sources: ["/api/__sitemap__/projects"],
+    cacheMaxAgeSeconds: 3600,
+    exclude: [
+      "/login",
+      "/login/**",
+      "/register",
+      "/register/**",
+      "/dashboard",
+      "/dashboard/**",
+      "/admin",
+      "/admin/**",
+      "/cart",
+      "/cart/**",
+      "/checkout",
+      "/checkout/**",
+      "/account",
+      "/account/**",
+      "/profile",
+      "/profile/**",
+      "/api/**",
+      "/ar/login",
+      "/ar/login/**",
+      "/ar/register",
+      "/ar/register/**",
+      "/ar/dashboard",
+      "/ar/dashboard/**",
+      "/ar/admin",
+      "/ar/admin/**",
+      "/ar/cart",
+      "/ar/cart/**",
+      "/ar/checkout",
+      "/ar/checkout/**",
+      "/ar/account",
+      "/ar/account/**",
+      "/ar/profile",
+      "/ar/profile/**",
+    ],
+    urls: [
+      {
+        loc: "/about",
+        changefreq: "monthly",
+        priority: 0.8,
+        _i18nTransform: true,
+      },
+      {
+        loc: "/contact",
+        changefreq: "yearly",
+        priority: 0.7,
+        _i18nTransform: true,
+      },
+      {
+        loc: "/projects",
+        changefreq: "weekly",
+        priority: 0.9,
+        _i18nTransform: true,
+      },
+      {
+        loc: "/manjra",
+        changefreq: "monthly",
+        priority: 0.7,
+        _i18nTransform: true,
+      },
+      {
+        loc: "/mansj",
+        changefreq: "monthly",
+        priority: 0.7,
+        _i18nTransform: true,
+      },
+      {
+        loc: "/prophouse",
+        changefreq: "monthly",
+        priority: 0.7,
+        _i18nTransform: true,
+      },
+      {
+        loc: "/privacy-policy",
+        changefreq: "yearly",
+        priority: 0.3,
+        _i18nTransform: true,
+      },
+    ],
+  },
+
+  routeRules: {
+    "/": { sitemap: { changefreq: "weekly", priority: 1 } },
+  },
 
   colorMode: {
     classSuffix: "",
@@ -51,6 +154,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.API_URL || "http://localhost:8000/api",
+      siteUrl: siteUrl || "",
     },
   },
 
