@@ -31,16 +31,61 @@
           :style="`width: ${marginS}px;`"
         ></div>
       </div>
-      <!--  -->
+      <!-- Top Logo And Image Desktop -->
       <div
-        class="hidden lg:block w-full border-s-[0.3px] border-white-op50 border-brand-text p-4"
-        :style="`margin-inline-start: ${marginS}px;`"
+        class="hidden lg:flex justify-between items-center gap-4 border-s-[0.3px] border-white-op50 border-brand-text p-4"
+        :style="`margin-inline-start: ${marginS}px; width: calc(100% - (var(--railW * 2)));`"
       >
         <img
           src="/logos/departments/Prophouse.svg"
           alt="PropHouse"
           class="w-[50px] lg:w-[90px]"
         />
+        <a
+          href="https://m7prophouse.com"
+          target="_blank"
+          class="group flex flex-nowrap justify-center items-center gap-2"
+          :style="`font-size: clamp(${Math.max(
+            16,
+            Math.round(39 * 0.35)
+          )}px, ${(39 / 20).toFixed(1)}vw, ${39}px);`"
+        >
+          <span
+            class="font-light group-hover:text-[#E1FE53] transition-all duration-300 ease-in-out"
+          >
+            {{ $t("prophouse.checkWebsite") }}
+          </span>
+          <!-- <span
+            class="font-pixel mb-[5px] inline-block text-[#E1FE53] tracking-tighter font-bold"
+            >-></span> -->
+          <img src="/icons/svg/prop-arrow.svg" class="w-5 h-5" />
+        </a>
+      </div>
+      <!-- Top Logo And Image Mobile-->
+      <div
+        class="flex lg:hidden justify-center items-center gap-4 border-b-[0.3px] border-white-op50 border-brand-text p-4"
+        :style="`width: calc(100% - (var(--railW * 2)));`"
+      >
+        <a
+          href="https://m7prophouse.com"
+          target="_blank"
+          class="group flex justify-center items-center flex-nowrap gap-1.5"
+          :style="`font-size: clamp(${Math.max(
+            16,
+            Math.round(39 * 0.35)
+          )}px, ${(39 / 20).toFixed(1)}vw, ${39}px);`"
+        >
+          <span
+            class="font-light group-hover:text-[#E1FE53] transition-all duration-300 ease-in-out"
+          >
+            {{ $t("prophouse.checkWebsite") }}
+          </span>
+          <!-- <span
+            class="font-pixel mb-[3px] inline-block text-[#E1FE53] tracking-tighter font-bold"
+            >-></span
+          > -->
+          <img src="/icons/svg/prop-arrow.svg" class="w-3.5 h-3.5" />
+        </a>
       </div>
       <!-- Sections -->
       <section v-for="(section, index) in pageDetails?.sections" :key="index">

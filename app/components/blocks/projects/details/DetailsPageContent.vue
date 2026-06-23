@@ -109,37 +109,75 @@
         <div class="flex justify-between items-center gap-6 mb-12">
           <!-- Row 2: Department + Scope -->
           <div class="flex flex-col w-full">
-            <!-- Department -->
+            <!-- Department and Awards -->
             <div
-              v-if="project.departments?.length"
-              class="flex flex-col items-start justify-start w-full gap-1 py-4 px-4 lg:px-6 border-b-[0.3px] border-white-op50 border-brand-text"
+              class="w-full grid gap-0"
+              :class="
+                project.awards?.length
+                  ? 'grid-cols-1 lg:grid-cols-2'
+                  : 'grid-cols-1'
+              "
             >
-              <span
-                :style="`font-size: clamp(${Math.max(
-                  14,
-                  Math.round(25 * 0.35)
-                )}px, ${(25 / 20).toFixed(1)}vw, ${25}px);`"
-                class="uppercase font-light"
+              <div
+                v-if="project.departments?.length"
+                class="flex flex-col items-start justify-start w-full gap-1 py-4 px-4 lg:px-6 border-b-[0.3px] border-white-op50 border-brand-text"
               >
-                {{ $t("filters.departments") }}:
-              </span>
-              <div class="flex items-center gap-3">
-                <div
-                  v-for="dept in project.departments"
-                  :key="dept.id"
-                  class="ltr:pr-3 rtl:pl-3"
+                <span
+                  :style="`font-size: clamp(${Math.max(
+                    14,
+                    Math.round(25 * 0.35)
+                  )}px, ${(25 / 20).toFixed(1)}vw, ${25}px);`"
+                  class="uppercase font-light"
                 >
-                  <NuxtLinkLocale
-                    :to="`/projects?department=${dept.slug}`"
-                    class="white-link-sm"
+                  {{ $t("filters.departments") }}:
+                </span>
+                <div class="flex items-center gap-3">
+                  <div
+                    v-for="dept in project.departments"
+                    :key="dept.id"
+                    class="ltr:pr-3 rtl:pl-3"
                   >
-                    <img
-                      :src="dept.hero_image"
-                      :alt="dept.name_en"
-                      class="dept-icon"
-                      :style="`width: ${props.iconSize}px; height: ${props.iconSize}px;`"
-                    />
-                  </NuxtLinkLocale>
+                    <NuxtLinkLocale
+                      :to="`/projects?department=${dept.slug}`"
+                      class="white-link-sm"
+                    >
+                      <img
+                        :src="dept.hero_image"
+                        :alt="dept.name_en"
+                        class="dept-icon"
+                        :style="`width: ${props.iconSize}px; height: ${props.iconSize}px;`"
+                      />
+                    </NuxtLinkLocale>
+                  </div>
+                </div>
+              </div>
+              <div
+                v-if="project.awards?.length"
+                class="flex flex-col items-start justify-start w-full gap-1 py-4 px-4 lg:px-6 lg:border-s-[0.3px] border-b-[0.3px] border-white-op50 border-brand-text"
+              >
+                <span
+                  :style="`font-size: clamp(${Math.max(
+                    14,
+                    Math.round(25 * 0.35)
+                  )}px, ${(25 / 20).toFixed(1)}vw, ${25}px);`"
+                  class="uppercase font-light"
+                >
+                  {{ $t("filters.awards") }}:
+                </span>
+                <div
+                  class="font-light"
+                  v-for="(award, index) in project.awards"
+                  :key="index"
+                  :style="`font-size: clamp(${Math.max(
+                    14,
+                    Math.round(props.scopeSize * 0.35)
+                  )}px, ${(props.scopeSize / 20).toFixed(1)}vw, ${
+                    props.scopeSize
+                  }px)`"
+                >
+                  <span>{{
+                    locale === "ar" ? award.title_ar : award.title_en
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -180,6 +218,53 @@
                   >
                   <img
                     v-if="index < project.scopes.length - 1"
+                    src="/icons/svg/green/3.svg"
+                    height="35"
+                    width="35"
+                    alt=""
+                    class="divider-image"
+                  />
+                </div>
+              </div>
+            </div>
+            <!-- Production Houses -->
+            <div
+              v-if="project.productionHouses?.length"
+              class="flex flex-col items-start justify-start w-full gap-1 py-4 px-4 lg:px-6 border-t-[0.3px] border-white-op50 border-brand-text"
+            >
+              <div>
+                <span
+                  class="font-light uppercase"
+                  :style="`font-size: clamp(${Math.max(
+                    14,
+                    Math.round(25 * 0.35)
+                  )}px, ${(25 / 20).toFixed(1)}vw, ${25}px);`"
+                  >{{ $t("filters.productionHouse") }}:</span
+                >
+              </div>
+
+              <div class="w-full flex flex-wrap items-center">
+                <div
+                  v-for="(productionHouse, index) in project.productionHouses"
+                  class="flex flex-wrap items-center"
+                  :key="index"
+                >
+                  <span
+                    class="font-light"
+                    :style="`font-size: clamp(${Math.max(
+                      14,
+                      Math.round(props.scopeSize * 0.35)
+                    )}px, ${(props.scopeSize / 20).toFixed(1)}vw, ${
+                      props.scopeSize
+                    }px)`"
+                    >{{
+                      locale === "ar"
+                        ? productionHouse.name_ar
+                        : productionHouse.name_en
+                    }}</span
+                  >
+                  <img
+                    v-if="index < project.productionHouses.length - 1"
                     src="/icons/svg/green/3.svg"
                     height="35"
                     width="35"

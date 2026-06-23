@@ -133,7 +133,8 @@
   "prophouse": {
     "showProjects": "تصفح مشاريع بربهاوس",
     "website": "موقع بربهاوس",
-    "visitWebsite": "زيارة موقع بربهاوس"
+    "visitWebsite": "زيارة موقع بربهاوس",
+    "checkWebsite": "تحقق من موقع بربهاوس"
   },
   "team": {
     "title": "الفريق"
@@ -151,7 +152,9 @@
     "done": "تم",
     "close": "إغلاق",
     "scopes": "الفئة",
-    "departments": "الأقسام"
+    "departments": "الأقسام",
+    "productionHouse": "شركة الإنتاج",
+    "awards": "الإنجازات"
   },
   "projects": {
     "empty": "لا توجد مشاريع",

@@ -135,7 +135,8 @@
   "prophouse": {
     "showProjects": "Browse PropHouse’s Projects",
     "website": "PropHouse Website",
-    "visitWebsite": "Visit PropHouse Website"
+    "visitWebsite": "Visit PropHouse Website",
+    "checkWebsite": "Check PropHouse Website"
   },
   "team": {
     "title": "Team"
@@ -147,6 +148,8 @@
     "scope": "Scope",
     "scopes": "Scopes",
     "departments": "Departments",
+    "productionHouse": "Production House",
+    "awards": "Awards",
     "error": "Unable to load filters",
     "button": "Filters",
     "title": "Filter Projects",

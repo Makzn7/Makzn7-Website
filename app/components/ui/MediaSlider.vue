@@ -85,7 +85,8 @@
       aria-label="Previous slide"
       type="button"
     >
-      <span class="arrow-icon">&larr;</span>
+      <!-- <span class="font-pixel arrow-icon">&larr;</span> -->
+      <img src="/icons/svg/green/14.svg" class="rotate-180 w-8 h-8" />
     </button>
     <button
       v-if="items.length > 1"
@@ -94,7 +95,8 @@
       aria-label="Next slide"
       type="button"
     >
-      <span class="arrow-icon">&rarr;</span>
+      <!-- <span class="font-pixel arrow-icon">&rarr;</span> -->
+      <img src="/icons/svg/green/14.svg" class="!w-8 !h-8" />
     </button>
 
     <!-- Pagination dots (Swiper renders bullets into this container) -->
@@ -140,7 +142,8 @@
               class="lightbox-btn lightbox-nav lightbox-nav--prev"
               aria-label="Previous media"
             >
-              <span class="lightbox-icon">&larr;</span>
+              <!-- <span class="lightbox-icon">&larr;</span> -->
+              <img src="/icons/svg/green/14.svg" class="rotate-180 w-8 h-8" />
             </button>
             <button
               v-if="items.length > 1"
@@ -149,7 +152,8 @@
               class="lightbox-btn lightbox-nav lightbox-nav--next"
               aria-label="Next media"
             >
-              <span class="lightbox-icon">&rarr;</span>
+              <!-- <span class="lightbox-icon">&rarr;</span> -->
+              <img src="/icons/svg/green/14.svg" class="!w-8 !h-8" />
             </button>
 
             <Swiper
@@ -464,9 +468,9 @@ onUnmounted(() => {
   z-index: 3;
   background: rgba(0, 0, 0, 0.4);
   border: none;
-  color: #fff;
-  width: 40px;
-  height: 40px;
+  color: var(--main-color, #fff);
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -500,7 +504,7 @@ onUnmounted(() => {
   pointer-events: none;
 }
 .arrow-icon {
-  font-size: 18px;
+  /* font-size: 18px; */
   line-height: 1;
 }
 
@@ -650,8 +654,8 @@ onUnmounted(() => {
 .lightbox-nav {
   top: 50%;
   transform: translateY(-50%);
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
 }
 .lightbox-nav:active {
   transform: translateY(-50%) scale(0.94);

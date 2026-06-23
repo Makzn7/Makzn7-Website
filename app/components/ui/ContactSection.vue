@@ -100,7 +100,8 @@
               <div class="w-full flex gap-4 justify-start items-start">
                 <!-- Instagram -->
                 <a
-                  :href="settings?.social_links?.instagram"
+                  v-if="settings?.social_links?.instagram"
+                  :href="settings.social_links.instagram"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="social-icon group transition-all duration-500 ease-in-out"
@@ -111,14 +112,25 @@
                     class="w-100 p-1"
                     alt=""
                   />
-                  <!-- <font-awesome-icon
-                    icon="fa-brands fa-instagram"
+                </a>
+                <!-- Facebook -->
+                <a
+                  v-if="settings?.social_links?.facebook"
+                  :href="settings.social_links.facebook"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-icon group transition-all duration-500 ease-in-out"
+                  aria-label="Facebook"
+                >
+                  <font-awesome-icon
+                    icon="fa-brands fa-facebook-f"
                     style="width: 100%; height: 100%"
-                  /> -->
+                  />
                 </a>
                 <!-- LinkedIn -->
                 <a
-                  :href="settings?.social_links?.linkedin"
+                  v-if="settings?.social_links?.linkedin"
+                  :href="settings.social_links.linkedin"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="social-icon group transition-all duration-500 ease-in-out"
@@ -129,23 +141,24 @@
                     style="width: 100%; height: 100%"
                   />
                 </a>
-                <!-- Vimeo -->
+                <!-- X (Twitter) -->
                 <a
-                  :href="settings?.social_links?.vimeo"
+                  v-if="settings?.social_links?.twitter"
+                  :href="settings.social_links.twitter"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="social-icon group transition-all duration-500 ease-in-out"
-                  aria-label="Vimeo"
+                  aria-label="X (Twitter)"
                 >
                   <font-awesome-icon
-                    icon="fa-brands fa-vimeo-v"
+                    icon="fa-brands fa-x-twitter"
                     style="width: 100%; height: 100%"
                   />
                 </a>
-
                 <!-- YouTube -->
                 <a
-                  :href="settings?.social_links?.youtube"
+                  v-if="settings?.social_links?.youtube"
+                  :href="settings.social_links.youtube"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="social-icon group transition-all duration-500 ease-in-out"
@@ -153,6 +166,20 @@
                 >
                   <font-awesome-icon
                     icon="fa-brands fa-youtube"
+                    style="width: 100%; height: 100%"
+                  />
+                </a>
+                <!-- Vimeo -->
+                <a
+                  v-if="settings?.social_links?.vimeo"
+                  :href="settings.social_links.vimeo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-icon group transition-all duration-500 ease-in-out"
+                  aria-label="Vimeo"
+                >
+                  <font-awesome-icon
+                    icon="fa-brands fa-vimeo-v"
                     style="width: 100%; height: 100%"
                   />
                 </a>
@@ -273,38 +300,40 @@
               <div
                 class="col-span-1 w-full flex flex-row gap-1 justify-between items-start"
               >
-                <!-- Social Media Icons (Vertical Stack) -->
+                <!-- Social Media Icons -->
                 <!-- Instagram -->
                 <a
-                  :href="settings?.social_links?.instagram"
+                  v-if="settings?.social_links?.instagram"
+                  :href="settings.social_links.instagram"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="social-icon group transition-all duration-500 ease-in-out"
                   aria-label="Instagram"
                 >
-                  <font-awesome-icon
-                    icon="fa-brands fa-instagram"
-                    style="width: 100%; height: 100%"
+                  <img
+                    src="/icons/general/instagram.svg"
+                    class="w-100 p-1"
+                    alt=""
                   />
                 </a>
-
-                <!-- Vimeo -->
+                <!-- Facebook -->
                 <a
-                  :href="settings?.social_links?.vimeo"
+                  v-if="settings?.social_links?.facebook"
+                  :href="settings.social_links.facebook"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="social-icon group transition-all duration-500 ease-in-out"
-                  aria-label="Vimeo"
+                  aria-label="Facebook"
                 >
                   <font-awesome-icon
-                    icon="fa-brands fa-vimeo-v"
+                    icon="fa-brands fa-facebook-f"
                     style="width: 100%; height: 100%"
                   />
                 </a>
-
                 <!-- LinkedIn -->
                 <a
-                  :href="settings?.social_links?.linkedin"
+                  v-if="settings?.social_links?.linkedin"
+                  :href="settings.social_links.linkedin"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="social-icon group transition-all duration-500 ease-in-out"
@@ -315,17 +344,45 @@
                     style="width: 100%; height: 100%"
                   />
                 </a>
-
                 <!-- X (Twitter) -->
                 <a
-                  :href="settings?.social_links?.twitter"
+                  v-if="settings?.social_links?.twitter"
+                  :href="settings.social_links.twitter"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="social-icon group transition-all duration-500 ease-in-out"
                   aria-label="X (Twitter)"
                 >
                   <font-awesome-icon
-                    icon="fa-brands fa-x-twitter "
+                    icon="fa-brands fa-x-twitter"
+                    style="width: 100%; height: 100%"
+                  />
+                </a>
+                <!-- YouTube -->
+                <a
+                  v-if="settings?.social_links?.youtube"
+                  :href="settings.social_links.youtube"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-icon group transition-all duration-500 ease-in-out"
+                  aria-label="YouTube"
+                >
+                  <font-awesome-icon
+                    icon="fa-brands fa-youtube"
+                    style="width: 100%; height: 100%"
+                  />
+                </a>
+                <!-- Vimeo -->
+                <a
+                  v-if="settings?.social_links?.vimeo"
+                  :href="settings.social_links.vimeo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="social-icon group transition-all duration-500 ease-in-out"
+                  aria-label="Vimeo"
+                >
+                  <font-awesome-icon
+                    icon="fa-brands fa-vimeo-v"
                     style="width: 100%; height: 100%"
                   />
                 </a>

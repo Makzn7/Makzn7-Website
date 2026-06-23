@@ -62,9 +62,10 @@ onMounted(async () => {
       if (Number.isNaN(num)) return fallback;
       return raw.endsWith("rem") ? num * rootFontSize : num;
     };
-    const cornerExtra = 8;
-    const cornerMarginX = railToPx("--railW", 60) + cornerExtra;
-    const cornerMarginY = railToPx("--railH", 44) + cornerExtra;
+    const cornerExtraX = 45;
+    const cornerExtraY = 30;
+    const cornerMarginX = railToPx("--railW", 60) + cornerExtraX;
+    const cornerMarginY = railToPx("--railH", 44) + cornerExtraY;
     const splashW = splashLogo.offsetWidth;
     const splashH = splashLogo.offsetHeight || splashW * 0.35;
     // في RTL تُعكس الوجهة الأفقية فقط: من المركز إلى الزاوية العليا اليمنى
@@ -160,9 +161,9 @@ onBeforeUnmount(() => {
 }
 
 .splash-logo {
-  width: 280px;
+  width: clamp(150px, 10vw, 300px);
   opacity: 0;
-  transform: translate(0, 0) scale(0.5);
+  transform: translate(0, 0) scale(1);
 }
 
 /* ══ أنيميشن الشعار ══ */
@@ -176,7 +177,7 @@ onBeforeUnmount(() => {
   /* ظهور مع تكبير */
   0% {
     opacity: 0;
-    transform: translate(0, 0) scale(0.5);
+    transform: translate(0, 0) scale(1);
   }
   16% {
     opacity: 1;
@@ -200,18 +201,17 @@ onBeforeUnmount(() => {
   /* الخطوة الأولى: ينزلق إلى أقصى الزاوية العليا اليسرى */
   68% {
     opacity: 1;
-    transform: translate(var(--cdx, -40vw), var(--cdy, -40vh)) scale(0.5);
+    transform: translate(var(--cdx, -40vw), var(--cdy, -40vh)) scale(1);
   }
   /* وقفة قصيرة عند الزاوية مع توهج الدخان الأخضر */
   82% {
     opacity: 1;
-    transform: translate(var(--cdx, -40vw), var(--cdy, -40vh)) scale(0.5);
+    transform: translate(var(--cdx, -40vw), var(--cdy, -40vh)) scale(1);
   }
   /* الخطوة الثانية: انتقال خفيف من الزاوية إلى موضع شعار الصفحة */
   100% {
     opacity: 1;
-    transform: translate(var(--dx, -200px), var(--dy, -150px))
-      scale(var(--sc, 0.35));
+    transform: translate(var(--dx, -200px), var(--dy, -150px)) scale(1);
   }
 }
 

@@ -1,5 +1,7 @@
+import type { Award } from "./award";
 import type { Department } from "./department";
 import type { PageSeo } from "./page";
+import type { ProductionHouse } from "./productionHouse";
 import type { ProjectType } from "./projectType";
 import type { Scope } from "./scope";
 
@@ -23,6 +25,8 @@ export type Project = {
   departments?: Department[];
   scopes: Scope[];
   types?: ProjectType[];
+  awards?: Award[];
+  productionHouses?: ProductionHouse[];
 
   teamIds: number[];
 
