@@ -20,12 +20,13 @@ export type ProjectsFiltersResponse = {
  * Faceted filter metadata returned inline with `GET /projects`. Each option
  * reflects availability for the *current* selection: `disabled` is true when
  * choosing it would yield no projects given the other active filters.
- * `value` is the slug (string) or year (number); `label` is already localized
+ * `value` is the slug (string) or year (number); `name_ar` and `name_en` are already localized
  * by the backend.
  */
 export type FacetedFilterOption = {
   value: string | number;
-  label: string;
+  name_ar: string;
+  name_en: string;
   count: number;
   disabled: boolean;
 };

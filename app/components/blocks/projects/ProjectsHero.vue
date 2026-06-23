@@ -187,8 +187,8 @@ function mapFacet(type: string, option: FacetedFilterOption): FilterItem {
     type,
     id: option.value,
     slug,
-    name_ar: option.label,
-    name_en: option.label,
+    name_ar: option.name_ar,
+    name_en: option.name_en,
     disabled: option.disabled,
     count: option.count,
   };

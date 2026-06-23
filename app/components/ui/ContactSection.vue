@@ -79,6 +79,7 @@
                       Math.round(37 * 0.35)
                     )}px, ${(37 / 20).toFixed(1)}vw, ${37}px);`"
                     dir="ltr"
+                    data-keep-digits
                   >
                     {{ settings?.email }}
                   </a>
@@ -249,6 +250,7 @@
                     :href="`mailto:${settings?.email}`"
                     class="white-link-sm font-en rtl:text-right"
                     dir="ltr"
+                    data-keep-digits
                   >
                     {{ settings?.email }}
                   </a>

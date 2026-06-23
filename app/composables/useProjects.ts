@@ -56,7 +56,9 @@ export type ProjectsResponse = {
  * Pull the project list out of a /projects response regardless of whether the
  * backend keyed it as `projects` (current) or `data` (legacy).
  */
-export function getProjects(res: ProjectsResponse | null | undefined): Project[] {
+export function getProjects(
+  res: ProjectsResponse | null | undefined,
+): Project[] {
   return res?.projects ?? res?.data ?? [];
 }
 
@@ -108,9 +110,7 @@ export function useInfiniteProjects(
     perPage,
   }));
 
-  const filtersKey = computed(() =>
-    JSON.stringify(unref(filters) ?? {}),
-  );
+  const filtersKey = computed(() => JSON.stringify(unref(filters) ?? {}));
 
   const nuxtApp = useNuxtApp();
 

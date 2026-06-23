@@ -122,6 +122,7 @@
                   :href="`mailto:${settings?.email}`"
                   class="white-link-sm font-en rtl:text-right"
                   dir="ltr"
+                  data-keep-digits
                 >
                   {{ settings?.email }}
                 </a>

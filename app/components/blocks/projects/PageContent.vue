@@ -68,7 +68,7 @@ interface Filter {
   count?: number;
 }
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     marginTop?: number;
     mobileMarginTop: number;
