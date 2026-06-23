@@ -64,6 +64,8 @@ interface Filter {
   name_ar: string;
   name_en: string;
   slug: string;
+  disabled?: boolean;
+  count?: number;
 }
 
 withDefaults(

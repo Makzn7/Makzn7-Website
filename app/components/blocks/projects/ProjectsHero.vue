@@ -121,7 +121,13 @@ interface FilterItem {
   name_ar: string;
   name_en: string;
   slug: string;
+  // Faceted availability — present when filters come from the /projects
+  // response. Undefined for the static fallback (always selectable).
+  disabled?: boolean;
+  count?: number;
 }
+
+import type { FacetedFilterOption } from "~/types/projectsFilters";
 
 const emit = defineEmits<{
   "lock-page-scroll": [];
@@ -138,7 +144,10 @@ const {
   error: filtersError,
 } = useProjectFilters();
 
-const filters = computed<FilterItem[]>(() => [
+// Static filter list from the dedicated /projects-filters endpoint. Used as
+// a fallback while the first /projects fetch is in flight, when the response
+// omits `filters`, and as the source for resolving localized chip names.
+const staticFilters = computed<FilterItem[]>(() => [
   ...(filtersData.value?.years ?? []).map((y) => ({
     type: "year",
     id: y.id,
@@ -169,13 +178,29 @@ const filters = computed<FilterItem[]>(() => [
   })),
 ]);
 
+// Map one faceted option (value/label/count/disabled) onto the FilterItem
+// shape the UI already understands. `value` is the slug (numeric for years),
+// `label` is pre-localized by the backend → reused for both name_ar/name_en.
+function mapFacet(type: string, option: FacetedFilterOption): FilterItem {
+  const slug = String(option.value);
+  return {
+    type,
+    id: option.value,
+    slug,
+    name_ar: option.label,
+    name_en: option.label,
+    disabled: option.disabled,
+    count: option.count,
+  };
+}
+
 // ── Active Filters ────────────────────────────────────────────
 const FILTER_QUERY_KEYS = ["department", "type", "scope", "year"] as const;
 let syncingFromUrl = false;
 
 function readFiltersFromQuery(q: Record<string, unknown>): FilterItem[] {
   const lookup = new Map(
-    filters.value.map((f) => [`${f.type}:${f.slug}`, f] as const)
+    staticFilters.value.map((f) => [`${f.type}:${f.slug}`, f] as const)
   );
   const next: FilterItem[] = [];
   for (const key of FILTER_QUERY_KEYS) {
@@ -219,8 +244,8 @@ const apiFilters = computed<ProjectFilters>(() => {
     if (f.type === "department") (result.department ??= []).push(f.slug);
     if (f.type === "type") (result.type ??= []).push(f.slug);
     if (f.type === "scope") (result.scope ??= []).push(f.slug);
-    // Filter list emits type `"year"`; the backend query param is `years`.
-    if (f.type === "year") (result.years ??= []).push(f.slug);
+    // Filter list emits type `"year"`; send it as the preferred `year[]` param.
+    if (f.type === "year") (result.year ??= []).push(f.slug);
   }
   return result;
 });
@@ -228,11 +253,27 @@ const apiFilters = computed<ProjectFilters>(() => {
 // ── Projects from API (infinite pagination) ───────────────────
 const {
   projects,
+  facets,
   pending: projectsPending,
   loadingMore: projectsLoadingMore,
   hasMore: projectsHasMore,
   loadMore: loadMoreProjects,
 } = useInfiniteProjects(apiFilters);
+
+// Displayed filter list. Prefer the faceted metadata that ships inline with
+// each /projects response (carries `disabled`/`count` reflecting the current
+// selection); fall back to the static list while it loads or if `filters` is
+// missing from the response — so the UI never goes blank.
+const filters = computed<FilterItem[]>(() => {
+  const f = facets.value;
+  if (!f) return staticFilters.value;
+  return [
+    ...(f.years ?? []).map((o) => mapFacet("year", o)),
+    ...(f.departments ?? []).map((o) => mapFacet("department", o)),
+    ...(f.types ?? []).map((o) => mapFacet("type", o)),
+    ...(f.scopes ?? []).map((o) => mapFacet("scope", o)),
+  ];
+});
 
 function onLoadMore() {
   loadMoreProjects();

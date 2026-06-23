@@ -1,10 +1,13 @@
 import type { Project } from "~/types/project";
+import type { FacetedFilters } from "~/types/projectsFilters";
 
 export type ProjectFilters = {
   department?: string[];
   type?: string[];
   scope?: string[];
-  years?: string[];
+  // Sent to the backend as `year[]` (preferred over the also-supported
+  // `years[]`) for consistency with the other bracketed array filters.
+  year?: string[];
   page?: number;
   perPage?: number;
 };
@@ -39,9 +42,23 @@ export type ProjectsMeta = {
 };
 
 export type ProjectsResponse = {
-  data: Project[];
+  // The backend returns the project array under `projects`. Older/alternate
+  // payloads used `data`; both are accepted and normalized via getProjects().
+  projects?: Project[];
+  data?: Project[];
   meta: ProjectsMeta;
+  // Faceted filter metadata for the current selection. Optional so older
+  // responses (or a missing field) degrade gracefully to static filters.
+  filters?: FacetedFilters;
 };
+
+/**
+ * Pull the project list out of a /projects response regardless of whether the
+ * backend keyed it as `projects` (current) or `data` (legacy).
+ */
+export function getProjects(res: ProjectsResponse | null | undefined): Project[] {
+  return res?.projects ?? res?.data ?? [];
+}
 
 export function useProjects(filters?: MaybeRef<ProjectFilters>) {
   const { raw } = useApi();
@@ -144,7 +161,7 @@ export function useInfiniteProjects(
   });
 
   const projects = computed<Project[]>(() => {
-    const first = data.value?.data ?? [];
+    const first = getProjects(data.value);
     const rest = extraPages.value.flat();
     if (rest.length === 0) return first;
     // De-dupe in case of overlap.
@@ -180,6 +197,14 @@ export function useInfiniteProjects(
     activeMeta.value ? activeMeta.value.page + 1 : 2,
   );
 
+  // Faceted filter availability for the current selection. Sourced from the
+  // page-1 response (load-more keeps the same filters, so facets don't change
+  // between pages). Null until the first fetch resolves — callers fall back to
+  // their static filter list in that window.
+  const facets = computed<FacetedFilters | null>(
+    () => data.value?.filters ?? null,
+  );
+
   async function loadMore() {
     if (loadingMore.value || pending.value) return;
     if (!hasMore.value) return;
@@ -196,7 +221,7 @@ export function useInfiniteProjects(
       });
       // Stale guard — filters changed mid-flight.
       if (myFetchId !== fetchId) return;
-      extraPages.value = [...extraPages.value, res?.data ?? []];
+      extraPages.value = [...extraPages.value, getProjects(res)];
       if (res?.meta) extraMeta.value = res.meta;
     } catch {
       // Swallow — surface via the next user-driven retry if needed.
@@ -210,6 +235,7 @@ export function useInfiniteProjects(
   return {
     projects,
     meta: activeMeta,
+    facets,
     pending,
     loadingMore,
     error,

@@ -51,13 +51,18 @@
             <button
               v-for="filter in subCol"
               :key="`${filter.type}-${filter.id}`"
+              type="button"
               class="white-link-sm text-start text-[14px] font-light uppercase leading-[1.45] transition-colors duration-200 whitespace-nowrap"
-              :class="
+              :class="[
                 isActive(filter)
                   ? 'active'
-                  : 'text-brand-text/50 hover:text-brand-text/80'
-              "
-              @click="$emit('toggle-filter', filter)"
+                  : 'text-brand-text/50 hover:text-brand-text/80',
+                isDisabled(filter)
+                  ? 'opacity-40 cursor-not-allowed pointer-events-none'
+                  : 'cursor-pointer',
+              ]"
+              :disabled="isDisabled(filter)"
+              @click="onSelect(filter)"
             >
               {{ locale === "ar" ? filter.name_ar : filter.name_en }}
             </button>
@@ -166,8 +171,14 @@
                           :key="`${filter.type}-${filter.id}`"
                           type="button"
                           class="filter-sheet__chip"
-                          :class="{ 'is-active': isActive(filter) }"
-                          @click="$emit('toggle-filter', filter)"
+                          :class="[
+                            { 'is-active': isActive(filter) },
+                            isDisabled(filter)
+                              ? 'opacity-40 cursor-not-allowed pointer-events-none'
+                              : '',
+                          ]"
+                          :disabled="isDisabled(filter)"
+                          @click="onSelect(filter)"
                         >
                           {{
                             locale === "ar" ? filter.name_ar : filter.name_en
@@ -245,6 +256,10 @@ interface Filter {
   name_ar: string;
   name_en: string;
   slug: string;
+  // Faceted availability: true when picking this option would yield no
+  // projects given the other active filters. Kept visible but not clickable.
+  disabled?: boolean;
+  count?: number;
 }
 
 const props = withDefaults(
@@ -327,6 +342,18 @@ function isActive(filter: Filter) {
   return props.activeFilters.some(
     (f) => f.type === filter.type && f.slug === filter.slug
   );
+}
+
+// A selected option is never treated as disabled — keep it clickable so the
+// user can always toggle it back off, even if the facet now reports it as
+// unavailable in combination with the other active filters.
+function isDisabled(filter: Filter) {
+  return !!filter.disabled && !isActive(filter);
+}
+
+function onSelect(filter: Filter) {
+  if (isDisabled(filter)) return;
+  emit("toggle-filter", filter);
 }
 
 function clearAll() {
