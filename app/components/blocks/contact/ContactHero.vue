@@ -80,7 +80,7 @@ import { ref } from "vue";
 import LeftSideContent from "~/components/ui/LeftSideContent.vue";
 import RightSideContent from "~/components/ui/RightSideContent.vue";
 import CustomCursor from "~/components/ui/CustomCursor.vue";
-import PageContent from "./PageContent.vue";
+import PageContent from "./PageContent2.vue";
 
 const emit = defineEmits(["lock-page-scroll", "unlock-page-scroll"]);
 

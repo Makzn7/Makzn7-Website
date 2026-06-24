@@ -57,6 +57,7 @@
             <PageContent
               :projects="featuredProjects"
               :with-animations="false"
+              :showLogo="false"
               :margin-top="6"
               :mobile-margin-top="3.5"
               :px="0"

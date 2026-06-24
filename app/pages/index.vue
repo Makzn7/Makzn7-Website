@@ -40,7 +40,10 @@ useSeo({
 const DEBUG_SPLASH = false;
 
 let headerLogo: HTMLElement | null = null;
-let logoAspect = 0.35; // height / width — يُستبدل بالنسبة الحقيقية بعد decode الصورة
+// نسبة الشعار (height / width) من viewBox الأصل (113×50.6) — ثابت موثوق.
+// لا نعتمد على naturalWidth/naturalHeight لأن Safari يرجعها 0 لـ SVG فيه viewBox
+// فقط بلا width/height، فينتج حجم خاطئ. هذه القيمة تطابق aspect-ratio في الـ CSS.
+const LOGO_ASPECT = 50.6 / 150;
 const timers: ReturnType<typeof setTimeout>[] = [];
 let p1Anim: Animation | null = null;
 let p2Anim: Animation | null = null;
@@ -66,17 +69,13 @@ function railToPx(
   return raw.endsWith("rem") ? num * rootFontSize : num;
 }
 
-// عرض شعار الهيدر الفعلي (مدفوع بالـ CSS، ثابت بصرف النظر عن لحظة تحميل الصورة)
-function headerLogoWidth() {
-  return headerLogo ? headerLogo.getBoundingClientRect().width : 0;
-}
-
 // مركز شعار الهيدر بإحداثيات الـ viewport — يُقاس طازجًا قبل مرحلة الرجوع مباشرة.
-// نشتق الارتفاع من العرض × النسبة بدل rect.height حتى لا نعتمد على لحظة تحميل صورة
-// الهيدر (rect.height قد تكون 0 قبل التحميل).
+// نستخدم rect.height الفعلي (محجوز بالـ aspect-ratio في CSS فهو ثابت ومتطابق بين
+// المتصفحات)، ونرجع لاشتقاقه من العرض × النسبة فقط إن كان 0 احتياطيًا.
 function headerCenter() {
   const r = headerLogo!.getBoundingClientRect();
-  return { x: r.left + r.width / 2, y: r.top + (r.width * logoAspect) / 2 };
+  const h = r.height || r.width * LOGO_ASPECT;
+  return { x: r.left + r.width / 2, y: r.top + h / 2 };
 }
 
 // مركز محطة الزاوية — من قياس الـ rail وأبعاد الشعار فقط (بلا أرقام سحرية).
@@ -109,7 +108,7 @@ function debugLog(label: string, w: number, h: number) {
     cornerCenter: cornerCenter(w, h),
     viewport: { w: window.innerWidth, h: window.innerHeight },
     devicePixelRatio: window.devicePixelRatio,
-    logoAspect,
+    logoAspect: LOGO_ASPECT,
   });
 }
 
@@ -122,7 +121,7 @@ async function runSplash() {
   const splashLogo = splashLogoRef.value as HTMLImageElement | null;
   if (!splashLogo) return finishSplash();
 
-  // 1) ننتظر تحميل/فك صورة الشعار حتى تتوفر النسبة الحقيقية (width/height)
+  // 1) ننتظر فك صورة الشعار حتى تكون جاهزة للرسم (لا نقرأ أبعادها الجوهرية)
   try {
     if (!splashLogo.complete) {
       await new Promise<void>((res) => {
@@ -132,10 +131,7 @@ async function runSplash() {
     }
     if (splashLogo.decode) await splashLogo.decode().catch(() => {});
   } catch {
-    /* تجاهل — نكمل بالنسبة الافتراضية */
-  }
-  if (splashLogo.naturalWidth && splashLogo.naturalHeight) {
-    logoAspect = splashLogo.naturalHeight / splashLogo.naturalWidth;
+    /* تجاهل — الحجم لا يعتمد على نجاح الـ decode */
   }
 
   // 2) استقرار الـ layout: nextTick + إطارين على الأقل
@@ -145,13 +141,14 @@ async function runSplash() {
 
   if (prefersReducedMotion()) return finishSplash();
 
-  // 3) توحيد الحجم: نفس مصدر العرض (شعار الهيدر) ونفس النسبة → أبعاد متطابقة في
-  //    كل المتصفحات، بلا clamp/vw مختلف وبلا scale عند الأطراف.
-  const W = headerLogoWidth();
+  // 3) توحيد الحجم من قياس شعار الهيدر الفعلي (rect)، والارتفاع محجوز بالـ
+  //    aspect-ratio في CSS فهو متطابق بين Safari و Chrome. لا نضبط style.height
+  //    بالـ JS حتى لا نعتمد على naturalWidth/Height (يرجعها سفاري 0).
+  const hRect = headerLogo!.getBoundingClientRect();
+  const W = hRect.width;
   if (!W) return finishSplash();
-  const H = W * logoAspect;
+  const H = hRect.height || W * LOGO_ASPECT;
   splashLogo.style.width = `${W}px`;
-  splashLogo.style.height = `${H}px`;
 
   const vC = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
   const corner = cornerCenter(W, H);

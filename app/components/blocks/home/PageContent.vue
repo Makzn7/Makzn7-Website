@@ -19,11 +19,16 @@
         class="flex flex-col lg:flex-row items-center justify-between gap-8 my-6 lg:my-12 mx-3 lg:mx-6"
       >
         <!-- dark:invert flips black logo to white in dark mode -->
+        <!-- ملف الـ SVG نفسه يحمل width/height جوهريين (113×50.6) + هذه الـ attrs
+             (150×67 بنفس النسبة) تحجز الأبعاد على مستوى HTML قبل أي CSS، فلا يُعرض
+             الشعار أبدًا بحجم replaced-element الافتراضي (300×150) لأي frame -->
         <img
           id="logo"
           v-if="showLogo"
           src="/logos/svg/logo_black.svg"
           alt="Makzn7"
+          width="150"
+          height="67"
           class="hero-logo dark:invert"
           :class="{ 'fade-in': withAnimations }"
         />

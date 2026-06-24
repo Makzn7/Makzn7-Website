@@ -221,13 +221,21 @@ html {
 }
 
 .hero-logo {
-  width: var(--site-logo-width);
-  /* ملف SVG فيه viewBox فقط بلا width/height، فقبل فك الصورة يفترض المتصفح حجمًا
-     افتراضيًا (≈300×150) ويظهر الشعار كبيرًا للحظة ثم يصغر. نحجز الأبعاد فورًا
-     بنسبة الـ viewBox الحقيقية (113×50.6) فلا يتغيّر الحجم بعد التحميل. */
-  aspect-ratio: 113 / 50.6;
-  height: auto;
+  /* الأبعاد مثبّتة من أول frame — width/height attrs في الـ HTML تمنع حجم SVG
+     الافتراضي (300×150)، وهذه القواعد تضمن ثبات الحجم بعد حساب CSS أيضًا. */
   display: block;
+  width: var(--site-logo-width);
+  height: auto;
+  /* يلغي max-width:100% الذي تضيفه Tailwind على كل img — قد يُقيّد العرض
+     مؤقتًا أثناء استقرار الـ perspective layout ثم يتحرر فيظهر الشعار يكبر */
+  max-width: none;
+  object-fit: contain;
+  /* نسبة الـ viewBox الحقيقية — تمنع أي تغيير في الارتفاع بعد تحميل الصورة */
+  aspect-ratio: 113 / 50.6;
+  /* لا transition على width/height/transform حتى لا يُحدث أي تغيير حجم مرئي */
+  transition:
+    opacity 0.2s ease,
+    filter 0.2s ease;
 }
 
 @layer base {
