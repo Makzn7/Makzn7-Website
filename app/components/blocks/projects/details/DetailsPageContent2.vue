@@ -231,6 +231,7 @@ function getDepartmentIcon(dept: Department): string {
 
 <style scoped>
 .slider-section {
+  position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
   max-height: 65vh;
@@ -238,6 +239,8 @@ function getDepartmentIcon(dept: Department): string {
 }
 
 .slider-fallback {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
 }

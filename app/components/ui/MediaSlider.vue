@@ -420,7 +420,12 @@ onUnmounted(() => {
 
 <style scoped>
 .media-slider {
-  position: relative;
+  /* نملأ الحاوية (.slider-section) عبر absolute بدل height:100% لأن Safari لا
+     يعتبر ارتفاع الأب المشتق من aspect-ratio ارتفاعًا محددًا، فيتقلّص الـ slider
+     ويهبط مرساة الأسهم/النقاط. absolute داخل أب position:relative يحل المشكلة
+     ويبقي الأسهم والنقاط محسوبة من نفس الإطار الكامل في كل المتصفحات. */
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   contain: layout paint;

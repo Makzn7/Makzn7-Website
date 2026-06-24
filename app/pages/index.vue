@@ -9,8 +9,17 @@ const aboutData = computed(() => homeData.value?.data?.about ?? null);
 
 const splashRef = ref<HTMLElement | null>(null);
 const splashLogoRef = ref<HTMLElement | null>(null);
-const showSplash = ref(true);
-const splashAnimating = ref(false);
+
+// الـ splash يظهر مرة واحدة فقط عند أول تحميل للموقع. useState يبقى محفوظًا طوال
+// عمر التطبيق (يُعاد ضبطه فقط عند refresh كامل)، فالتنقل الداخلي ثم الرجوع
+// للرئيسية لا يعيد تشغيله — وهذا يحل مشكلة ظهوره بحجم مختلف بعد route navigation.
+const splashPlayed = useState<boolean>("home-splash-played", () => false);
+const showSplash = ref(!splashPlayed.value);
+
+// طبقات التحميل تتحكم بها فلاغات منفصلة بدل keyframe واحد، حتى تتزامن مع مراحل
+// حركة الشعار المُدارة بالـ JS (انظر runSplash بالأسفل).
+const bgHidden = ref(false);
+const glowOn = ref(false);
 
 const { scrollContainer, lockPageScroll, unlockPageScroll } =
   usePageScrollShell();
@@ -22,80 +31,196 @@ useSeo({
   description: () => t("seo.homeDescription"),
 });
 
-let splashTimer: ReturnType<typeof setTimeout> | null = null;
-let measureTimer: ReturnType<typeof setTimeout> | null = null;
-let headerLogo: HTMLElement | null = null;
+// ══ حركة الـ Splash → شعار الهيدر (FLIP مبني على قياس فعلي) ══
+// نحرّك شعار التحميل عبر Web Animations API على transforms رقمية (px) محسوبة من
+// getBoundingClientRect، بدل CSS keyframes التي تعتمد على متغيّرات قد يعيد كل
+// متصفح حسابها/استيفاءها بشكل مختلف (وهذا مصدر اختلاف Chrome/Safari). الشعار
+// position:fixed فإحداثياته بالنسبة للـ viewport وليست لأي parent — وقد تحققنا
+// أنه لا يوجد ancestor عليه transform/filter/perspective.
+const DEBUG_SPLASH = false;
 
-function applySplashTarget() {
-  const splashLogo = splashLogoRef.value;
-  if (!headerLogo || !splashLogo) return;
-  const tr = headerLogo.getBoundingClientRect();
-  const splashW = splashLogo.offsetWidth;
-  const dx = tr.left + tr.width / 2 - window.innerWidth / 2;
-  const dy = tr.top + tr.height / 2 - window.innerHeight / 2;
-  const sc = tr.width / splashW;
-  splashLogo.style.setProperty("--dx", `${dx}px`);
-  splashLogo.style.setProperty("--dy", `${dy}px`);
-  splashLogo.style.setProperty("--sc", `${sc}`);
+let headerLogo: HTMLElement | null = null;
+let logoAspect = 0.35; // height / width — يُستبدل بالنسبة الحقيقية بعد decode الصورة
+const timers: ReturnType<typeof setTimeout>[] = [];
+let p1Anim: Animation | null = null;
+let p2Anim: Animation | null = null;
+
+// مدد المراحل (ms) — تحافظ على نفس إيقاع الحركة الحالي تقريبًا
+const P1_DURATION = 1250; // ظهور + نبضة عند المركز ثم انزلاق إلى الزاوية
+const CORNER_HOLD = 150; // وقفة عند الزاوية مع توهج الدخان الأخضر
+const P2_DURATION = 380; // الرجوع من الزاوية إلى موضع شعار الهيدر
+const EASE = "cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+
+const nextFrame = () =>
+  new Promise<void>((r) => requestAnimationFrame(() => r()));
+
+function railToPx(
+  rootStyles: CSSStyleDeclaration,
+  varName: string,
+  fallback: number,
+  rootFontSize: number
+) {
+  const raw = rootStyles.getPropertyValue(varName).trim();
+  const num = parseFloat(raw);
+  if (Number.isNaN(num)) return fallback;
+  return raw.endsWith("rem") ? num * rootFontSize : num;
+}
+
+// عرض شعار الهيدر الفعلي (مدفوع بالـ CSS، ثابت بصرف النظر عن لحظة تحميل الصورة)
+function headerLogoWidth() {
+  return headerLogo ? headerLogo.getBoundingClientRect().width : 0;
+}
+
+// مركز شعار الهيدر بإحداثيات الـ viewport — يُقاس طازجًا قبل مرحلة الرجوع مباشرة.
+// نشتق الارتفاع من العرض × النسبة بدل rect.height حتى لا نعتمد على لحظة تحميل صورة
+// الهيدر (rect.height قد تكون 0 قبل التحميل).
+function headerCenter() {
+  const r = headerLogo!.getBoundingClientRect();
+  return { x: r.left + r.width / 2, y: r.top + (r.width * logoAspect) / 2 };
+}
+
+// مركز محطة الزاوية — من قياس الـ rail وأبعاد الشعار فقط (بلا أرقام سحرية).
+function cornerCenter(w: number, h: number) {
+  const rs = getComputedStyle(document.documentElement);
+  const fs = parseFloat(rs.fontSize) || 16;
+  const railW = railToPx(rs, "--railW", 60, fs);
+  const railH = railToPx(rs, "--railH", 44, fs);
+  const marginX = railW + w * 0.25;
+  const marginY = railH + h * 0.5;
+  const isRtl = document.documentElement.dir === "rtl";
+  // RTL تعكس المحور الأفقي فقط: الزاوية العليا اليمنى بدل اليسرى
+  const x = isRtl ? window.innerWidth - (marginX + w / 2) : marginX + w / 2;
+  const y = marginY + h / 2;
+  return { x, y };
+}
+
+// الشعار fixed عند (0,0)، فنحرّك مركزه إلى نقطة في الـ viewport عبر translate.
+// transform-origin center + تطابق الحجم (بلا scale عند الأطراف) يجعل المحاذاة دقيقة.
+function toCenter(cx: number, cy: number, w: number, h: number, scale = 1) {
+  return `translate(${cx - w / 2}px, ${cy - h / 2}px) scale(${scale})`;
+}
+
+function debugLog(label: string, w: number, h: number) {
+  if (!DEBUG_SPLASH) return;
+  // eslint-disable-next-line no-console
+  console.log(`[SPLASH] ${label}`, {
+    loaderRect: splashLogoRef.value?.getBoundingClientRect(),
+    headerRect: headerLogo?.getBoundingClientRect(),
+    cornerCenter: cornerCenter(w, h),
+    viewport: { w: window.innerWidth, h: window.innerHeight },
+    devicePixelRatio: window.devicePixelRatio,
+    logoAspect,
+  });
+}
+
+function finishSplash() {
+  if (headerLogo) headerLogo.style.visibility = "";
+  showSplash.value = false;
+}
+
+async function runSplash() {
+  const splashLogo = splashLogoRef.value as HTMLImageElement | null;
+  if (!splashLogo) return finishSplash();
+
+  // 1) ننتظر تحميل/فك صورة الشعار حتى تتوفر النسبة الحقيقية (width/height)
+  try {
+    if (!splashLogo.complete) {
+      await new Promise<void>((res) => {
+        splashLogo.onload = () => res();
+        splashLogo.onerror = () => res();
+      });
+    }
+    if (splashLogo.decode) await splashLogo.decode().catch(() => {});
+  } catch {
+    /* تجاهل — نكمل بالنسبة الافتراضية */
+  }
+  if (splashLogo.naturalWidth && splashLogo.naturalHeight) {
+    logoAspect = splashLogo.naturalHeight / splashLogo.naturalWidth;
+  }
+
+  // 2) استقرار الـ layout: nextTick + إطارين على الأقل
+  await nextTick();
+  await nextFrame();
+  await nextFrame();
+
+  if (prefersReducedMotion()) return finishSplash();
+
+  // 3) توحيد الحجم: نفس مصدر العرض (شعار الهيدر) ونفس النسبة → أبعاد متطابقة في
+  //    كل المتصفحات، بلا clamp/vw مختلف وبلا scale عند الأطراف.
+  const W = headerLogoWidth();
+  if (!W) return finishSplash();
+  const H = W * logoAspect;
+  splashLogo.style.width = `${W}px`;
+  splashLogo.style.height = `${H}px`;
+
+  const vC = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  const corner = cornerCenter(W, H);
+  debugLog("phase1-start", W, H);
+
+  // 4) المرحلة 1: ظهور + نبضة عند المركز ثم انزلاق إلى الزاوية
+  await nextFrame();
+  p1Anim = splashLogo.animate(
+    [
+      { offset: 0, transform: toCenter(vC.x, vC.y, W, H, 1), opacity: 0 },
+      { offset: 0.18, transform: toCenter(vC.x, vC.y, W, H, 1), opacity: 1 },
+      { offset: 0.3, transform: toCenter(vC.x, vC.y, W, H, 1.1), opacity: 1 },
+      { offset: 0.42, transform: toCenter(vC.x, vC.y, W, H, 1), opacity: 1 },
+      { offset: 0.52, transform: toCenter(vC.x, vC.y, W, H, 1), opacity: 1 },
+      {
+        offset: 1,
+        transform: toCenter(corner.x, corner.y, W, H, 1),
+        opacity: 1,
+      },
+    ],
+    { duration: P1_DURATION, easing: EASE, fill: "forwards" }
+  );
+
+  // نخفي الخلفية أثناء الانزلاق حتى تظهر الصفحة خلف الشعار
+  timers.push(setTimeout(() => (bgHidden.value = true), P1_DURATION * 0.52));
+
+  await p1Anim.finished.catch(() => {});
+
+  // 5) وقفة عند الزاوية مع توهج الدخان الأخضر
+  glowOn.value = true;
+  await new Promise<void>((r) => timers.push(setTimeout(r, CORNER_HOLD)));
+
+  // 6) المرحلة 2: نعيد قياس شعار الهيدر طازجًا (بعد استقرار حركة ظهوره) ثم نرجع
+  //    الشعار فوقه تمامًا — نفس الحجم وبلا scale فالمحاذاة دقيقة ولا "نزول".
+  const target = headerCenter();
+  debugLog("phase2-start", W, H);
+  await nextFrame();
+  p2Anim = splashLogo.animate(
+    [
+      { transform: toCenter(corner.x, corner.y, W, H, 1) },
+      { transform: toCenter(target.x, target.y, W, H, 1) },
+    ],
+    { duration: P2_DURATION, easing: EASE, fill: "forwards" }
+  );
+  await p2Anim.finished.catch(() => {});
+
+  debugLog("phase2-end", W, H);
+  finishSplash();
 }
 
 onMounted(async () => {
+  // عند الرجوع للرئيسية بعد تنقل داخلي: الـ splash سبق تشغيله → لا نعيده ولا
+  // نلمس شعار الهيدر إطلاقًا (يبقى ظاهرًا بحجمه الطبيعي).
+  if (!showSplash.value) return;
+  // نُعلّم أنه تم التشغيل فورًا حتى لو خرج المستخدم أثناء الحركة ثم رجع.
+  splashPlayed.value = true;
+
   await nextTick();
   headerLogo = document.getElementById("logo");
-  const splashLogo = splashLogoRef.value;
-  if (headerLogo) {
-    applySplashTarget();
-    // نخفي شعار الصفحة حتى لا يظهر شعاران أثناء الانتقال
-    headerLogo.style.visibility = "hidden";
-  }
-
-  // إزاحة الزاوية العليا اليسرى — المحطة الأولى قبل موضع شعار الصفحة
-  if (splashLogo) {
-    const cornerScale = 0.5;
-    // المسافة من الزاوية تُحسب من نفس عرض/ارتفاع الـ rail (--railW / --railH)
-    // مع زيادة خفيفة حتى لا يستقر الشعار فوق الـ rail بالضبط
-    const rootStyles = getComputedStyle(document.documentElement);
-    const rootFontSize = parseFloat(rootStyles.fontSize) || 16;
-    const railToPx = (varName: string, fallback: number) => {
-      const raw = rootStyles.getPropertyValue(varName).trim();
-      const num = parseFloat(raw);
-      if (Number.isNaN(num)) return fallback;
-      return raw.endsWith("rem") ? num * rootFontSize : num;
-    };
-    const cornerExtraX = 45;
-    const cornerExtraY = 30;
-    const cornerMarginX = railToPx("--railW", 60) + cornerExtraX;
-    const cornerMarginY = railToPx("--railH", 44) + cornerExtraY;
-    const splashW = splashLogo.offsetWidth;
-    const splashH = splashLogo.offsetHeight || splashW * 0.35;
-    // في RTL تُعكس الوجهة الأفقية فقط: من المركز إلى الزاوية العليا اليمنى
-    const isRtl = document.documentElement.dir === "rtl";
-    const cdx =
-      (isRtl ? 1 : -1) *
-      (window.innerWidth / 2 - (splashW * cornerScale) / 2 - cornerMarginX);
-    const cdy = -(
-      window.innerHeight / 2 -
-      (splashH * cornerScale) / 2 -
-      cornerMarginY
-    );
-    // تعيين إزاحة الزاوية كمتغيرات CSS لاستخدامها في keyframes
-    splashLogo.style.setProperty("--cdx", `${cdx}px`);
-    splashLogo.style.setProperty("--cdy", `${cdy}px`);
-  }
-
-  splashAnimating.value = true;
-  // إعادة قياس موضع شعار الصفحة قبل الخطوة الثانية مباشرة بعد استقرار التخطيط
-  measureTimer = setTimeout(applySplashTarget, 2600);
-  // عند وصول شعار التحميل لموضع شعار الصفحة: تسليم سلس في نفس الإطار
-  splashTimer = setTimeout(() => {
-    if (headerLogo) headerLogo.style.visibility = "";
-    showSplash.value = false;
-  }, 3600);
+  // نخفي شعار الهيدر دون إخراجه من الـ layout (visibility لا display) ليبقى قابلاً
+  // للقياس ومكانه محجوزًا/ثابتًا قبل وبعد اختفاء الـ splash.
+  if (headerLogo) headerLogo.style.visibility = "hidden";
+  runSplash();
 });
 
 onBeforeUnmount(() => {
-  if (splashTimer) clearTimeout(splashTimer);
-  if (measureTimer) clearTimeout(measureTimer);
+  timers.forEach(clearTimeout);
+  p1Anim?.cancel();
+  p2Anim?.cancel();
   if (headerLogo) headerLogo.style.visibility = "";
 });
 </script>
@@ -103,16 +228,15 @@ onBeforeUnmount(() => {
 <template>
   <div>
     <!-- صفحة التحميل -->
-    <div
-      v-if="showSplash"
-      ref="splashRef"
-      class="splash-screen"
-      :class="{ 'splash-fade-out': splashAnimating }"
-    >
-      <div class="splash-bg" aria-hidden="true" />
+    <div v-if="showSplash" ref="splashRef" class="splash-screen">
+      <div
+        class="splash-bg"
+        :class="{ 'is-hidden': bgHidden }"
+        aria-hidden="true"
+      />
       <div
         class="splash-corner-glow"
-        :class="{ 'glow-animate': splashAnimating }"
+        :class="{ 'glow-animate': glowOn }"
         aria-hidden="true"
       />
       <img
@@ -120,7 +244,6 @@ onBeforeUnmount(() => {
         src="/logos/svg/logo_black.svg"
         alt="Makzn7"
         class="splash-logo dark:invert"
-        :class="{ 'splash-animate': splashAnimating }"
       />
     </div>
 
@@ -153,66 +276,39 @@ onBeforeUnmount(() => {
   justify-content: center;
 }
 
-/* خلفية التحميل كطبقة مستقلة حتى تتلاشى بالتوازي مع حركة الشعار */
+/* خلفية التحميل كطبقة مستقلة تتلاشى أثناء انزلاق الشعار نحو الزاوية */
 .splash-bg {
   position: absolute;
   inset: 0;
   background-color: var(--color-bg);
+  opacity: 1;
+  transition: opacity 0.9s ease;
+}
+.splash-bg.is-hidden {
+  opacity: 0;
 }
 
 .splash-logo {
-  width: clamp(150px, 10vw, 300px);
+  /* position:fixed → الإحداثيات بالنسبة للـ viewport لا لأي parent.
+     العرض والارتفاع يُضبطان بالبكسل من JS (عرض شعار الهيدر × نسبة الصورة)،
+     فلا clamp/vw مختلف بين المتصفحات. الحركة كلها عبر Web Animations API. */
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* نفس مصدر حجم شعار الهيدر — حجم صحيح فورًا بلا اعتماد على الحجم الجوهري للـ SVG.
+     الـ JS يضبط نفس القيمة بالبكسل لاحقًا لحساب إحداثيات الحركة فقط. */
+  width: var(--site-logo-width);
+  /* نفس حجز الأبعاد كشعار الهيدر — يمنع وميض الحجم قبل فك صورة الـ SVG */
+  aspect-ratio: 113 / 50.6;
+  height: auto;
+  display: block;
+  object-fit: contain;
   opacity: 0;
-  transform: translate(0, 0) scale(1);
-}
-
-/* ══ أنيميشن الشعار ══ */
-.splash-logo.splash-animate {
-  position: relative;
-  z-index: 1;
-  animation: splashLogoAnim 2.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-
-@keyframes splashLogoAnim {
-  /* ظهور مع تكبير */
-  0% {
-    opacity: 0;
-    transform: translate(0, 0) scale(1);
-  }
-  16% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-  }
-  /* نبضة - تكبير */
-  24% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1.1);
-  }
-  /* نبضة - رجوع */
-  32% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-  }
-  /* ثبات لحظي */
-  40% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-  }
-  /* الخطوة الأولى: ينزلق إلى أقصى الزاوية العليا اليسرى */
-  68% {
-    opacity: 1;
-    transform: translate(var(--cdx, -40vw), var(--cdy, -40vh)) scale(1);
-  }
-  /* وقفة قصيرة عند الزاوية مع توهج الدخان الأخضر */
-  82% {
-    opacity: 1;
-    transform: translate(var(--cdx, -40vw), var(--cdy, -40vh)) scale(1);
-  }
-  /* الخطوة الثانية: انتقال خفيف من الزاوية إلى موضع شعار الصفحة */
-  100% {
-    opacity: 1;
-    transform: translate(var(--dx, -200px), var(--dy, -150px)) scale(1);
-  }
+  z-index: 2;
+  /* مركز ثابت للـ transform حتى يتطابق سلوك Safari و Chrome */
+  transform-origin: center center;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 /* ══ توهج/دخان أخضر من الزاوية العليا اليسرى ══ */
@@ -246,18 +342,18 @@ onBeforeUnmount(() => {
   right: -45vmax;
 }
 
+/* يُفعّل عند وصول الشعار للزاوية (glowOn من JS) فيلعب التوهج كاملاً عندها */
 .splash-corner-glow.glow-animate {
-  animation: cornerGlowAnim 2.6s ease-in-out forwards;
+  animation: cornerGlowAnim 0.65s ease-in-out forwards;
 }
 
 @keyframes cornerGlowAnim {
-  0%,
-  64% {
+  0% {
     opacity: 0;
     transform: scale(0.4);
   }
   /* توهج قصير وخافت عند وصول الشعار للزاوية */
-  78% {
+  45% {
     opacity: 0.8;
     transform: scale(1);
   }
@@ -267,32 +363,14 @@ onBeforeUnmount(() => {
   }
 }
 
-/* ══ اختفاء الخلفية بالتوازي مع الخطوة الأولى نحو الزاوية ══ */
-.splash-screen.splash-fade-out .splash-bg {
-  animation: splashBgFade 3.6s ease forwards;
-}
-
-@keyframes splashBgFade {
-  0%,
-  40% {
-    opacity: 1;
-  }
-  68%,
-  100% {
-    opacity: 0;
-  }
-}
-
-/* Reduced motion: show the logo statically, skip the morph + fade */
+/* Reduced motion: نتخطى الحركة كليًا (runSplash يستدعي finishSplash مباشرة) */
 @media (prefers-reduced-motion: reduce) {
-  .splash-logo,
-  .splash-logo.splash-animate {
-    opacity: 1;
-    transform: none;
+  .splash-logo {
+    opacity: 0;
     animation: none;
   }
-  .splash-screen.splash-fade-out .splash-bg {
-    animation: none;
+  .splash-bg {
+    transition: none;
   }
   .splash-corner-glow,
   .splash-corner-glow.glow-animate {
