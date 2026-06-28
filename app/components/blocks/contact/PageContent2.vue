@@ -37,15 +37,17 @@
           :style="`margin-inline-start: ${marginS}px; width: calc(100% - ${marginS}px);`"
         >
           <div
-            class="w-full flex flex-col lg:flex-row gap-4 lg:gap-1 items-center justify-center"
+            class="w-full grid grid-cols-1 lg:grid-cols-5 gap-4 lg:gap-1 items-center justify-center"
           >
             <!-- Form -->
-            <div class="order-2 lg:order-1 contact-form mt-4 lg:mt-0 w-full">
+            <div
+              class="lg:col-span-3 order-2 lg:order-1 contact-form mt-4 lg:mt-0 w-full"
+            >
               <ContactForm :marginS="marginS" :canSend="canSend" />
             </div>
             <!-- Text + Icon -->
             <div
-              class="order-1 lg:order-2 h-full w-full flex justify-center items-center"
+              class="lg:col-span-2 order-1 lg:order-2 h-full w-full flex justify-center items-center"
             >
               <div class="relative flex justify-center items-center">
                 <img
@@ -70,7 +72,7 @@
       <!-- Info Section -->
       <section>
         <div
-          class="info-section w-full grid grid-cols-7 lg:grid-cols-9 border-s-[0.3px] border-white-op50 border-brand-text lg:h-[100px]"
+          class="info-section w-full grid grid-cols-7 lg:grid-cols-9 border-s-[0.3px] border-white-op50 border-brand-text lg:h-[100px] overflow-y-hidden"
           :style="`margin-inline-start: ${marginS}px; width: calc(100% - ${marginS}px);`"
         >
           <!--  -->
@@ -162,9 +164,9 @@
           class="contact-form-section w-full lg:border-s-[0.3px] border-t-[0.3px] border-white-op50 border-brand-text"
           :style="`margin-inline-start: ${marginS}px; width: calc(100% - ${marginS}px);`"
         >
-          <div class="w-full grid grid-cols-1 lg:grid-cols-5">
+          <div class="w-full grid grid-cols-1 lg:grid-cols-2">
             <!-- Image & Button -->
-            <div class="order-2 lg:order-1 lg:col-span-3 flex flex-col">
+            <div class="order-2 lg:order-1 flex flex-col">
               <img
                 src="/images/pages/contact/map3.png"
                 alt="Location Image"
@@ -191,7 +193,7 @@
             </div>
             <!-- Info -->
             <div
-              class="order-1 lg:order-2 lg:col-span-2 flex lg:flex-col justify-between gap-4 lg:gap-8 px-4 lg:px-6 py-4 lg:py-12"
+              class="order-1 lg:order-2 flex lg:flex-col justify-between gap-4 lg:gap-8 px-4 lg:px-6 py-4 lg:py-12"
             >
               <h3
                 class="font-normal lg:ltr:font-bold tracking-[0px] lg:mb-4 lg:max-w-96"
