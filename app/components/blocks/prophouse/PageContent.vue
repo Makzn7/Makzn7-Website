@@ -58,7 +58,7 @@
           <!-- <span
             class="font-pixel mb-[5px] inline-block text-[#E1FE53] tracking-tighter font-bold"
             >-></span> -->
-          <img src="/icons/svg/prop-arrow.svg" class="w-5 h-5" />
+          <img src="/icons/svg/prop-arrow.svg" class="w-5 h-5 rtl:rotate-180" />
         </a>
       </div>
       <!-- Top Logo And Image Mobile-->
@@ -84,7 +84,10 @@
             class="font-pixel mb-[3px] inline-block text-[#E1FE53] tracking-tighter font-bold"
             >-></span
           > -->
-          <img src="/icons/svg/prop-arrow.svg" class="w-3.5 h-3.5" />
+          <img
+            src="/icons/svg/prop-arrow.svg"
+            class="w-3.5 h-3.5 rtl:rotate-180"
+          />
         </a>
       </div>
       <!-- Sections -->

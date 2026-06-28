@@ -91,6 +91,7 @@
     "rateLimited": "Too many requests. Please wait a moment and try again.",
     "serverError": "We couldn't reach the server right now. Please try again shortly.",
     "error": "An error occurred while sending your message. Please try again later.",
+    "reachOut": "Or reach out here…",
     "errors": {
       "name": {
         "required": "Please enter your name.",

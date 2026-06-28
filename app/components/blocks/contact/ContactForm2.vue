@@ -1,12 +1,13 @@
 <template>
   <form
     ref="formRef"
-    class="flex flex-col justify-between h-full gap-8"
+    class="flex flex-col justify-between h-full gap-8 w-full"
     novalidate
     @submit.prevent="handleSubmit"
   >
     <div class="flex flex-col">
       <div
+        class="lg:text-nowrap"
         :style="`font-size: clamp(${Math.max(18, Math.round(100 * 0.35))}px, ${(
           100 / 20
         ).toFixed(1)}vw, ${100}px);`"
@@ -49,6 +50,7 @@
           @input="onInput(field.key, $event)"
           @focus="focused = field.key"
           @blur="focused = null"
+          :readonly="!canSend"
         />
         <p
           v-if="fieldErrors[field.key]"
@@ -60,7 +62,7 @@
       </div>
     </div>
 
-    <div class="flex justify-end items-center gap-4">
+    <div class="flex justify-start items-center gap-4">
       <p
         v-if="successMsg"
         role="status"
@@ -79,7 +81,7 @@
       </p>
       <button
         type="submit"
-        :disabled="submitting"
+        :disabled="submitting || !canSend"
         class="px-10 py-3 bg-[--main-color] border border-[--main-color] text-black transition-all duration-300 hover:bg-transparent hover:text-white hover:border-white disabled:opacity-60 disabled:cursor-not-allowed"
         :style="`font-size: clamp(${Math.max(14, Math.round(23 * 0.35))}px, ${(
           23 / 20
@@ -92,6 +94,15 @@
 </template>
 
 <script setup lang="ts">
+const props = withDefaults(
+  defineProps<{
+    canSend?: boolean;
+  }>(),
+  {
+    canSend: true,
+  }
+);
+
 type FieldKey = "name" | "email" | "phone" | "message";
 
 type FieldDef = {
@@ -152,7 +163,7 @@ const fields: FieldDef[] = [
   {
     key: "message",
     tag: "textarea",
-    rows: 7,
+    rows: 3,
     minlength: 10,
     maxlength: 5000,
     required: true,
@@ -275,7 +286,7 @@ function buildPayload(): ContactPayload {
 }
 
 async function handleSubmit() {
-  if (submitting.value) return;
+  if (submitting.value || !props.canSend) return;
   clearMessages();
   if (!validateClient()) return;
 
