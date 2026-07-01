@@ -113,6 +113,11 @@
         "required": "Please write a message.",
         "min": "Message must be at least {min} characters.",
         "max": "Message must be at most {max} characters."
+      },
+      "turnstile": {
+        "required": "Please complete the verification first.",
+        "error": "Verification failed. Please try again.",
+        "expired": "Verification expired. Please try again."
       }
     },
     "contactSectionTitle": "Contact",

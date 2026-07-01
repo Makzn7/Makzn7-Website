@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "@nuxtjs/color-mode",
     "@nuxtjs/sitemap",
+    "@nuxtjs/turnstile",
   ],
 
   site: {
@@ -144,6 +145,10 @@ export default defineNuxtConfig({
         file: "ar.json",
       },
     ],
+  },
+
+  turnstile: {
+    siteKey: process.env.NUXT_TURNSTILE_SITE_KEY || "",
   },
 
   css: [

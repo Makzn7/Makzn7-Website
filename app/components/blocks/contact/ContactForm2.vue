@@ -62,33 +62,48 @@
       </div>
     </div>
 
-    <div class="flex justify-start items-center gap-4">
-      <p
-        v-if="successMsg"
-        role="status"
-        aria-live="polite"
-        class="text-[13px] text-[--main-color]"
-      >
-        {{ successMsg }}
-      </p>
-      <p
-        v-if="errorMsg && !hasFieldErrors"
-        role="alert"
-        aria-live="assertive"
-        class="text-[13px] text-red-400"
-      >
-        {{ errorMsg }}
-      </p>
-      <button
-        type="submit"
-        :disabled="submitting || !canSend"
-        class="px-10 py-3 bg-[--main-color] border border-[--main-color] text-black transition-all duration-300 hover:bg-transparent hover:text-white hover:border-white disabled:opacity-60 disabled:cursor-not-allowed"
-        :style="`font-size: clamp(${Math.max(14, Math.round(23 * 0.35))}px, ${(
-          23 / 20
-        ).toFixed(1)}vw, ${23}px);`"
-      >
-        {{ submitting ? "..." : $t("contact.submit") }}
-      </button>
+    <div class="flex flex-col gap-4">
+      <div>
+        <NuxtTurnstile
+          ref="turnstileRef"
+          v-model="turnstileToken"
+          @error="onTurnstileError"
+          @expired="onTurnstileExpired"
+        />
+        <p v-if="turnstileError" class="text-[12px] text-red-400 pb-2">
+          {{ turnstileError }}
+        </p>
+      </div>
+
+      <div class="flex justify-start items-center gap-4">
+        <p
+          v-if="successMsg"
+          role="status"
+          aria-live="polite"
+          class="text-[13px] text-[--main-color]"
+        >
+          {{ successMsg }}
+        </p>
+        <p
+          v-if="errorMsg && !hasFieldErrors"
+          role="alert"
+          aria-live="assertive"
+          class="text-[13px] text-red-400"
+        >
+          {{ errorMsg }}
+        </p>
+        <button
+          type="submit"
+          :disabled="submitting || !canSend"
+          class="px-10 py-3 bg-[--main-color] border border-[--main-color] text-black transition-all duration-300 hover:bg-transparent hover:text-white hover:border-white disabled:opacity-60 disabled:cursor-not-allowed"
+          :style="`font-size: clamp(${Math.max(
+            14,
+            Math.round(23 * 0.35)
+          )}px, ${(23 / 20).toFixed(1)}vw, ${23}px);`"
+        >
+          {{ submitting ? "..." : $t("contact.submit") }}
+        </button>
+      </div>
     </div>
   </form>
 </template>
@@ -124,6 +139,7 @@ type ContactPayload = {
   message: string;
   locale: "ar" | "en";
   source: string;
+  turnstile: string;
 };
 
 type ValidationErrorBody = {
@@ -174,6 +190,9 @@ const { t, locale } = useI18n();
 const { raw } = useApi();
 
 const formRef = ref<HTMLFormElement | null>(null);
+const turnstileRef = ref<{ reset: () => void } | null>(null);
+const turnstileToken = ref("");
+const turnstileError = ref("");
 const form = reactive<Record<FieldKey, string>>({
   name: "",
   email: "",
@@ -200,9 +219,20 @@ function onInput(key: FieldKey, event: Event) {
   if (fieldErrors[key]) fieldErrors[key] = "";
 }
 
+function onTurnstileError() {
+  turnstileToken.value = "";
+  turnstileError.value = t("contact.errors.turnstile.error");
+}
+
+function onTurnstileExpired() {
+  turnstileToken.value = "";
+  turnstileError.value = t("contact.errors.turnstile.expired");
+}
+
 function clearMessages() {
   successMsg.value = "";
   errorMsg.value = "";
+  turnstileError.value = "";
   (Object.keys(fieldErrors) as FieldKey[]).forEach((k) => {
     fieldErrors[k] = "";
   });
@@ -282,6 +312,7 @@ function buildPayload(): ContactPayload {
     message: form.message.trim(),
     locale: locale.value === "ar" ? "ar" : "en",
     source: "website",
+    turnstile: turnstileToken.value,
   };
 }
 
@@ -289,6 +320,10 @@ async function handleSubmit() {
   if (submitting.value || !props.canSend) return;
   clearMessages();
   if (!validateClient()) return;
+  if (!turnstileToken.value) {
+    turnstileError.value = t("contact.errors.turnstile.required");
+    return;
+  }
 
   submitting.value = true;
   let status = 0;
@@ -305,7 +340,11 @@ async function handleSubmit() {
 
     successMsg.value =
       status === 202 ? t("contact.duplicate") : t("contact.success");
-    if (status !== 202) resetForm();
+    if (status !== 202) {
+      resetForm();
+      turnstileRef.value?.reset();
+      turnstileToken.value = "";
+    }
   } catch (err: any) {
     if (err?.status === 422) {
       const body = err.raw as ValidationErrorBody | undefined;
