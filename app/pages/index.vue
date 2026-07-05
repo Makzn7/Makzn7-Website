@@ -151,7 +151,16 @@ function updateGlow() {
     Math.abs(progress - lastGlowProgress) >= 0.001
   ) {
     lastGlowProgress = progress;
-    // قيم صغيرة جدًا = إحساس مترف هادئ؛ النزول يدفع باتجاه والصعود يعكسه طبيعيًا.
+    // على الموبايل: التوهج متمركز أعلى المنتصف قرب مسار الشعار، فأي إزاحة نزولية
+    // (parallax) تشدّه نحو موضع الشعار الأصلي في المنتصف. لذا نُلغي الـ parallax
+    // على الموبايل ونبقيه ثابتًا — مساره الصاعد يأتي كليًا من keyframe الموبايل.
+    if (isMobileViewport()) {
+      el.style.rotate = "0deg";
+      el.style.translate = "0 0px";
+      return;
+    }
+    // الديسكتوب (التوهج من الزاوية): قيم صغيرة جدًا = إحساس مترف هادئ؛ النزول
+    // يدفع باتجاه والصعود يعكسه طبيعيًا.
     el.style.rotate = `${(progress * 8).toFixed(2)}deg`;
     el.style.translate = `0 ${(progress * 10).toFixed(1)}px`;
   }
@@ -444,6 +453,33 @@ onBeforeUnmount(() => {
   100% {
     opacity: 0;
     transform: scale(1.1);
+  }
+}
+
+/* على الموبايل التوهج متمركز أعلى المنتصف (لا زاوية جانبية). keyframe الديسكتوب
+   يكبّر scale حول هذا المركز فيتمدّد نصفه السفلي نزولًا نحو موضع الشعار الأصلي في
+   المنتصف ثم يختفي فجأة = إحساس "نزول ثم قفز". لذا نمنح الموبايل مساره الخاص:
+   يصعد للأعلى فقط (translateY موجب→سالب) مع نفس نبضة الـ opacity، بلا شدّ للأسفل.
+   نفس التصميم/الحجم/الـ blur/اللون تمامًا — المتغيّر هو مسار الحركة فقط.
+   transform هنا مستقل عن translate/rotate القادمة من scroll (خاصية مختلفة). */
+@media (max-width: 1023.98px) {
+  .splash-corner-glow.glow-animate {
+    animation: cornerGlowAnimMobile 0.65s ease-in-out forwards;
+  }
+}
+
+@keyframes cornerGlowAnimMobile {
+  0% {
+    opacity: 0;
+    transform: translateY(6vmax) scale(0.85);
+  }
+  45% {
+    opacity: 0.8;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-5vmax) scale(1.06);
   }
 }
 
