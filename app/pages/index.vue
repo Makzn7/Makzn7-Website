@@ -9,6 +9,7 @@ const aboutData = computed(() => homeData.value?.data?.about ?? null);
 
 const splashRef = ref<HTMLElement | null>(null);
 const splashLogoRef = ref<HTMLElement | null>(null);
+const splashCornerGlowRef = ref<HTMLElement | null>(null);
 
 // الـ splash يظهر مرة واحدة فقط عند أول تحميل للموقع. useState يبقى محفوظًا طوال
 // عمر التطبيق (يُعاد ضبطه فقط عند refresh كامل)، فالتنقل الداخلي ثم الرجوع
@@ -99,6 +100,23 @@ function toCenter(cx: number, cy: number, w: number, h: number, scale = 1) {
   return `translate(${cx - w / 2}px, ${cy - h / 2}px) scale(${scale})`;
 }
 
+// هل نحن على شاشة موبايل؟ نستخدم matchMedia على نفس نقطة توقف lg (1024px) التي
+// يبدّل عندها الهيدر شعارَه من صف جانبي إلى عمود متمركز أفقيًا (والـ rails تصغر).
+// على الموبايل لا نريد انزلاق الشعار نحو الزاوية بل نحو مركز شعار الهيدر.
+function isMobileViewport() {
+  return (
+    typeof window !== "undefined" &&
+    window.matchMedia("(max-width: 1023.98px)").matches
+  );
+}
+
+// محطة نهاية المرحلة 1: على الديسكتوب زاوية علوية (السلوك الحالي كما هو تمامًا)،
+// وعلى الموبايل مركز شعار الهيدر الفعلي (متمركز أفقيًا) فلا يوجد شدّ يسار/يمين —
+// يصح في LTR و RTL معًا لأن المركز محايد الاتجاه، ومحسوب من العنصر الحقيقي.
+function stationCenter(w: number, h: number) {
+  return isMobileViewport() ? headerCenter() : cornerCenter(w, h);
+}
+
 function debugLog(label: string, w: number, h: number) {
   if (!DEBUG_SPLASH) return;
   // eslint-disable-next-line no-console
@@ -112,7 +130,57 @@ function debugLog(label: string, w: number, h: number) {
   });
 }
 
+// ══ حركة scroll خفيفة جدًا لتوهج الزاوية (splash-corner-glow) ══
+// نفس مفهوم دوران الحلقة في صفحة التواصل: مرتبطة بالتمرير لا بأنيميشن لانهائي.
+// التوهج عنصر radial-gradient متماثل دورانيًا (فالدوران وحده غير محسوس)، لذا نضيف
+// إزاحة parallax لطيفة جدًا + دوران ضئيل. نكتبها عبر خصائص rotate/translate
+// المستقلة فتتركّب فوق transform:scale القادم من keyframe cornerGlowAnim بلا
+// إلغائه إطلاقًا (فلا تنكسر حركة الـ splash). التمرير native (window.scrollY).
+let glowRafId: number | null = null;
+let glowScrollHandler: (() => void) | null = null;
+let lastGlowProgress = NaN;
+
+function updateGlow() {
+  glowRafId = null;
+  const el = splashCornerGlowRef.value;
+  if (!el) return; // أُزيل مع نهاية الـ splash → نتوقف
+  const vh = window.innerHeight || 1;
+  const progress = (window.scrollY || 0) / vh; // 0..n مع النزول
+  if (
+    Number.isNaN(lastGlowProgress) ||
+    Math.abs(progress - lastGlowProgress) >= 0.001
+  ) {
+    lastGlowProgress = progress;
+    // قيم صغيرة جدًا = إحساس مترف هادئ؛ النزول يدفع باتجاه والصعود يعكسه طبيعيًا.
+    el.style.rotate = `${(progress * 8).toFixed(2)}deg`;
+    el.style.translate = `0 ${(progress * 10).toFixed(1)}px`;
+  }
+}
+
+function scheduleGlow() {
+  if (glowRafId === null) glowRafId = requestAnimationFrame(updateGlow);
+}
+
+function startGlowScroll() {
+  if (prefersReducedMotion()) return; // نحترم تقليل الحركة
+  glowScrollHandler = scheduleGlow;
+  window.addEventListener("scroll", glowScrollHandler, { passive: true });
+  scheduleGlow(); // ضبط الحالة الابتدائية حسب موضع التمرير الحالي
+}
+
+function stopGlowScroll() {
+  if (glowScrollHandler) {
+    window.removeEventListener("scroll", glowScrollHandler);
+    glowScrollHandler = null;
+  }
+  if (glowRafId !== null) {
+    cancelAnimationFrame(glowRafId);
+    glowRafId = null;
+  }
+}
+
 function finishSplash() {
+  stopGlowScroll();
   if (headerLogo) headerLogo.style.visibility = "";
   showSplash.value = false;
 }
@@ -151,7 +219,8 @@ async function runSplash() {
   splashLogo.style.width = `${W}px`;
 
   const vC = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-  const corner = cornerCenter(W, H);
+  // زاوية على الديسكتوب، ومركز شعار الهيدر على الموبايل (بلا شدّ للزاوية).
+  const station = stationCenter(W, H);
   debugLog("phase1-start", W, H);
 
   // 4) المرحلة 1: ظهور + نبضة عند المركز ثم انزلاق إلى الزاوية
@@ -165,7 +234,7 @@ async function runSplash() {
       { offset: 0.52, transform: toCenter(vC.x, vC.y, W, H, 1), opacity: 1 },
       {
         offset: 1,
-        transform: toCenter(corner.x, corner.y, W, H, 1),
+        transform: toCenter(station.x, station.y, W, H, 1),
         opacity: 1,
       },
     ],
@@ -188,7 +257,7 @@ async function runSplash() {
   await nextFrame();
   p2Anim = splashLogo.animate(
     [
-      { transform: toCenter(corner.x, corner.y, W, H, 1) },
+      { transform: toCenter(station.x, station.y, W, H, 1) },
       { transform: toCenter(target.x, target.y, W, H, 1) },
     ],
     { duration: P2_DURATION, easing: EASE, fill: "forwards" }
@@ -211,6 +280,8 @@ onMounted(async () => {
   // نخفي شعار الهيدر دون إخراجه من الـ layout (visibility لا display) ليبقى قابلاً
   // للقياس ومكانه محجوزًا/ثابتًا قبل وبعد اختفاء الـ splash.
   if (headerLogo) headerLogo.style.visibility = "hidden";
+  // حركة scroll خفيفة للتوهج طوال حياة الـ splash (تُوقَف في finishSplash/unmount)
+  startGlowScroll();
   runSplash();
 });
 
@@ -218,6 +289,7 @@ onBeforeUnmount(() => {
   timers.forEach(clearTimeout);
   p1Anim?.cancel();
   p2Anim?.cancel();
+  stopGlowScroll();
   if (headerLogo) headerLogo.style.visibility = "";
 });
 </script>
@@ -232,6 +304,7 @@ onBeforeUnmount(() => {
         aria-hidden="true"
       />
       <div
+        ref="splashCornerGlowRef"
         class="splash-corner-glow"
         :class="{ 'glow-animate': glowOn }"
         aria-hidden="true"
@@ -337,6 +410,20 @@ onBeforeUnmount(() => {
 :global(html[dir="rtl"] .splash-corner-glow) {
   left: auto;
   right: -45vmax;
+}
+
+/* على الشاشات الصغيرة (نفس نقطة توقف الشعار: يهبط للمركز لا للزاوية) نُركّز
+   التوهج أعلى المنتصف بدل الزاوية، فيتوافق مع مسار الشعار المتمركز ولا يظهر
+   على الأطراف. نستخدم left/margin (بلا transform) حتى لا نتعارض مع scale
+   القادم من keyframe cornerGlowAnim. يسري على LTR و RTL معًا. */
+@media (max-width: 1023.98px) {
+  .splash-corner-glow,
+  :global(html[dir="rtl"] .splash-corner-glow) {
+    top: -45vmax;
+    left: 50%;
+    right: auto;
+    margin-left: -45vmax; /* نصف العرض (90vmax) لتوسيط التوهج أفقيًا */
+  }
 }
 
 /* يُفعّل عند وصول الشعار للزاوية (glowOn من JS) فيلعب التوهج كاملاً عندها */
