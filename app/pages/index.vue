@@ -73,8 +73,22 @@ function railToPx(
 // مركز شعار الهيدر بإحداثيات الـ viewport — يُقاس طازجًا قبل مرحلة الرجوع مباشرة.
 // نستخدم rect.height الفعلي (محجوز بالـ aspect-ratio في CSS فهو ثابت ومتطابق بين
 // المتصفحات)، ونرجع لاشتقاقه من العرض × النسبة فقط إن كان 0 احتياطيًا.
+//
+// مهم: شعار الهيدر يحمل حركة fade-in (translateY(28px)→0). فلو قِسناه أثناء
+// تشغيلها نقرأ موضعًا أخفض من موضعه النهائي. على الموبايل محطة نهاية المرحلة 1 هي
+// نفسها مركز الهيدر، فيستقر شعار الـ splash أسفل الموضع الصحيح، ثم تعيد المرحلة 2
+// قياسه بعد استقراره فيصعد لتصحيحه = "نزول ثم توقف ثم صعود" مزعج. لذا نتجاهل إزاحة
+// الـ transform لحظة القياس (override مؤقت بأولوية important يتغلّب على الحركة، وهو
+// غير مرئي لأن الهيدر مخفي بالـ visibility)، فنقرأ الموضع النهائي المستقر دومًا.
+// لا نلمس خاصية animation إطلاقًا حتى لا نُعيد تشغيل الـ fade-in.
 function headerCenter() {
-  const r = headerLogo!.getBoundingClientRect();
+  const el = headerLogo!;
+  const prev = el.style.getPropertyValue("transform");
+  const prevPriority = el.style.getPropertyPriority("transform");
+  el.style.setProperty("transform", "none", "important");
+  const r = el.getBoundingClientRect();
+  if (prev) el.style.setProperty("transform", prev, prevPriority);
+  else el.style.removeProperty("transform");
   const h = r.height || r.width * LOGO_ASPECT;
   return { x: r.left + r.width / 2, y: r.top + h / 2 };
 }
