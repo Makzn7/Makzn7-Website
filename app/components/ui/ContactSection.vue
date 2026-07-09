@@ -10,10 +10,12 @@
         class="w-full mx-auto grid grid-cols-1 gap-12 py-6 lg:py-16 px-6 lg:px-28"
       >
         <!-- Title -->
-        <div class="flex justify-between items-center">
+        <div
+          class="grid grid-cols-5 lg:grid-cols-3 gap-8 lg:gap-4 items-center"
+        >
           <!-- Title -->
           <h2
-            class="leading-none fade-in tracking-[-2.06px] text-nowrap"
+            class="col-span-3 lg:col-span-2 leading-none fade-in tracking-[-2.06px] text-nowrap"
             :style="`animation-delay: 0s; font-size: clamp(${Math.max(
               24,
               Math.round(57 * 0.35)
@@ -23,14 +25,14 @@
           </h2>
           <!-- Options -->
           <div
-            class="w-full flex gap-4 justify-end items-center"
+            class="col-span-2 lg:col-span-1 w-full flex gap-4 justify-start lg:justify-end items-center"
             :style="`font-size: clamp(${Math.max(
               14,
               Math.round(18 * 0.35)
             )}px, ${(18 / 20).toFixed(1)}vw, ${18}px);`"
           >
             <button
-              class="flex justify-start items-start gap-1 min-w-[20px]"
+              class="col-span-2 lg:col-span-1 flex justify-start items-start gap-1 min-w-[20px]"
               id="toggle-lang"
               @click="toggleLocale"
               :class="locale === 'ar' ? 'font-en' : 'font-ar'"

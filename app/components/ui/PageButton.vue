@@ -14,9 +14,10 @@
         class="absolute inset-0 hidden group-hover:flex items-center justify-center px-8 py-4 bg-transparent"
       >
         <span
+          class="button-text text-center"
           :class="`font-bold`"
           :style="`font-size: clamp(${Math.max(
-            18,
+            16,
             Math.round(100 * 0.35)
           )}px, ${(100 / 20).toFixed(1)}vw, ${100}px); color: ${textColor};`"
         >
@@ -50,3 +51,11 @@ defineProps({
   },
 });
 </script>
+
+<style scoped>
+@media (max-width: 1024px) {
+  .button-text {
+    font-size: clamp(16px, 7.5vw, 70px) !important;
+  }
+}
+</style>

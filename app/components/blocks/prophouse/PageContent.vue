@@ -174,6 +174,7 @@
                 class="absolute inset-0 hidden group-hover:flex items-center justify-center px-8 py-4 bg-transparent"
               >
                 <span
+                  class="button-text text-center"
                   :class="`font-bold`"
                   :style="`font-size: clamp(${Math.max(
                     16,
@@ -271,6 +272,9 @@ const hint = computed(() => (locale.value === "ar" ? hintAr : hintEn));
   .pc-project-px {
     padding-right: 2rem;
     padding-left: 2rem;
+  }
+  .button-text {
+    font-size: clamp(16px, 7.5vw, 70px) !important;
   }
 }
 </style>

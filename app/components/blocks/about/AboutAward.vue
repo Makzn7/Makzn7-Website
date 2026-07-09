@@ -13,37 +13,49 @@
       <div
         v-for="(award, i) in awards"
         :key="i"
-        class="relative flex flex-col lg:flex-row justify-center items-center gap-4 mb-6 pb-6 border-b-[0.3px] border-white-op50 last:border-0 px-6 lg:ps-12 lg:pe-44"
+        class="relative flex flex-col justify-center items-center border-b-[0.3px] mb-6 border-white-op50 last:border-0"
       >
-        <div class="w-full">
-          <h2
-            class="font-bold"
-            :style="`font-size: clamp(${Math.max(
-              18,
-              Math.round(yearS * 0.35)
-            )}px, ${(yearS / 20).toFixed(1)}vw, ${yearS}px);`"
-          >
-            {{ award.year }}
-          </h2>
-          <div
-            class="font-light leading-[1.2] my-2"
-            :style="`font-size: clamp(${Math.max(
-              18,
-              Math.round(nameS * 0.35)
-            )}px, ${(nameS / 20).toFixed(1)}vw, ${nameS}px);`"
-            v-html="
-              locale === 'ar' ? award.description_ar : award.description_en
-            "
-          ></div>
+        <div
+          class="w-full relative flex flex-col lg:flex-row justify-center items-center gap-4 pb-6 px-6 lg:ps-12 lg:pe-44"
+        >
+          <div class="w-full">
+            <h2
+              class="font-bold"
+              :style="`font-size: clamp(${Math.max(
+                18,
+                Math.round(yearS * 0.35)
+              )}px, ${(yearS / 20).toFixed(1)}vw, ${yearS}px);`"
+            >
+              {{ award.year }}
+            </h2>
+            <div
+              class="font-light leading-[1.2] my-2"
+              :style="`font-size: clamp(${Math.max(
+                18,
+                Math.round(nameS * 0.35)
+              )}px, ${(nameS / 20).toFixed(1)}vw, ${nameS}px);`"
+              v-html="
+                locale === 'ar' ? award.description_ar : award.description_en
+              "
+            ></div>
+          </div>
+          <div class="relative shrink-0">
+            <img
+              v-if="award.image_3d"
+              :src="award.image_3d"
+              :alt="award.title_en"
+              loading="lazy"
+              class="object-contain"
+              :style="`width: ${imgBox}; height: ${imgBox};`"
+            />
+          </div>
         </div>
-        <div class="relative shrink-0">
+        <div v-if="award.image" class="w-full flex justify-center items-center">
           <img
-            v-if="award.image_3d"
-            :src="award.image_3d"
+            :src="award.image"
             :alt="award.title_en"
+            class="w-full object-cover"
             loading="lazy"
-            class="object-contain"
-            :style="`width: ${imgBox}; height: ${imgBox};`"
           />
         </div>
       </div>
