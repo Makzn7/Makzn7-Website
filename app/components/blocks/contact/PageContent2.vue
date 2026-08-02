@@ -126,7 +126,7 @@
             class="lg:order-8 col-span-2 lg:col-span-1 w-full h-full flex justify-center items-center py-4 px-6 font-light border-e-[0.3px] border-t-[0.3px] lg:border-t-0 border-white-op50 border-brand-text text-center"
           >
             <a
-              href="https://www.instagram.com/makzn7/"
+              :href="`${settings?.social_links?.instagram}`"
               target="_blank"
               class="social-icon group transition-all duration-500 ease-in-out white-link-sm font-en rtl:text-right"
               dir="ltr"
@@ -143,7 +143,7 @@
             class="lg:order-9 col-span-2 lg:col-span-1 w-full h-full flex justify-center items-center py-4 px-6 font-light border-e-[0.3px] border-t-[0.3px] lg:border-t-0 border-white-op50 border-brand-text text-center"
           >
             <a
-              href="https://www.instagram.com/makzn7/"
+              :href="`${settings?.social_links?.linkedin}`"
               target="_blank"
               class="social-icon group transition-all duration-500 ease-in-out white-link-sm font-en rtl:text-right"
               dir="ltr"
